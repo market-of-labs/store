@@ -1,8 +1,7 @@
 version: 2
 
-# store 也有 action 依赖了（forward.yml 的 actions/github-script，钉的是 SHA），
-# 所以它同样需要一份 —— 钉 SHA 之后没有机器帮着升，就等于钉死在一个会腐坏的
-# 版本上；末尾那行 `# vX.Y.Z` 注释就是给 Dependabot 认版本用的。
+# store 也有 action 依赖了（forward.yml 的 actions/github-script），所以它同样需要
+# 一份 —— 用的既然是主版本标签（`@v9`），不配这个就等于钉死在当前主版本上。
 #
 # 这个仓库是私有的，所以顺带确认它不花分钟数：本仓库的 workflow 只在
 # issues / release / push(sources/**) 上跑，Dependabot 开的是普通 PR，触发不了

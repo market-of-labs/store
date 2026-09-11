@@ -44,11 +44,10 @@ jobs:
         # `~^:?*[\`、`..`、`@{`，**却不禁止 `"`** —— 一个叫 `v1.0"x` 的 tag
         # 就能把那串 JSON 拼坏。顺带白拿指数退避重试。
         #
-        # 钉 SHA 而不是 `@v9`：这个 job 自己就握着那把能写三个仓库的 PAT，所以
-        # "上游往 v9 这个 tag 上推了什么"必须是一个不会自己变的事实。SHA 不变，
-        # tag 变（v9.0.0 与 v9 现在指向同一个 commit，但 v9 明天可以改指别处）。
-        # 末尾注释给 Dependabot 认版本 —— 见同目录的 dependabot.yml。
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        # 用主版本标签（`@v9`），不钉 commit SHA：升级交给同目录的 dependabot.yml
+        # 每周开 PR。钉 SHA 更抗供应链，但每次升级都要人工查 SHA，而 SHA 写错是
+        # 静默失败 —— 取舍是有意的。
+        uses: actions/github-script@v9
         env:
           # ⚠️ 一切外部数据只经 env 传入；script: 里**一处 ${{ }} 都没有**。
           # script: 不是 shell，但 ${{ }} 在这里同样是**文本拼接** —— 往里面塞

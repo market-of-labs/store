@@ -23,7 +23,7 @@ store/
 │   └── endpoints.json          # 地址模板（第一期 ⇄ 部署期的唯一开关）
 ├── .github/
 │   ├── workflows/forward.yml   # 薄转发：不 checkout、不插值、只 POST 一次 dispatch
-│   ├── dependabot.yml          # 每周升 forward.yml 里那个钉 SHA 的 action
+│   ├── dependabot.yml          # 每周升 forward.yml 里那个 action 的主版本
 │   └── ISSUE_TEMPLATE/         # 给小圈子成员用的两个入口
 ├── README.md
 └── .gitignore
