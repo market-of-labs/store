@@ -17,9 +17,9 @@ store/
 ├── sources/                    # 输入 —— 唯一由人维护的事实源，一应用一文件
 │   ├── dev.imranr.obtainium.json
 │   └── com.obtainium.companion.json
-├── store/                      # 产物 + 契约常量 —— 只有 forge 写
-│   ├── apps.json               # 最终清单（客户端拉的就是它）
-│   ├── index.json              # 版本/asset 机读索引
+├── apps.json                   # 最终清单 —— 放**根目录**，因为客户端唯一消费的就是它
+├── store/                      # 其余产物 + 契约常量 —— 只有 forge 写
+│   ├── index.json              # 版本/asset 机读索引（客户端不消费，D23）
 │   └── endpoints.json          # 地址模板（第一期 ⇄ 部署期的唯一开关）
 ├── .github/
 │   ├── workflows/forward.yml   # 薄转发：不 checkout、不插值、只 POST 一次 dispatch
@@ -28,7 +28,14 @@ store/
 └── .gitignore
 ```
 
-**`sources/` 是输入，`store/` 是产物。** 不要手工编辑 `store/apps.json` / `store/index.json` —— 它们由 `forge` 生成，手改会在下一轮对账被覆盖。
+**`sources/` 是输入，产物是 `apps.json` 与 `store/` 两处。** 不要手工编辑 `apps.json` / `store/index.json`
+—— 它们由 `forge` 生成，手改会在下一轮对账被覆盖。
+
+> **为什么清单在根目录而不在 `store/` 里**：`apps.json` 是**唯一直接伺服给客户端**的文件，
+> 它的路径就是设备的默认清单地址（`raw.githubusercontent.com/market-of-labs/store/main/apps.json`）。
+> 把它放在根目录，地址里就不会出现 `store/store` 这种「仓库名与目录名重复」的段。
+> `index.json` 客户端不消费（D23），`endpoints.json` 是给 forge 与 CF 读的契约常量，
+> 两者都不需要短路径，留在 `store/` 里保持与输入面分开。
 
 ---
 
@@ -112,7 +119,7 @@ store/
 | | 第一期（现在，无 CF） | 部署期 |
 |---|---|---|
 | `assetUrlTemplate` | `https://github.com/market-of-labs/store/releases/download/{appId}/{fileName}` | `https://<cf域>/asset/{appId}/{version}/{fileName}` |
-| 清单地址 | `https://raw.githubusercontent.com/market-of-labs/store/main/store/apps.json` | `https://<cf域>/manifest` |
+| 清单地址 | `https://raw.githubusercontent.com/market-of-labs/store/main/apps.json` | `https://<cf域>/manifest` |
 | CF 隐藏红线 | ⚠️ **暂时失守**（真实 `owner/repo` 出现在清单里） | 满足 |
 
 **客户端不需要任何改动**：它只消费清单里现成的 URL、从不自行拼前缀。切 CF = 改这一行 + 改伴侣应用设置里的清单地址，**不发新版应用**。
@@ -124,7 +131,7 @@ store/
 ## 6. 当前状态（种子数据，待 `forge` 首次运行替换）
 
 - `sources/` 已有 2 条：`dev.imranr.obtainium`（`kind:"obtainium"`，启动器安装候选）与 `com.obtainium.companion`（`kind:"companion"`，自更新来源）。
-- `store/apps.json` / `store/index.json` 是**手写种子**，只为让伴侣应用在 `forge` 跑起来之前有东西可拉。`index.json` 里的 `size` 是占位 `0`。
+- `apps.json` / `store/index.json` 是**手写种子**，只为让伴侣应用在 `forge` 跑起来之前有东西可拉。`index.json` 里的 `size` 是占位 `0`。
 - 一旦 `forge` 跑过一次，这两个产物会被真实数据覆盖。
 - **现在所有 `apkUrls` 都指向尚不存在的 Release**（tag=`{appId}` 的 Release 还没建）—— 属预期，`forge` 首次收录时创建。
 

@@ -14,7 +14,7 @@ on:
     # ⚠️ 必须死写 types。裸 `on: release` = 全部 7 种动作（含 deleted / unpublished）
     types: [published]
   push:
-    # 只有输入面变化才需要重算；产物（store/**）由 forge 回写，不需要转发
+    # 只有输入面变化才需要重算；产物（根目录的 apps.json 与 store/**）由 forge 回写，不需要转发
     paths: ['sources/**']
   workflow_dispatch: {}   # 手动兜底
 
