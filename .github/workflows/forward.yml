@@ -4,7 +4,7 @@ name: forward-to-forge
 # 硬规矩（细则见 market-spec/03 §2.6）：
 #   1. 不 checkout —— 没有任何仓库内容进入执行环境（包括 issue 正文）
 #   2. run: 里零 ${{ }} 插值 —— 外部值全部走 env:（${{ }} 在 run: 里是文本拼接，会脚本注入）
-#   3. 门禁在 job 级 —— 被跳过的 job 根本拿不到 secret
+#   3. 跳过在 job 级 —— 被跳过的 job 根本拿不到 secret（这里没有权限门禁，见下）
 #   4. 转发的是「信标」不是「数据」—— 只带事件名/issue 号/tag/sha，内容由 forge 自己用 API 读
 
 on:
@@ -23,11 +23,19 @@ permissions: {}            # 不需要 GITHUB_TOKEN 的任何权限（走 PAT）
 jobs:
   forward:
     runs-on: ubuntu-latest
-    if: >-
-      !contains(github.event.head_commit.message || '', '[skip-dispatch]') &&
-      (github.event_name != 'issues' ||
-       github.event.issue.author_association == 'OWNER' ||
-       github.event.issue.author_association == 'MEMBER')
+    # 唯一的守卫：防自激回声。forge 每次回写都由 CommitBack 无条件补上
+    # [skip-dispatch]（internal/job/ctx.go），而它写 sources/（收录与变更单都写）
+    # 恰好落在上面的 paths 里 —— PAT 触发的 push 不会被 GitHub 抑制，不拦就是
+    # 「回写 → 转发 → 再回写」，每收录一个应用白烧一轮最长 90 分钟的对账。
+    #
+    # ⚠️ 写成「非 push 事件直接放行」，**不要**把两件事塞进同一条 && 链。
+    # github.event.head_commit 只在 push 事件里存在，issue 事件里去取它会让整条
+    # 表达式判假 —— 症状是 run 一闪而过、结论 skipped、日志一个字都没有。
+    #
+    # 上面两句原本和一条按 author_association 挡陌生人的门禁串在同一条 && 里：
+    # issue 事件上 head_commit 与那条门禁必有一个取不到值，整条就判假了 ——
+    # 而 store 是私有仓库，非成员连 issue 都开不了，那条门禁挡不到任何人，已删。
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip-dispatch]')
     steps:
       - name: Dispatch forge
         env:
