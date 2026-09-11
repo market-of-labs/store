@@ -3,7 +3,7 @@
 这是**私密应用市场的数据落地处**：输入（`sources/`）、产物（`store/`）、以及全部 APK 二进制（Releases）。
 
 - **现在公有**（为了让开发期的 raw 直链可直接用）→ **部署期转私有**。
-- 转私有正是 CF 遮蔽网关存在的理由，也是全部维护逻辑被拆到 [`forge`](../forge) 的原因（GitHub 对私有仓库的 Actions 分钟数计费）。
+- 转私有正是 CF 遮蔽网关存在的理由，也是维护逻辑被拆出去的原因（GitHub **只对私有仓库**的 Actions 分钟数计费）。拆成了两个：公有的 [`forge`](../forge) 只放 workflow（**运行器**），逻辑的**实现**在私有的 [`forge-core`](../forge-core) 里 —— 所以"跑在公有仓库"和"逻辑不公开"能同时成立。
 - 完整设计见 `market-spec/`（尤其 **03 · 维护逻辑**）。
 
 > ⚠️ **这个仓库不执行任何维护逻辑**。它只跑一个「转手就发车」的极薄 workflow，把事件转告 `forge`。
@@ -147,7 +147,8 @@ store/
 | # | 检查项 |
 |---|---|
 | **1** | **本仓库及其所属 org 的「Immutable releases」必须为 OFF**（2025-10-28 GA）。开启后 asset 不能增删改、tag 不能删/移 —— 本设计的追加上传与 `_incoming` 清场全部失效；删除不可变 Release 会**永久烧毁该 tag**，而 `tag = {appId}` 不可重建。**"先开后关"也不安全**（已固化的 Release 不受影响）。 |
-| 2 | `store` 转私有后按私有仓库计费 —— 逻辑都在公有的 `forge` 跑，本仓库只跑一次 `curl` |
-| 3 | `FORGE_DISPATCH_TOKEN`（本仓库 secret）与 `forge` 的 `STORE_WRITE_TOKEN` 是**同一把** fine-grained PAT |
+| 2 | `store` 转私有后按私有仓库计费 —— 逻辑跑在公有的 `forge`（其实现来自私有的 `forge-core`），本仓库只跑一次 `curl` |
+| 3 | `FORGE_DISPATCH_TOKEN`（本仓库 secret）与 `forge` 的 `STORE_WRITE_TOKEN` 是**同一把** fine-grained PAT，仓库范围必须含 `store`(Contents RW + Issues RW) / `forge`(Contents RW) / **`forge-core`(Contents R)** |
+| 3b | `forge-core` 必须**已发布过至少一个带 `forge-linux-amd64` asset 的 tag** —— 公有的 `forge` 浮动取 latest，一个 Release 都没有时 `gh release download` 直接失败 |
 | 4 | 本仓库 workflow 保持 `permissions: {}` |
 | 5 | 确认 `_incoming` 始终是 **draft** 且从未被误 Publish |
