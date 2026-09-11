@@ -1,43 +1,22 @@
 name: 新增 · 标准源
-description: 申请收录一个新的 GitHub 上游应用（需要写权限之外的协作者用这个）
+description: 申请收录一个新的 GitHub 上游应用（给小圈子成员用，不需要仓库写权限）
 title: "[新增] "
 body:
   - type: markdown
     attributes:
       value: |
-        请只用于**新的 appId**。若该 id 已存在，请改用「变更 · 移除」模板。
-        提交后由 forge 校验并回评；通过则自动写入 `sources/{appId}.json` 并关闭本 issue。
+        **只需要填上游仓库。** 包名、显示名、作者都由 forge 在对账时从 APK 与仓库里读出来 ——
+        不用你查，填了也不作数。
 
-  - type: input
-    id: appId
-    attributes:
-      label: 应用包名（appId）
-      description: 必须是 APK 包内真实的 package，例如 dev.imranr.obtainium。写错会导致校验失败。
-      placeholder: dev.imranr.obtainium
-    validations:
-      required: true
+        代价是：**仓库填错会静默收错应用**。所以解析完成后会把读出来的身份回评给你，请核对一眼。
 
-  - type: input
-    id: name
-    attributes:
-      label: 显示名
-      placeholder: Obtainium
-    validations:
-      required: true
-
-  - type: input
-    id: author
-    attributes:
-      label: 作者 / 组织
-      placeholder: ImranR98
-    validations:
-      required: true
+        本单会一直开着，直到解析成功才自动关闭。被拒绝时会写明原因并等你补完，**不用重开单**。
 
   - type: input
     id: repo
     attributes:
       label: 上游 GitHub 仓库
-      description: owner/repo 形式。必须可匿名读（公开仓库）。
+      description: owner/repo 形式。必须可匿名读（公开仓库）。填错会在下一轮对账被拒，本单会收到一条说明。
       placeholder: ImranR98/Obtainium
     validations:
       required: true
@@ -46,23 +25,42 @@ body:
     id: assetPattern
     attributes:
       label: 资产匹配正则（可选）
-      description: 用于从上游 Release 里挑出要镜像的 APK。留空则默认匹配 *.apk。
+      description: 用来从上游 Release 的资产里挑出要镜像的 APK，留空则匹配 *.apk。如果一个仓库同时发布了多个不同包名的 APK，这条是唯一的消歧办法 —— 那时不填会被拒，按回评提示补上即可。
       placeholder: "app.*\\.apk$"
     validations:
       required: false
 
   - type: input
-    id: categories
+    id: desc
     attributes:
-      label: 分类标签（可选）
-      description: 逗号分隔，例如：工具,效率
+      label: 一句话简介（可选）
+      description: 会拼在 Obtainium 列表里的**显示名**后面，形如「应用名 · 你的简介」。这是列表行上唯一能写字的空白处，所以**最多 20 个字**（超了会被截断，并在回评里告诉你）。留空就只显示应用名。
+      placeholder: 去广告的第三方客户端
     validations:
       required: false
 
-  - type: input
+  - type: checkboxes
+    id: categories
+    attributes:
+      label: 分类标签（可选）
+      description: 会显示在 Obtainium 的列表色条与筛选里。建议至少勾一个；一个都不勾也能收录。
+      options:
+        - label: 工具
+        - label: 效率
+        - label: 媒体
+        - label: 通讯
+        - label: 开发
+        - label: 游戏
+        - label: 其他
+
+  - type: checkboxes
     id: abiWhitelist
     attributes:
       label: 只镜像哪些 ABI（可选）
-      description: 逗号分隔，取值限 arm64-v8a / armeabi-v7a / x86_64 / x86 / universal。留空 = 全部分片都镜像。
-    validations:
-      required: false
+      description: 一个都不勾 = 全部分片都镜像；勾了就只镜像勾中的（省 Release 空间）。
+      options:
+        - label: arm64-v8a
+        - label: armeabi-v7a
+        - label: x86_64
+        - label: x86
+        - label: universal

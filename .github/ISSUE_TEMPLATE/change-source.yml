@@ -8,7 +8,7 @@ body:
         ⚠️ 想「停更」请选**暂停更新**，不要选移除。移除**不会**让已同步设备上那一行消失
         （deep link 只有创建/覆盖、没有删除动作），只会让新设备不再收录。
 
-        同一 issue 只处理一个 appId。
+        同一 issue 只处理一个 appId。下面的字段只在「修改元数据」时才有意义，其余动作留空即可。
 
   - type: input
     id: appId
@@ -48,15 +48,33 @@ body:
     id: newAssetPattern
     attributes:
       label: 新的资产匹配正则（仅「修改元数据」时填）
+      description: 用来从上游 Release 的资产里挑出要镜像的 APK，留空则匹配 *.apk。一个仓库同时发布多个不同包名的 APK 时，这条是唯一的消歧办法。
+      placeholder: "app.*\\.apk$"
     validations:
       required: false
 
   - type: input
-    id: newCategories
+    id: newDesc
     attributes:
-      label: 新的分类标签（仅「修改元数据」时填，逗号分隔）
+      label: 新的简介（仅「修改元数据」时填）
+      description: 拼在列表显示名后面，形如「应用名 · 简介」，**最多 20 个字**（超了会被截断）。留空 = 不改简介；**想把简介清空得直接改 `sources/{appId}.json`**，这里表达不了"改成空"。
+      placeholder: 去广告的第三方客户端
     validations:
       required: false
+
+  - type: checkboxes
+    id: newCategories
+    attributes:
+      label: 新的分类标签（仅「修改元数据」时填）
+      description: 勾中的即**全量替换**原有的分类。一个都不勾 = 不改分类。
+      options:
+        - label: 工具
+        - label: 效率
+        - label: 媒体
+        - label: 通讯
+        - label: 开发
+        - label: 游戏
+        - label: 其他
 
   - type: textarea
     id: reason
