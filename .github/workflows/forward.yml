@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Dispatch forge
         env:
-          DISPATCH_TOKEN: ${{ secrets.FORGE_DISPATCH_TOKEN }}
+          DISPATCH_TOKEN: ${{ secrets.GH_PAT }}
           GH_EVENT: ${{ github.event_name }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
