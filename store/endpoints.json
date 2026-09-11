@@ -1,0 +1,5 @@
+{
+  "tagTemplate": "{appId}",
+  "assetNameTemplate": "{appId}-{version}-{abi}.apk",
+  "assetUrlTemplate": "https://github.com/market-of-labs/store/releases/download/{appId}/{fileName}"
+}

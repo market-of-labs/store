@@ -1,0 +1,53 @@
+name: forward-to-forge
+
+# 本 workflow 只做一件事：把事件原样转告 forge。
+# 硬规矩（细则见 market-spec/03 §2.6）：
+#   1. 不 checkout —— 没有任何仓库内容进入执行环境（包括 issue 正文）
+#   2. run: 里零 ${{ }} 插值 —— 外部值全部走 env:（${{ }} 在 run: 里是文本拼接，会脚本注入）
+#   3. 门禁在 job 级 —— 被跳过的 job 根本拿不到 secret
+#   4. 转发的是「信标」不是「数据」—— 只带事件名/issue 号/tag/sha，内容由 forge 自己用 API 读
+
+on:
+  issues:
+    types: [opened, edited]
+  release:
+    # ⚠️ 必须死写 types。裸 `on: release` = 全部 7 种动作（含 deleted / unpublished）
+    types: [published]
+  push:
+    # 只有输入面变化才需要重算；产物（store/**）由 forge 回写，不需要转发
+    paths: ['sources/**']
+  workflow_dispatch: {}   # 手动兜底
+
+permissions: {}            # 不需要 GITHUB_TOKEN 的任何权限（走 PAT）
+
+jobs:
+  forward:
+    runs-on: ubuntu-latest
+    if: >-
+      !contains(github.event.head_commit.message || '', '[skip-dispatch]') &&
+      (github.event_name != 'issues' ||
+       github.event.issue.author_association == 'OWNER' ||
+       github.event.issue.author_association == 'MEMBER')
+    steps:
+      - name: Dispatch forge
+        env:
+          DISPATCH_TOKEN: ${{ secrets.FORGE_DISPATCH_TOKEN }}
+          GH_EVENT: ${{ github.event_name }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_PRERELEASE: ${{ github.event.release.prerelease }}
+          REPO: ${{ github.repository }}
+          REF: ${{ github.ref }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          echo "::add-mask::$DISPATCH_TOKEN"
+          payload=$(printf '{"event_type":"store-event","client_payload":{%s}}' \
+            "$(printf '"event":"%s","issue":%s,"releaseTag":"%s","prerelease":"%s","repo":"%s","ref":"%s","sha":"%s"' \
+               "$GH_EVENT" "${ISSUE_NUMBER:-0}" "$RELEASE_TAG" "$RELEASE_PRERELEASE" "$REPO" "$REF" "$SHA")")
+          curl -sS --fail-with-body -X POST \
+            -H "Authorization: Bearer $DISPATCH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/market-of-labs/forge/dispatches \
+            -d "$payload"

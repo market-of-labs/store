@@ -1,0 +1,15 @@
+{
+  "id": "com.obtainium.companion",
+  "name": "私有市场同步器",
+  "author": "you",
+  "source": "github",
+  "paused": false,
+  "kind": "companion",
+  "categories": [],
+  "upstream": {
+    "type": "github-release",
+    "repo": "market-of-labs/companion",
+    "assetPattern": "^com\\.obtainium\\.companion-.*\\.apk$"
+  },
+  "abiWhitelist": []
+}

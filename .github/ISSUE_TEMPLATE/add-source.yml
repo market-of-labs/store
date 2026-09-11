@@ -1,0 +1,68 @@
+name: 新增 · 标准源
+description: 申请收录一个新的 GitHub 上游应用（需要写权限之外的协作者用这个）
+title: "[新增] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请只用于**新的 appId**。若该 id 已存在，请改用「变更 · 移除」模板。
+        提交后由 forge 校验并回评；通过则自动写入 `sources/{appId}.json` 并关闭本 issue。
+
+  - type: input
+    id: appId
+    attributes:
+      label: 应用包名（appId）
+      description: 必须是 APK 包内真实的 package，例如 dev.imranr.obtainium。写错会导致校验失败。
+      placeholder: dev.imranr.obtainium
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: 显示名
+      placeholder: Obtainium
+    validations:
+      required: true
+
+  - type: input
+    id: author
+    attributes:
+      label: 作者 / 组织
+      placeholder: ImranR98
+    validations:
+      required: true
+
+  - type: input
+    id: repo
+    attributes:
+      label: 上游 GitHub 仓库
+      description: owner/repo 形式。必须可匿名读（公开仓库）。
+      placeholder: ImranR98/Obtainium
+    validations:
+      required: true
+
+  - type: input
+    id: assetPattern
+    attributes:
+      label: 资产匹配正则（可选）
+      description: 用于从上游 Release 里挑出要镜像的 APK。留空则默认匹配 *.apk。
+      placeholder: "app.*\\.apk$"
+    validations:
+      required: false
+
+  - type: input
+    id: categories
+    attributes:
+      label: 分类标签（可选）
+      description: 逗号分隔，例如：工具,效率
+    validations:
+      required: false
+
+  - type: input
+    id: abiWhitelist
+    attributes:
+      label: 只镜像哪些 ABI（可选）
+      description: 逗号分隔，取值限 arm64-v8a / armeabi-v7a / x86_64 / x86 / universal。留空 = 全部分片都镜像。
+    validations:
+      required: false

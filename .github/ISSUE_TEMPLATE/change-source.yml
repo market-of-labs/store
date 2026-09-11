@@ -1,0 +1,67 @@
+name: 变更 · 移除
+description: 修改元数据 / 暂停更新 / 恢复更新 / 移除一个已收录的应用
+title: "[变更] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ 想「停更」请选**暂停更新**，不要选移除。移除**不会**让已同步设备上那一行消失
+        （deep link 只有创建/覆盖、没有删除动作），只会让新设备不再收录。
+
+        同一 issue 只处理一个 appId。
+
+  - type: input
+    id: appId
+    attributes:
+      label: 目标 appId
+      description: 已收录的包名，例如 dev.imranr.obtainium
+    validations:
+      required: true
+
+  - type: dropdown
+    id: action
+    attributes:
+      label: 动作
+      options:
+        - 修改元数据
+        - 暂停更新
+        - 恢复更新
+        - 移除
+    validations:
+      required: true
+
+  - type: input
+    id: newName
+    attributes:
+      label: 新的显示名（仅「修改元数据」时填）
+    validations:
+      required: false
+
+  - type: input
+    id: newAuthor
+    attributes:
+      label: 新的作者 / 组织（仅「修改元数据」时填）
+    validations:
+      required: false
+
+  - type: input
+    id: newAssetPattern
+    attributes:
+      label: 新的资产匹配正则（仅「修改元数据」时填）
+    validations:
+      required: false
+
+  - type: input
+    id: newCategories
+    attributes:
+      label: 新的分类标签（仅「修改元数据」时填，逗号分隔）
+    validations:
+      required: false
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 说明（可选）
+      description: 便于回查为什么这么改。
+    validations:
+      required: false

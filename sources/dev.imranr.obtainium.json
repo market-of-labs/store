@@ -1,0 +1,15 @@
+{
+  "id": "dev.imranr.obtainium",
+  "name": "Obtainium",
+  "author": "ImranR98",
+  "source": "github",
+  "paused": false,
+  "kind": "obtainium",
+  "categories": [],
+  "upstream": {
+    "type": "github-release",
+    "repo": "ImranR98/Obtainium",
+    "assetPattern": "app.*\\.apk$"
+  },
+  "abiWhitelist": []
+}

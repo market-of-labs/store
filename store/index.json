@@ -1,0 +1,39 @@
+{
+  "generatedAt": "2026-09-10T00:00:00Z",
+  "apps": [
+    {
+      "id": "dev.imranr.obtainium",
+      "tag": "dev.imranr.obtainium",
+      "versions": [
+        {
+          "version": "1.6.15",
+          "versionCode": 1615,
+          "assets": [
+            {
+              "abi": "universal",
+              "file": "dev.imranr.obtainium-1.6.15-universal.apk",
+              "size": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "com.obtainium.companion",
+      "tag": "com.obtainium.companion",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "versionCode": 100,
+          "assets": [
+            {
+              "abi": "universal",
+              "file": "com.obtainium.companion-1.0.0-universal.apk",
+              "size": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

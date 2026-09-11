@@ -1,0 +1,14 @@
+# 本地环境
+local.properties
+.idea/
+*.iml
+
+# 临时目录（脚本的工作区，绝不入库）
+/tmp/
+.DS_Store
+
+# 凭据 —— 任何形式的 key / token / keystore 都不得入库
+*.jks
+*.keystore
+keystore.*
+secrets.*
