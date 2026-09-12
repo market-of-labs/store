@@ -11,5 +11,21 @@
   "upstream": {
     "type": "github-release",
     "repo": "mytv-android/myDV"
-  }
+  },
+  "versions": [
+    {
+      "version": "1.4.26",
+      "versionCode": 26,
+      "versionName": "1.4.26",
+      "publishedAt": "2026-09-03T12:32:55Z",
+      "upstreamTag": "V1.4.26",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "com.github.mytv.dv-1.4.26-universal.apk",
+          "size": 15652606
+        }
+      ]
+    }
+  ]
 }

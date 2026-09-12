@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-12T10:41:17Z",
+  "exportedAt": "2026-09-12T10:50:14Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -18,6 +18,23 @@
       "changeLog": "",
       "categories": [
         "工具"
+      ]
+    },
+    {
+      "id": "com.github.mytv.dv",
+      "name": "myDV · 抖音第三方电视版",
+      "author": "mytv-android",
+      "url": "https://market.invalid/com.github.mytv.dv",
+      "overrideSource": "HTML",
+      "latestVersion": "1.4.26",
+      "apkUrls": "[[\"com.github.mytv.dv-1.4.26-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/com.github.mytv.dv/com.github.mytv.dv-1.4.26-universal.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":26}",
+      "releaseDate": 1788438775000000,
+      "changeLog": "",
+      "categories": [
+        "媒体"
       ]
     },
     {
