@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "exportedAt": "2026-09-12T10:15:22Z",
+  "generatedBy": "forge",
+  "apps": [
+    {
+      "id": "com.github.HailLauncher",
+      "name": "冰雹桌面 · 带应用冻结功能的TV桌面",
+      "author": "TVLaunchers",
+      "url": "https://market.invalid/com.github.HailLauncher",
+      "overrideSource": "HTML",
+      "latestVersion": "2026.09.10",
+      "apkUrls": "[[\"com.github.HailLauncher-2026.09.10-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/com.github.HailLauncher/com.github.HailLauncher-2026.09.10-universal.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":20260910}",
+      "releaseDate": 1789011848000000,
+      "changeLog": "",
+      "categories": [
+        "工具"
+      ]
+    }
+  ]
+}

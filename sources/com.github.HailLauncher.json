@@ -11,5 +11,21 @@
   "upstream": {
     "type": "github-release",
     "repo": "TVLaunchers/HailLauncher"
-  }
+  },
+  "versions": [
+    {
+      "version": "2026.09.10",
+      "versionCode": 20260910,
+      "versionName": "2026.09.10",
+      "publishedAt": "2026-09-10T03:44:08Z",
+      "upstreamTag": "2026.09.10",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "com.github.HailLauncher-2026.09.10-universal.apk",
+          "size": 2744055
+        }
+      ]
+    }
+  ]
 }
