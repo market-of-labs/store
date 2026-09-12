@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-12T10:36:48Z",
+  "exportedAt": "2026-09-12T10:39:28Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -38,6 +38,25 @@
         "效率"
       ],
       "kind": "companion"
+    },
+    {
+      "id": "dev.bikram.obtainx",
+      "name": "ObtainX",
+      "author": "bikram-agarwal",
+      "url": "https://market.invalid/dev.bikram.obtainx",
+      "overrideSource": "HTML",
+      "latestVersion": "2.10.00",
+      "apkUrls": "[[\"dev.bikram.obtainx-2.10.00-arm64-v8a.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.bikram.obtainx/dev.bikram.obtainx-2.10.00-arm64-v8a.apk\"],[\"dev.bikram.obtainx-2.10.00-armeabi-v7a.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.bikram.obtainx/dev.bikram.obtainx-2.10.00-armeabi-v7a.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":210003}",
+      "releaseDate": 1788654602000000,
+      "changeLog": "",
+      "categories": [
+        "工具",
+        "效率"
+      ],
+      "kind": "obtainium"
     },
     {
       "id": "dev.imranr.obtainium",
