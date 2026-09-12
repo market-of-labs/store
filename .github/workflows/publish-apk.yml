@@ -1,0 +1,155 @@
+name: publish-apk
+
+# 私有源码仓的 CI 把构建产物送进 `_incoming` 暂存队列（03 §3.2 / §8「上游私有仓库」）。
+#
+# 这是给 source: "manual" 的**自研 App** 用的：它的源码仓是私有的，`source: "github"`
+# 那条路走不通（forge 匿名读不了私有仓，而给 forge 上游读凭据是我们不想开的门），
+# 所以它不提上游，只把产物送进上传队列 —— 走的是与「人在网页上手动传 APK」
+# **完全同一条**下游路径：forge 一行代码都不用改，也不用给它任何凭据。
+#
+# 调用方在自己的仓库里写这么一段（构建 job 先 upload-artifact，名字必须是 apk）：
+#
+#   jobs:
+#     build:
+#       runs-on: ubuntu-latest
+#       steps:
+#         - uses: actions/checkout@v7
+#         - run: ./gradlew assembleRelease
+#         - uses: actions/upload-artifact@v7
+#           with: { name: apk, path: app/**/*.apk }
+#     publish:
+#       needs: build
+#       uses: market-of-labs/store/.github/workflows/publish-apk.yml@master   # 本仓库默认分支是 master（不是 main）
+#       with: { app-id: com.you.closedapp }
+#       secrets: { store-token: ${{ secrets.STORE_TOKEN }} }
+#
+# 放在 store 而不是各 App 仓：store 是 `_incoming` 的宿主，也是唯一知道仓库名的地方。
+# 一份实现、一处修 bug，各 App 仓不用各抄一份。
+#
+# 硬规矩（与 forward.yml 同一套）：
+#   1. `run:` 里零 `${{ }}` 插值 —— 外部值全部走 `env:`（`${{ }}` 在 run: 里是文本拼接，
+#      传进来一个带引号的 appId 就能改掉整段脚本）
+#   2. 走 PAT（`secrets.store-token`）而不是 GITHUB_TOKEN —— 后者出不了本仓库（§6.2 不变量 1）
+#   3. 只往 `_incoming` 写。清场（改回 draft、删掉已搬走的 asset）是 forge 的活（§3.2 规则 6），
+#      这里绝不碰任何正式 Release
+
+on:
+  workflow_call:
+    inputs:
+      app-id:
+        description: 应用的 appId，与 APK 里的 package 逐字一致。传之前用它确认这个包名已收录。
+        type: string
+        required: true
+      apk:
+        description: 构建产物路径（相对仓库根，可通配）。多 ABI 分片可以一次全传。
+        type: string
+        required: false
+        default: dist/*.apk
+      store-repo:
+        description: store 仓库的 owner/repo。
+        type: string
+        required: false
+        default: market-of-labs/store
+    secrets:
+      store-token:
+        description: 对 store 有 contents:write 的细粒度 PAT
+        required: true
+
+permissions: {} # 不需要 GITHUB_TOKEN 的任何权限（走 PAT）
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      # ⚠️ 一切外部数据只经 env 传入；下面 run: 里一处 ${{ }} 都没有。
+      GH_TOKEN: ${{ secrets.store-token }}
+      STORE: ${{ inputs.store-repo }}
+      APP_ID: ${{ inputs.app-id }}
+      APK_GLOB: ${{ inputs.apk }}
+    steps:
+      - name: 取构建产物
+        uses: actions/download-artifact@v8
+        with:
+          name: apk
+          path: dist
+
+      - name: 确认这个包名已收录
+        run: |
+          # 没收录的包名传上去只会**留在 _incoming**（forge 在 sources/ 里找不到家，03 §3.2），
+          # 而那条线索只出现在 forge 的日志里 —— 这边是绿的。所以先自己撞一次墙：
+          # 少一次「CI 绿了但东西没进来」的排查。
+          if ! gh api "repos/$STORE/contents/sources/$APP_ID.json" >/dev/null 2>&1; then
+            echo "::error::store 里没有 sources/$APP_ID.json —— 这个包名还没收录，或 app-id 打错了。先开一张「新增来源」的单（03 §2.5），等它落下 sources/ 再跑。"
+            exit 1
+          fi
+
+      - name: 找回暂存区，并复位成 draft
+        run: |
+          set -euo pipefail
+
+          # `/releases/tags/_incoming` 对 draft 是 404：draft 还没有真 tag，GitHub 把它
+          # 藏在 untagged-* 引用下。所以按列表筛 tag_name 拿 id，之后一切按 id 打 ——
+          # by-id 端点对 draft 与正式版一视同仁。
+          #
+          # --paginate 不能省：Release 数是随收录数长的，越过每页 30 的默认值之后，
+          # 队列会被挤出第一页 —— 症状是静默的「找不到 _incoming」，纯属分页的假故障。
+          id=$(gh api --paginate "repos/$STORE/releases" \
+            --jq '.[] | select(.tag_name == "_incoming") | .id' | head -1)
+          if [ -z "$id" ]; then
+            echo "::error::store 里没有 tag 为 _incoming 的 Release。它是个**常驻队列**（03 §3.2），状态无所谓 —— 有这个 tag 就行，本 workflow 会先把它复位成 draft。但 forge 故意不自动建：凭空冒出一个空队列出来，只会掩盖「你其实传到了别处」这个事实。"
+            exit 1
+          fi
+
+          # ⚠️ 上传**之前**必须先让它回到 draft。发车靠的是 `published` 事件（§3.2），
+          # 而「已经是 published，再 PATCH draft=false」**没有状态跃迁**，事件不会发 ——
+          # 资产于是安静地躺在队列里，谁也不会来搬。这条复位就是给这种局面兜底的：
+          # 无论上一轮把它留在什么状态（搬运失败时它是 published，还带着残骸），
+          # 这里都重新走一遍 draft → published 的真实跃迁。
+          gh api -X PATCH "repos/$STORE/releases/$id" -f draft=true >/dev/null
+          echo "暂存区已复位为 draft（id=$id）"
+
+          # 递给后面两步（写进 $GITHUB_ENV 的值，后续 step 直接当环境变量用）。
+          echo "INCOMING_ID=$id" >> "$GITHUB_ENV"
+
+      - name: 传进暂存队列
+        run: |
+          set -euo pipefail
+
+          files=( $APK_GLOB ) # 故意不加引号：要的就是通配展开
+          if [ ! -e "${files[0]}" ]; then
+            echo "::error::没匹配到 APK（$APK_GLOB）—— 构建 job 里 upload-artifact 的 path 对得上吗"
+            exit 1
+          fi
+
+          for f in "${files[@]}"; do
+            n=$(basename "$f")
+
+            # 同名旧 asset 先删掉。这不是 §4.6 禁的那个 --clobber（那条规矩管的是正式
+            # Release 里**已发布**的版本不许被覆盖）；这里删的是我们自己上一轮没搬成功的
+            # 残骸 —— 不删的话重跑一律 422，而重跑恰恰是最常见的动作。
+            old=$(gh api --paginate "repos/$STORE/releases/$INCOMING_ID/assets" \
+              --jq ".[] | select(.name == \"$n\") | .id")
+            if [ -n "$old" ]; then
+              gh api -X DELETE "repos/$STORE/releases/$INCOMING_ID/assets/$old"
+              echo "删掉同名的旧 asset：$n（上一轮的残骸）"
+            fi
+
+            # 名字随你打（构建产物叫什么就是什么）：forge 只读 APK 内容，
+            # 搬进正式 Release 时会按内容改名（§3.3）。
+            gh api -X POST -H "Content-Type: application/octet-stream" \
+              "repos/$STORE/releases/$INCOMING_ID/assets?name=$n" --input "$f" >/dev/null
+            echo "已传进 _incoming：$n（$(du -h "$f" | cut -f1)）"
+          done
+
+      - name: 发布暂存区
+        run: |
+          # 「Publish」是唯一能发车的动作：往 Release 上传 / 改名 / 删 asset **都不触发**
+          # release 事件（03 §3.2），所以传完必须显式发布一次。
+          #
+          # forge 侧的闸门是「tag == _incoming 且**非** prerelease」（§4.6 规则 2），
+          # 这里把两个状态位一次摆正，免得有人手工把它标成过预发布。
+          gh api -X PATCH "repos/$STORE/releases/$INCOMING_ID" \
+            -f draft=false -f prerelease=false >/dev/null
+
+          echo "已发布 _incoming —— forge 会在几分钟内把 asset 搬进 tag=$APP_ID 的正式 Release，并重建清单。"
+          echo "结果看 forge 运行器的 Actions 日志：搬不进去的会**留在 _incoming** 并逐条写明原因（03 §3.2，不静默丢弃）。"

@@ -6,7 +6,8 @@
 - 转私有正是 CF 遮蔽网关存在的理由，也是维护逻辑被拆出去的原因（GitHub **只对私有仓库**的 Actions 分钟数计费）。拆成了两个：公有的 [`forge`](../forge) 只放 workflow（**运行器**），逻辑的**实现**在私有的 [`forge-core`](../forge-core) 里 —— 所以"跑在公有仓库"和"逻辑不公开"能同时成立。
 - 完整设计见 `market-spec/`（尤其 **03 · 维护逻辑**）。
 
-> ⚠️ **这个仓库不执行任何维护逻辑**。它只跑一个「转手就发车」的极薄 workflow，把事件转告 `forge`。
+> ⚠️ **这个仓库不执行任何维护逻辑**。维护数据那条链全靠一个「转手就发车」的极薄 workflow 把事件转告 `forge`；
+> 另有一个 `publish-apk.yml`，它是**给私有源码仓复用的上传器** —— 只往 `_incoming` 里放文件，不读也不改 `sources/`（§4）。
 
 ---
 
@@ -20,6 +21,7 @@ store/
 │   └── endpoints.json          # 地址模板（第一期 ⇄ 部署期的唯一开关）
 ├── .github/
 │   ├── workflows/forward.yml   # 薄转发：不 checkout、不插值、只 POST 一次 dispatch
+│   ├── workflows/publish-apk.yml # 可复用：私有源码仓的 CI 把 APK 送进 _incoming（§4）
 │   ├── dependabot.yml          # 每周升 forward.yml 里那个 action 的主版本
 │   └── ISSUE_TEMPLATE/         # 维护数据源的两个入口
 ├── README.md
@@ -148,6 +150,38 @@ store/
 >
 > ⚠️ **清场用「改回 draft」，绝不用「删 Release」**：删 Release 会让 tag 消失；若该仓库曾开启过 Immutable Releases，该 tag 会被**永久烧毁**且无法重建。
 
+### 自研 App：让源码仓的 CI 自动走这四步
+
+自研 App 的源码仓是私有的，`source: "github"` 那条路走不通（forge 匿名读不了私有仓，我们也不打算给它上游读凭据）。
+它走的是**同一条**上传队列，只是把上面 4 步自动化 —— 本仓库的 `publish-apk.yml` 是可复用 workflow，App 仓构建完调一下即可：
+
+```yaml
+jobs:
+  build:                      # 构建 job 与平时一样，只多一步
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: ./gradlew assembleRelease
+      - uses: actions/upload-artifact@v7
+        with: { name: apk, path: app/**/*.apk }   # 名字必须是 apk
+  publish:
+    needs: build
+    uses: market-of-labs/store/.github/workflows/publish-apk.yml@master   # 本仓库默认分支是 master（不是 main）
+    with: { app-id: com.you.closedapp }
+    secrets: { store-token: ${{ secrets.STORE_TOKEN }} }   # 对 store 有 contents:write 的细粒度 PAT
+```
+
+它做三件事：**先确认 `sources/<appId>.json` 已在案**（没收录就红着停住，而不是传上去静静躺在队列里等人工发现）、
+把 APK 传进 `_incoming`、**Publish** —— 之后与手动路径完全一样（第 3、4 步）。
+
+> ⚠️ **上传前它会把队列复位成 draft**：发车靠 `published` 事件，而「已经是 published 再 PATCH `draft=false`」
+> **没有状态跃迁**，事件不会发（资产会静静躺在队列里，谁也不会来搬）。这条复位同时是**恢复手段** ——
+> 上一轮搬运失败（队列停在 published、还带着残骸）或 `published` 事件半路丢了，重跑一次 CI 就重新走一遍
+> draft → published 的真实跃迁，不需要人去网页上手工 Convert to draft。
+
+> ⚠️ **App 仓必须在同一 org 才调得动**（store 转私有后，私有仓的可复用 workflow 只对同 org 开放）。
+> 否则就把那个文件里的两步 `gh api` 就地抄进 App 仓的 workflow —— 同样只需要那把 PAT，不需要 store 公开。
+
 ---
 
 ## 5. 第一期 ⇄ 部署期：只差 `store/endpoints.json` 一行
@@ -187,4 +221,4 @@ store/
 | 3 | 本仓库与 `forge` 各自都能解析出 **同名** secret `GH_PAT`（**仓库级或组织级都行** —— 现状是本仓库用仓库级、`forge` 走组织级），值是**同一把** fine-grained PAT，仓库范围必须含 `store`(Contents RW + Issues RW) / `forge`(Contents RW) / **`forge-core`(Contents R)** |
 | 3b | `forge-core` 必须**已发布过至少一个带 `forge-linux-amd64` asset 的 tag** —— 公有的 `forge` 浮动取 latest，一个 Release 都没有时取件直接失败 |
 | 4 | 本仓库 workflow 保持 `permissions: {}` |
-| 5 | 确认 `_incoming` 始终是 **draft** 且从未被误 Publish |
+| 5 | 确认 `_incoming` 始终是 **draft** 且从未被误 Publish（CI 那条路每次上传前会先复位成 draft，见 §4；网页那条路靠人别点错） |
