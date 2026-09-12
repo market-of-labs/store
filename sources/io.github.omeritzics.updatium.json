@@ -1,0 +1,20 @@
+{
+  "id": "io.github.omeritzics.updatium",
+  "name": "Updatium",
+  "author": "omeritzics",
+  "source": "github",
+  "paused": false,
+  "categories": [
+    "工具",
+    "效率"
+  ],
+  "kind": "obtainium",
+  "upstream": {
+    "type": "github-release",
+    "repo": "omeritzics/Updatium"
+  },
+  "abiWhitelist": [
+    "arm64-v8a",
+    "armeabi-v7a"
+  ]
+}
