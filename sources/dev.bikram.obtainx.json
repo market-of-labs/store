@@ -1,0 +1,21 @@
+{
+  "id": "dev.bikram.obtainx",
+  "name": "ObtainX",
+  "author": "bikram-agarwal",
+  "source": "github",
+  "paused": false,
+  "categories": [
+    "工具",
+    "效率"
+  ],
+  "kind": "obtainium",
+  "upstream": {
+    "type": "github-release",
+    "repo": "bikram-agarwal/ObtainX",
+    "assetPattern": "^ObtainX-v[0-9.]+-(arm64-v8a|armeabi-v7a)\\.apk$"
+  },
+  "abiWhitelist": [
+    "arm64-v8a",
+    "armeabi-v7a"
+  ]
+}
