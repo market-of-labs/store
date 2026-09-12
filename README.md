@@ -91,7 +91,7 @@ store/
 ```
 
 > **`id` 必须 = APK 包内真实的 `package`。** 它同时是文件名、git tag、和 Obtainium 的安装身份，写错无法自动纠正。
-> 两条入口都是这么取得的 —— 申请人从不手填 `id`。
+> 两条入口都是这么取得的 —— **没有人手填 `id`**。
 
 两个模板：
 
@@ -124,6 +124,15 @@ store/
 想改内容就**编辑正文**，不必重开单（编辑后的正文走的是**同一套**解析规则，见 `internal/job/intake.go`）。
 **收尾之后的失败不需要重试** —— `sources/` 里的文件已经在了，每日对账是幂等的，缺哪补哪。
 
+> **手动上传没有新增单**（D52）。它不经 `add-source.yml`：那张单里根本没有能表达
+> "我没有上游仓库"的字段（`repo` 是必填）。条目由 §4 那条搬运链**按 APK 内容当场建**：
+> `id` = 包名、`name` = APK 的 `label`、`author` 先记 **`未知`**。
+> 所以"传一个 APK"就是收录一个新来源的全部动作，传完它就在 `apps.json` 里了。
+>
+> 代价是**作者只能先占位**：APK 里没有作者字段，也没有上游仓库可以取 owner。而 `author`
+> 是必填（空着会让**整份清单**判失败，不是只废掉这一条），所以 `未知` 是唯一能填的值 ——
+> 它也是**唯一**的提示信号：看到它就说明这条来源还在等一张 `change-source.yml`。
+
 ---
 
 ## 3. 停更 vs 移除（**最容易搞错的一处**）
@@ -145,6 +154,10 @@ store/
 2. 点 **Publish release**。
 3. `release: published` → `forward.yml` → `forge` 解析每个 APK 的 `package / versionName / versionCode / ABI` → 改名搬运进对应 `{appId}` 的正式 Release → 重建清单。
 4. `forge` 把 `_incoming` **改回 draft** 并删掉已搬走的 asset（清场）。
+
+> **`sources/` 里还没有这个包名时，条目就在第 3 步当场建出来**（D52）：包名 = `id`、
+> APK 的 `label` = 显示名、`author` 先记 `未知`。所以新建一个手动来源**不需要任何单子** ——
+> 传一次 APK 就够了，传完它已经在 `apps.json` 里。作者与简介之后用 `change-source.yml` 补。
 
 > ⚠️ **为什么必须有「点 Publish」这一步**：往 Release 上传/改名/删 asset **不触发任何 `release` 事件**。Publish 是唯一能让流程发车的动作。
 >
@@ -171,7 +184,8 @@ jobs:
     secrets: { store-token: ${{ secrets.STORE_TOKEN }} }   # 对 store 有 contents:write 的细粒度 PAT
 ```
 
-它做三件事：**先确认 `sources/<appId>.json` 已在案**（没收录就红着停住，而不是传上去静静躺在队列里等人工发现）、
+它做三件事：**先确认 `sources/<appId>.json` 已在案**（挡住打错的 `app-id` —— 真正的落点由 APK 内容决定，
+所以这个 app-id 对不上时，写错的后果是 store 里悄悄多出一条陌生来源）、
 把 APK 传进 `_incoming`、**Publish** —— 之后与手动路径完全一样（第 3、4 步）。
 
 > ⚠️ **上传前它会把队列复位成 draft**：发车靠 `published` 事件，而「已经是 published 再 PATCH `draft=false`」

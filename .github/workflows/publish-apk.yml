@@ -75,11 +75,12 @@ jobs:
 
       - name: 确认这个包名已收录
         run: |
-          # 没收录的包名传上去只会**留在 _incoming**（forge 在 sources/ 里找不到家，03 §3.2），
-          # 而那条线索只出现在 forge 的日志里 —— 这边是绿的。所以先自己撞一次墙：
-          # 少一次「CI 绿了但东西没进来」的排查。
+          # 这不是"没收录就搬不进去"（forge 现在会按 APK 的 package 当场把条目建出来，
+          # 见 03 §3.2 / D52）。留着它是为了挡住**打错的 app-id**：真正的落点由 APK 内容
+          # 决定，所以这里跟 app-id 对不上时，写错的后果是 store 里悄悄多出一条作者为
+          # 「未知」的陌生来源 —— 那是事后翻 git 历史才看得见的那种错误。
           if ! gh api "repos/$STORE/contents/sources/$APP_ID.json" >/dev/null 2>&1; then
-            echo "::error::store 里没有 sources/$APP_ID.json —— 这个包名还没收录，或 app-id 打错了。先开一张「新增来源」的单（03 §2.5），等它落下 sources/ 再跑。"
+            echo "::error::store 里没有 sources/$APP_ID.json。若这个包名是新的：先把 APK 传一次（forge 会替它建条目，作者记成「未知」，之后用 change-source.yml 补），再回来跑这里；若它本该已收录：app-id 打错了。"
             exit 1
           fi
 
