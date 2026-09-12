@@ -16,5 +16,26 @@
   "abiWhitelist": [
     "arm64-v8a",
     "armeabi-v7a"
+  ],
+  "versions": [
+    {
+      "version": "1.6.15",
+      "versionCode": 23543,
+      "versionName": "1.6.15",
+      "publishedAt": "2026-09-06T07:09:48Z",
+      "upstreamTag": "v1.6.15",
+      "assets": [
+        {
+          "abi": "arm64-v8a",
+          "file": "dev.imranr.obtainium-1.6.15-arm64-v8a.apk",
+          "size": 25654392
+        },
+        {
+          "abi": "armeabi-v7a",
+          "file": "dev.imranr.obtainium-1.6.15-armeabi-v7a.apk",
+          "size": 23852160
+        }
+      ]
+    }
   ]
 }
