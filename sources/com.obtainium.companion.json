@@ -13,5 +13,21 @@
   "upstream": {
     "type": "github-release",
     "repo": "market-of-labs/companion"
-  }
+  },
+  "versions": [
+    {
+      "version": "0.0.2",
+      "versionCode": 2,
+      "versionName": "0.0.2",
+      "publishedAt": "2026-09-12T10:31:15Z",
+      "upstreamTag": "v0.0.2",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "com.obtainium.companion-0.0.2-universal.apk",
+          "size": 8716472
+        }
+      ]
+    }
+  ]
 }

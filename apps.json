@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-12T10:33:41Z",
+  "exportedAt": "2026-09-12T10:36:48Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -19,6 +19,25 @@
       "categories": [
         "工具"
       ]
+    },
+    {
+      "id": "com.obtainium.companion",
+      "name": "私有市场同步器 · 自建应用市场-Obtainium启动器",
+      "author": "market-of-labs",
+      "url": "https://market.invalid/com.obtainium.companion",
+      "overrideSource": "HTML",
+      "latestVersion": "0.0.2",
+      "apkUrls": "[[\"com.obtainium.companion-0.0.2-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/com.obtainium.companion/com.obtainium.companion-0.0.2-universal.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":2}",
+      "releaseDate": 1789209075000000,
+      "changeLog": "",
+      "categories": [
+        "工具",
+        "效率"
+      ],
+      "kind": "companion"
     },
     {
       "id": "dev.imranr.obtainium",
