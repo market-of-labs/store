@@ -1,0 +1,20 @@
+{
+  "id": "com.github.mytv.android",
+  "name": "TV Live",
+  "author": "mytv-android",
+  "desc": "IPTV播放器",
+  "source": "github",
+  "paused": false,
+  "categories": [
+    "媒体"
+  ],
+  "upstream": {
+    "type": "github-release",
+    "repo": "mytv-android/mytv-android",
+    "assetPattern": "(?i)-(arm64-v8a|armeabi-v7a)-sdk23-original\\.apk$"
+  },
+  "abiWhitelist": [
+    "arm64-v8a",
+    "armeabi-v7a"
+  ]
+}
