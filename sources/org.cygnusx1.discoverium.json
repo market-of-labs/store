@@ -1,0 +1,16 @@
+{
+  "id": "org.cygnusx1.discoverium",
+  "name": "Discoverium",
+  "author": "cygnusx-1-org",
+  "source": "github",
+  "paused": false,
+  "categories": [
+    "工具",
+    "效率"
+  ],
+  "kind": "obtainium",
+  "upstream": {
+    "type": "github-release",
+    "repo": "cygnusx-1-org/Discoverium"
+  }
+}
