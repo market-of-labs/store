@@ -5,28 +5,73 @@ body:
   - type: markdown
     attributes:
       value: |
-        **只需要填上游仓库。** 包名、显示名、作者都由 forge 当场从 APK 与仓库里读出来 ——
+        **标准源：只需要填上游仓库。** 包名、显示名、作者都由 forge 当场从 APK 与仓库里读出来 ——
         不用你查，填了也不作数。
 
         代价是：**仓库填错会静默收错应用**。所以会在回评里把读出来的身份念一遍，请核对一眼。
 
+        **手动上传（私有应用/自研闭源）**：来源类型选「手动上传」，上游仓库留空，
+        并填上带「仅手动上传时填」的那三项。它没有上游可读，第一份 APK 是**收录之后**
+        才传到暂存区的 —— 回评里会写清那三步。
+
         提交后几分钟内就会回评（收录了哪个版本、或者为什么没收），本单随即自动关闭。
         失败时会写明原因、**保持开着**等你补完，**不用重开单** —— 改完**编辑正文**即可重新发车。
+
+  - type: dropdown
+    id: origin
+    attributes:
+      label: 来源类型
+      description: |
+        绝大多数情况就是**GitHub 上游发布**（默认值，不用动）。
+        `手动上传` = 没有上游仓库：APK 由你构建后传到 `_incoming` 暂存区再 Publish。
+      options:
+        - GitHub 上游发布
+        - 手动上传
+      default: 0
+    validations:
+      required: true
 
   - type: input
     id: repo
     attributes:
       label: 上游 GitHub 仓库
-      description: owner/repo 形式。必须可匿名读（公开仓库）。填错时本单会收到一条说明并保持开着，改完编辑正文即可重试。
+      description: owner/repo 形式。必须可匿名读（公开仓库）。填错时本单会收到一条说明并保持开着，改完编辑正文即可重试。**手动上传时留空。**
       placeholder: ImranR98/Obtainium
     validations:
-      required: true
+      required: false
+
+  - type: input
+    id: appId
+    attributes:
+      label: 包名（仅手动上传时填）
+      description: 必须与 APK 里的 `package` **逐字一致** —— 它既是安装身份，也是把上传的 APK 认回家的唯一依据。填错的话传上去的 APK 搬不进来（会留在暂存区并回评告诉你它是什么包名）。
+      placeholder: com.you.closedapp
+    validations:
+      required: false
+
+  - type: input
+    id: name
+    attributes:
+      label: 显示名（仅手动上传时填）
+      description: 在 Obtainium 列表里显示的名字。手动上传没有上游，读不到它，所以由你填。
+      placeholder: 我的应用
+    validations:
+      required: false
+
+  - type: input
+    id: author
+    attributes:
+      label: 作者 / 组织（仅手动上传时填）
+      description: 显示在列表里那一行的归属。手动上传没有上游仓库可以取 owner，所以由你填。
+      placeholder: you
+    validations:
+      required: false
 
   - type: input
     id: assetPattern
     attributes:
       label: 资产匹配正则（可选）
-      description: 用来从上游 Release 的资产里挑出要镜像的 APK，留空则匹配 *.apk。如果一个仓库同时发布了多个不同包名的 APK，这条是唯一的消歧办法 —— 那时不填会被拒，按回评提示补上即可。
+      description: 用来从上游 Release 的资产里挑出要镜像的 APK，留空则匹配 *.apk。如果一个仓库同时发布了多个不同包名的 APK，这条是唯一的消歧办法 —— 那时不填会被拒，按回评提示补上即可。**手动上传时留空**（没有上游，填了会被拒）。
       placeholder: "app.*\\.apk$"
     validations:
       required: false
@@ -48,7 +93,7 @@ body:
     id: includePrerelease
     attributes:
       label: 拉取预发布版本（可选）
-      description: 勾上 = 上游标了 pre-release 的发布也一起镜像（**包括大于当前正式版的预发布版**）。只在上游把新版只发成 pre-release 时才需要 —— 上游的预发布通常是测试包，默认不收。
+      description: 勾上 = 上游标了 pre-release 的发布也一起镜像（**包括大于当前正式版的预发布版**）。只在上游把新版只发成 pre-release 时才需要 —— 上游的预发布通常是测试包，默认不收。**手动上传时不要勾**（没有上游，勾了会被拒）。
       options:
         - label: 拉取预发布版本
 
