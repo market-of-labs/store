@@ -11,5 +11,18 @@
     "repo": "ImranR98/Obtainium",
     "assetPattern": "app.*\\.apk$"
   },
-  "abiWhitelist": []
+  "abiWhitelist": [],
+  "versions": [
+    {
+      "version": "1.6.15",
+      "versionCode": 1615,
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "dev.imranr.obtainium-1.6.15-universal.apk",
+          "size": 0
+        }
+      ]
+    }
+  ]
 }

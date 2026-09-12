@@ -31,6 +31,27 @@ body:
     validations:
       required: false
 
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 应用类型
+      description: 绝大多数情况就是**普通应用**（默认值，不用动）。`obtainium` = 帮伴侣应用标记「装 Obtainium 该装哪一个」；`companion` = 本市场的伴侣应用本体（**全局至多一条**，已有的话会被拒）。
+      options:
+        - 普通应用
+        - obtainium
+        - companion
+      default: 0
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: includePrerelease
+    attributes:
+      label: 拉取预发布版本（可选）
+      description: 勾上 = 上游标了 pre-release 的发布也一起镜像（**包括大于当前正式版的预发布版**）。只在上游把新版只发成 pre-release 时才需要 —— 上游的预发布通常是测试包，默认不收。
+      options:
+        - label: 拉取预发布版本
+
   - type: input
     id: desc
     attributes:

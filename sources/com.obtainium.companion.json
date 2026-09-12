@@ -11,5 +11,18 @@
     "repo": "market-of-labs/companion",
     "assetPattern": "^com\\.obtainium\\.companion-.*\\.apk$"
   },
-  "abiWhitelist": []
+  "abiWhitelist": [],
+  "versions": [
+    {
+      "version": "1.0.0",
+      "versionCode": 100,
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "com.obtainium.companion-1.0.0-universal.apk",
+          "size": 0
+        }
+      ]
+    }
+  ]
 }

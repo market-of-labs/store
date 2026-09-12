@@ -57,7 +57,7 @@ body:
     id: newDesc
     attributes:
       label: 新的简介（仅「修改元数据」时填）
-      description: 拼在列表显示名后面，形如「应用名 · 简介」，**最多 20 个字**（超了会被截断）。留空 = 不改简介；**想把简介清空得直接改 `sources/{appId}.json`**，这里表达不了"改成空"。
+      description: 拼在列表显示名后面，形如「应用名 · 简介」，**最多 20 个字**（超了会被截断）。留空 = 不改简介；**这里表达不了"改成空"**，真想清空就在下面的「说明」里写一句。
       placeholder: 去广告的第三方客户端
     validations:
       required: false

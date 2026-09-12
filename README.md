@@ -14,29 +14,29 @@
 
 ```
 store/
-├── sources/                    # 输入 —— 唯一由人维护的事实源，一应用一文件
+├── sources/                    # 唯一事实源，一应用一文件
 │   ├── dev.imranr.obtainium.json
 │   └── com.obtainium.companion.json
 ├── apps.json                   # 最终清单 —— 放**根目录**，因为客户端唯一消费的就是它
 ├── store/                      # 其余产物 + 契约常量 —— 只有 forge 写
-│   ├── index.json              # 版本/asset 机读索引（客户端不消费，D23）
 │   └── endpoints.json          # 地址模板（第一期 ⇄ 部署期的唯一开关）
 ├── .github/
 │   ├── workflows/forward.yml   # 薄转发：不 checkout、不插值、只 POST 一次 dispatch
 │   ├── dependabot.yml          # 每周升 forward.yml 里那个 action 的主版本
-│   └── ISSUE_TEMPLATE/         # 给小圈子成员用的两个入口
+│   └── ISSUE_TEMPLATE/         # 维护数据源的两个入口
 ├── README.md
 └── .gitignore
 ```
 
-**`sources/` 是输入，产物是 `apps.json` 与 `store/` 两处。** 不要手工编辑 `apps.json` / `store/index.json`
-—— 它们由 `forge` 生成，手改会在下一轮对账被覆盖。
+**`sources/` 是唯一事实源，产物是 `apps.json` 与 `store/endpoints.json`。**
+`sources/{appId}.json` 里**人填的那半**（`name`/`author`/`upstream`…）与**forge 写的 `versions` 账本**
+同住一个文件 —— 所以它也**整份由 forge 改写**，手改会在下一轮对账被盖掉
+（版本账本曾经是独立的 `store/index.json`，已并入来源文件，D48）。
 
 > **为什么清单在根目录而不在 `store/` 里**：`apps.json` 是**唯一直接伺服给客户端**的文件，
 > 它的路径就是设备的默认清单地址（`raw.githubusercontent.com/market-of-labs/store/master/apps.json`）。
-> 把它放在根目录，地址里就不会出现 `store/store` 这种「仓库名与目录名重复」的段。
-> `index.json` 客户端不消费（D23），`endpoints.json` 是给 forge 与 CF 读的契约常量，
-> 两者都不需要短路径，留在 `store/` 里保持与输入面分开。
+> 把它放在根目录，地址里就不会出现 `store/store` 这种「仓库名与目录名重复」的段；
+> `endpoints.json` 是给 forge 与 CF 读的契约常量，不需要短路径，留在 `store/` 里。
 >
 > ⚠️ **路径里的分支名是 `master`**（本仓库的默认分支），别顺手写成 `main`。
 > `companion` 仓库用的是 `main`，两者**不同名是有意的** —— 对齐方式是改地址，不是改默认分支。
@@ -45,13 +45,14 @@ store/
 
 ---
 
-## 2. 两条入口
+## 2. 维护入口：开 issue
 
-### 甲 · 直接改文件 push（你自己用）
+**数据源只由这两个模板（+ 手动触发的 action）维护，不靠手改文件** —— forge 落盘时会**整份重写**
+`sources/{appId}.json`（含 `versions` 账本），手改的键在下一轮就被盖回去了。
 
-编辑/新增 `sources/{appId}.json` 后 push。`push` 到 `sources/**` 会触发 `forward.yml` → `forge` 收敛该条目。
+### 落盘后长这样
 
-新增一个应用 = 新建 `sources/{appId}.json`：
+标准源（上游是 GitHub Release）：
 
 ```json
 {
@@ -90,8 +91,9 @@ store/
 ```
 
 > **`id` 必须 = APK 包内真实的 `package`。** 它同时是文件名、git tag、和 Obtainium 的安装身份，写错无法自动纠正。
+> 两条入口都是这么取得的 —— 申请人从不手填 `id`。
 
-### 乙 · 开 issue（给小圈子成员用，不需要仓库写权限）
+两个模板：
 
 - **新增 · 标准源** → `.github/ISSUE_TEMPLATE/add-source.yml`
 - **变更 · 移除** → `.github/ISSUE_TEMPLATE/change-source.yml`
@@ -166,9 +168,9 @@ store/
 
 ## 6. 当前状态（种子数据，待 `forge` 首次运行替换）
 
-- `sources/` 已有 2 条：`dev.imranr.obtainium`（`kind:"obtainium"`，启动器安装候选）与 `com.obtainium.companion`（`kind:"companion"`，自更新来源）。
-- `apps.json` / `store/index.json` 是**手写种子**，只为让伴侣应用在 `forge` 跑起来之前有东西可拉。`index.json` 里的 `size` 是占位 `0`。
-- 一旦 `forge` 跑过一次，这两个产物会被真实数据覆盖。
+- `sources/` 已有 3 条：`dev.imranr.obtainium`（`kind:"obtainium"`，启动器安装候选）、`com.obtainium.companion`（`kind:"companion"`，自更新来源）、`com.github.HailLauncher`（待镜像，账本还空着）。
+- 前两条的 `versions` 账本与 `apps.json` 都是**手写种子**，只为让伴侣应用在 `forge` 跑起来之前有东西可拉。账本里的 `size` 是占位 `0`、`publishedAt` 缺席（所以清单里的 `releaseDate` 暂时回填不出来）。
+- 一旦 `forge` 跑过一次，这些会被真实数据覆盖（`build-index` 从 Release 现状重建账本）。
 - **现在所有 `apkUrls` 都指向尚不存在的 Release**（tag=`{appId}` 的 Release 还没建）—— 属预期，`forge` 首次收录时创建。
 
 ---
