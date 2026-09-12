@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-12T10:50:14Z",
+  "exportedAt": "2026-09-12T11:41:51Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -18,6 +18,23 @@
       "changeLog": "",
       "categories": [
         "工具"
+      ]
+    },
+    {
+      "id": "com.github.mytv.android",
+      "name": "TV Live · IPTV播放器",
+      "author": "mytv-android",
+      "url": "https://market.invalid/com.github.mytv.android",
+      "overrideSource": "HTML",
+      "latestVersion": "2.2.0.219",
+      "apkUrls": "[[\"com.github.mytv.android-2.2.0.219-arm64-v8a.apk\",\"https://github.com/market-of-labs/store/releases/download/com.github.mytv.android/com.github.mytv.android-2.2.0.219-arm64-v8a.apk\"],[\"com.github.mytv.android-2.2.0.219-armeabi-v7a.apk\",\"https://github.com/market-of-labs/store/releases/download/com.github.mytv.android/com.github.mytv.android-2.2.0.219-armeabi-v7a.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":219}",
+      "releaseDate": 1787278485000000,
+      "changeLog": "",
+      "categories": [
+        "媒体"
       ]
     },
     {
