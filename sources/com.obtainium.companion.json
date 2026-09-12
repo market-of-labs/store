@@ -1,0 +1,17 @@
+{
+  "id": "com.obtainium.companion",
+  "name": "私有市场同步器",
+  "author": "market-of-labs",
+  "desc": "自建应用市场-Obtainium启动器",
+  "source": "github",
+  "paused": false,
+  "categories": [
+    "工具",
+    "效率"
+  ],
+  "kind": "companion",
+  "upstream": {
+    "type": "github-release",
+    "repo": "market-of-labs/companion"
+  }
+}
