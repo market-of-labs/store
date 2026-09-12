@@ -16,5 +16,26 @@
   "abiWhitelist": [
     "arm64-v8a",
     "armeabi-v7a"
+  ],
+  "versions": [
+    {
+      "version": "26.8",
+      "versionCode": 260818092,
+      "versionName": "26.8",
+      "publishedAt": "2026-08-16T12:27:28Z",
+      "upstreamTag": "Qama-v26.8",
+      "assets": [
+        {
+          "abi": "arm64-v8a",
+          "file": "io.github.omeritzics.updatium-26.8-arm64-v8a.apk",
+          "size": 27297815
+        },
+        {
+          "abi": "armeabi-v7a",
+          "file": "io.github.omeritzics.updatium-26.8-armeabi-v7a.apk",
+          "size": 25083267
+        }
+      ]
+    }
   ]
 }

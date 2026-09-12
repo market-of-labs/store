@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-12T10:40:20Z",
+  "exportedAt": "2026-09-12T10:40:59Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -73,6 +73,25 @@
       "changeLog": "",
       "categories": [
         "工具"
+      ],
+      "kind": "obtainium"
+    },
+    {
+      "id": "io.github.omeritzics.updatium",
+      "name": "Updatium",
+      "author": "omeritzics",
+      "url": "https://market.invalid/io.github.omeritzics.updatium",
+      "overrideSource": "HTML",
+      "latestVersion": "26.8",
+      "apkUrls": "[[\"io.github.omeritzics.updatium-26.8-arm64-v8a.apk\",\"https://github.com/market-of-labs/store/releases/download/io.github.omeritzics.updatium/io.github.omeritzics.updatium-26.8-arm64-v8a.apk\"],[\"io.github.omeritzics.updatium-26.8-armeabi-v7a.apk\",\"https://github.com/market-of-labs/store/releases/download/io.github.omeritzics.updatium/io.github.omeritzics.updatium-26.8-armeabi-v7a.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":260818092}",
+      "releaseDate": 1786883248000000,
+      "changeLog": "",
+      "categories": [
+        "工具",
+        "效率"
       ],
       "kind": "obtainium"
     },
