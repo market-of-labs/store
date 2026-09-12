@@ -1,0 +1,16 @@
+{
+  "id": "dev.thejaustin.obtainiumplus",
+  "name": "Obtainium+",
+  "author": "thejaustin",
+  "source": "github",
+  "paused": false,
+  "categories": [
+    "工具",
+    "效率"
+  ],
+  "kind": "obtainium",
+  "upstream": {
+    "type": "github-release",
+    "repo": "thejaustin/ObtainiumPlus"
+  }
+}
