@@ -12,5 +12,21 @@
   "upstream": {
     "type": "github-release",
     "repo": "thejaustin/ObtainiumPlus"
-  }
+  },
+  "versions": [
+    {
+      "version": "1.6.10-p19",
+      "versionCode": 2418,
+      "versionName": "1.6.10-p19",
+      "publishedAt": "2026-09-11T17:14:54Z",
+      "upstreamTag": "v1.6.10-p19",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "dev.thejaustin.obtainiumplus-1.6.10-p19-universal.apk",
+          "size": 83040228
+        }
+      ]
+    }
+  ]
 }

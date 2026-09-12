@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-12T10:40:59Z",
+  "exportedAt": "2026-09-12T10:41:17Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -73,6 +73,25 @@
       "changeLog": "",
       "categories": [
         "工具"
+      ],
+      "kind": "obtainium"
+    },
+    {
+      "id": "dev.thejaustin.obtainiumplus",
+      "name": "Obtainium+",
+      "author": "thejaustin",
+      "url": "https://market.invalid/dev.thejaustin.obtainiumplus",
+      "overrideSource": "HTML",
+      "latestVersion": "1.6.10-p19",
+      "apkUrls": "[[\"dev.thejaustin.obtainiumplus-1.6.10-p19-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.thejaustin.obtainiumplus/dev.thejaustin.obtainiumplus-1.6.10-p19-universal.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":2418}",
+      "releaseDate": 1789146894000000,
+      "changeLog": "",
+      "categories": [
+        "工具",
+        "效率"
       ],
       "kind": "obtainium"
     },
