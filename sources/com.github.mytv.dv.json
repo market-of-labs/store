@@ -1,0 +1,15 @@
+{
+  "id": "com.github.mytv.dv",
+  "name": "myDV",
+  "author": "mytv-android",
+  "desc": "抖音第三方电视版",
+  "source": "github",
+  "paused": false,
+  "categories": [
+    "媒体"
+  ],
+  "upstream": {
+    "type": "github-release",
+    "repo": "mytv-android/myDV"
+  }
+}
