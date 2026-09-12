@@ -12,5 +12,21 @@
   "upstream": {
     "type": "github-release",
     "repo": "cygnusx-1-org/Discoverium"
-  }
+  },
+  "versions": [
+    {
+      "version": "1.6.140",
+      "versionCode": 23540,
+      "versionName": "1.6.140",
+      "publishedAt": "2026-08-31T08:59:20Z",
+      "upstreamTag": "1.6.140",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "org.cygnusx1.discoverium-1.6.140-universal.apk",
+          "size": 77481617
+        }
+      ]
+    }
+  ]
 }

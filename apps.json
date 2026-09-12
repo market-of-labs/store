@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-12T10:39:28Z",
+  "exportedAt": "2026-09-12T10:40:20Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -73,6 +73,25 @@
       "changeLog": "",
       "categories": [
         "工具"
+      ],
+      "kind": "obtainium"
+    },
+    {
+      "id": "org.cygnusx1.discoverium",
+      "name": "Discoverium",
+      "author": "cygnusx-1-org",
+      "url": "https://market.invalid/org.cygnusx1.discoverium",
+      "overrideSource": "HTML",
+      "latestVersion": "1.6.140",
+      "apkUrls": "[[\"org.cygnusx1.discoverium-1.6.140-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/org.cygnusx1.discoverium/org.cygnusx1.discoverium-1.6.140-universal.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":23540}",
+      "releaseDate": 1788166760000000,
+      "changeLog": "",
+      "categories": [
+        "工具",
+        "效率"
       ],
       "kind": "obtainium"
     }
