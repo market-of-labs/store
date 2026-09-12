@@ -14,10 +14,8 @@
 
 ```
 store/
-├── sources/                    # 唯一事实源，一应用一文件
-│   ├── dev.imranr.obtainium.json
-│   └── com.obtainium.companion.json
-├── apps.json                   # 最终清单 —— 放**根目录**，因为客户端唯一消费的就是它
+├── sources/                    # 唯一事实源，一应用一文件（**现在是空的**，只有 .gitkeep）
+├── apps.json                   # 最终清单 —— 放**根目录**，因为客户端唯一消费的就是它（首条落地前不存在）
 ├── store/                      # 其余产物 + 契约常量 —— 只有 forge 写
 │   └── endpoints.json          # 地址模板（第一期 ⇄ 部署期的唯一开关）
 ├── .github/
@@ -166,12 +164,17 @@ store/
 
 ---
 
-## 6. 当前状态（种子数据，待 `forge` 首次运行替换）
+## 6. 当前状态（**干净的起点**）
 
-- `sources/` 已有 3 条：`dev.imranr.obtainium`（`kind:"obtainium"`，启动器安装候选）、`com.obtainium.companion`（`kind:"companion"`，自更新来源）、`com.github.HailLauncher`（待镜像，账本还空着）。
-- 前两条的 `versions` 账本与 `apps.json` 都是**手写种子**，只为让伴侣应用在 `forge` 跑起来之前有东西可拉。账本里的 `size` 是占位 `0`、`publishedAt` 缺席（所以清单里的 `releaseDate` 暂时回填不出来）。
-- 一旦 `forge` 跑过一次，这些会被真实数据覆盖（`build-index` 从 Release 现状重建账本）。
-- **现在所有 `apkUrls` 都指向尚不存在的 Release**（tag=`{appId}` 的 Release 还没建）—— 属预期，`forge` 首次收录时创建。
+- `sources/` **是空的**（只有 `.gitkeep`），`apps.json` **不存在** —— 原先那份手写种子数据（3 条来源 + 一份清单）已整体清空，从头开始。
+- 下一条真实数据来自**第一张新增 issue**：它落下 `sources/{appId}.json`、建 `{appId}` Release、把 APK 镜像进去、重建 `apps.json`。在那之前：
+  - 设备端拉清单地址是 **404**（预期，不是故障）；
+  - `forge-core` 的黄金测试 `TestGoldenRealRepo` 会**跳过**（它要求 `apps.json` 存在才跑）—— 码在、数据不在，跳过是对的行为。
+- **⚠️ 两条会被"从头开始"带走的条目，要用时得重新收录**：
+  - `com.obtainium.companion`（`kind:"companion"`，伴侣应用**自更新**的来源）—— 没有它，自更新链路没有上游；
+  - `dev.imranr.obtainium`（`kind:"obtainium"`，**引导安装 Obtainium** 的候选）—— 没有它，伴侣应用找不到"该装哪一个"。
+  这两条都不是自动回来的，各开一张新增单即可（前者上游指向本市场的 `companion` 仓库的 Release）。
+- `com.github.HailLauncher` 也一并清掉了（它当初只是"待镜像"的占位）。
 
 ---
 
