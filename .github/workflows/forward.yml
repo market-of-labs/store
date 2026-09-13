@@ -5,14 +5,16 @@ name: forward-to-forge
 #   1. 不 checkout —— 没有任何仓库内容进入执行环境（包括 issue 正文）
 #   2. run:/script: 里零 ${{ }} 插值 —— 外部值全部走 env:（${{ }} 在那里是文本拼接，会脚本注入）
 #   3. 跳过在 job 级 —— 被跳过的 job 根本拿不到 secret（这里没有权限门禁，见下）
-#   4. 转发的是「信标」不是「数据」—— 只带事件名/issue 号/tag/sha，内容由 forge 自己用 API 读
+#   4. 转发的是「信标」不是「数据」—— 只带事件名/issue 号/sha，内容由 forge 自己用 API 读
 
 on:
   issues:
     types: [opened, edited]
-  release:
-    # ⚠️ 必须死写 types。裸 `on: release` = 全部 7 种动作（含 deleted / unpublished）
-    types: [published]
+  # ⚠️ 这里**没有** `release` —— 别再把它加回来。
+  # `_incoming` 队列常驻 draft（03 §3.2），搬运只能被显式叫起来：人点 forge 的
+  # 手动按钮，或上传 CI 自己发信标。从前那条 `release: [published]` 会在**任何**
+  # Release 发布时打进 forge，迫使 forge 侧再挂一道闸门去筛"是不是 _incoming"；
+  # 而它真正想覆盖的"人手动 Publish 队列发车"那条路已经不存在了。
   push:
     # 只有输入面变化才需要重算；产物（根目录的 apps.json 与 store/**）由 forge 回写，不需要转发
     paths: ['sources/**']
@@ -40,8 +42,8 @@ jobs:
       - name: Dispatch forge
         # GitHub 官方的 API 客户端 action（node24，无第三方依赖树）。选它而不是
         # 手写 curl，是为了让 payload 走 octokit 的 JSON 序列化：老写法里
-        # `"releaseTag":"%s"` 是**没有转义**的，而 git 的 refname 规则禁空格、
-        # `~^:?*[\`、`..`、`@{`，**却不禁止 `"`** —— 一个叫 `v1.0"x` 的 tag
+        # `"ref":"%s"` 是**没有转义**的，而 git 的 refname 规则禁空格、
+        # `~^:?*[\`、`..`、`@{`，**却不禁止 `"`** —— 一个叫 `v1.0"x` 的分支名
         # 就能把那串 JSON 拼坏。顺带白拿指数退避重试。
         #
         # 用主版本标签（`@v9`），不钉 commit SHA：升级交给同目录的 dependabot.yml
@@ -56,8 +58,6 @@ jobs:
           DISPATCH_TOKEN: ${{ secrets.GH_PAT }}
           GH_EVENT: ${{ github.event_name }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-          RELEASE_PRERELEASE: ${{ github.event.release.prerelease }}
           REF: ${{ github.ref }}
           SHA: ${{ github.sha }}
         with:
@@ -78,8 +78,6 @@ jobs:
               client_payload: {
                 event: process.env.GH_EVENT,
                 issue: Number(process.env.ISSUE_NUMBER || 0),
-                releaseTag: process.env.RELEASE_TAG || '',
-                prerelease: process.env.RELEASE_PRERELEASE || '',
                 repo: `${context.repo.owner}/${context.repo.repo}`,
                 ref: process.env.REF || '',
                 sha: process.env.SHA || '',

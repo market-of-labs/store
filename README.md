@@ -150,18 +150,25 @@ store/
 
 ## 4. 手动上传 APK 的流程（`source: "manual"`）
 
-1. 打开 Releases → `_incoming`（**常驻 draft**）→ 上传 APK。
-2. 点 **Publish release**。
-3. `release: published` → `forward.yml` → `forge` 解析每个 APK 的 `package / versionName / versionCode / ABI` → 改名搬运进对应 `{appId}` 的正式 Release → 重建清单。
-4. `forge` 把 `_incoming` **改回 draft** 并删掉已搬走的 asset（清场）。
+1. 打开 Releases → `_incoming`（**常驻 draft**）→ 上传 APK。**一次可以传多个**，
+   属于不同 App、不同版本、不同 ABI 的都行 —— 下面第 3 步会把**整批**一次搬完。
+2. **手动触发一次 action**：去 `forge` 的 Actions → `on-dispatch` → Run workflow，
+   `verb` 保持缺省（`intake-incoming`）。
+3. `forge` 解析每个 APK 的 `package / versionName / versionCode / ABI` → 改名搬运进对应 `{appId}` 的正式 Release → 重建清单。
+4. `forge` 把 `_incoming` **继续保持 draft** 并删掉已搬走的 asset（清场）。
 
 > **`sources/` 里还没有这个包名时，条目就在第 3 步当场建出来**（D52）：包名 = `id`、
 > APK 的 `label` = 显示名、`author` 先记 `未知`。所以新建一个手动来源**不需要任何单子** ——
 > 传一次 APK 就够了，传完它已经在 `apps.json` 里。作者与简介之后用 `change-source.yml` 补。
 
-> ⚠️ **为什么必须有「点 Publish」这一步**：往 Release 上传/改名/删 asset **不触发任何 `release` 事件**。Publish 是唯一能让流程发车的动作。
+> ⚠️ **为什么必须手动触发**：往 Release 上传/改名/删 asset **不触发任何 `release` 事件**，
+> 而队列常驻 draft、压根不经过"发布"这个动作 —— 所以传完文件**不会有任何东西替你发车**，
+> 那一脚只能自己踩（或让 CI 发信标，见下）。
 >
-> ⚠️ **清场用「改回 draft」，绝不用「删 Release」**：删 Release 会让 tag 消失；若该仓库曾开启过 Immutable Releases，该 tag 会被**永久烧毁**且无法重建。
+> ⚠️ **搬不进去的会留在队列里**，逐条写明原因、**不静默丢弃**（03 §3.2）；看一眼 forge 那次
+> run 的日志就知道哪几条还在等人工。重跑一次搬运即可，幂等（已搬成的会被跳过）。
+>
+> ⚠️ **清场用「保持 draft」，绝不用「删 Release」**：删 Release 会让 tag 消失；若该仓库曾开启过 Immutable Releases，该 tag 会被**永久烧毁**且无法重建。
 
 ### 自研 App：让源码仓的 CI 自动走这四步
 
@@ -186,12 +193,15 @@ jobs:
 
 它做三件事：**先确认 `sources/<appId>.json` 已在案**（挡住打错的 `app-id` —— 真正的落点由 APK 内容决定，
 所以这个 app-id 对不上时，写错的后果是 store 里悄悄多出一条陌生来源）、
-把 APK 传进 `_incoming`、**Publish** —— 之后与手动路径完全一样（第 3、4 步）。
+把 APK 传进 `_incoming`、**发一个 `repository_dispatch` 叫 `forge` 来搬** —— 之后与手动路径完全一样（第 3、4 步）。
 
-> ⚠️ **上传前它会把队列复位成 draft**：发车靠 `published` 事件，而「已经是 published 再 PATCH `draft=false`」
-> **没有状态跃迁**，事件不会发（资产会静静躺在队列里，谁也不会来搬）。这条复位同时是**恢复手段** ——
-> 上一轮搬运失败（队列停在 published、还带着残骸）或 `published` 事件半路丢了，重跑一次 CI 就重新走一遍
-> draft → published 的真实跃迁，不需要人去网页上手工 Convert to draft。
+> ⚠️ **它拿的是对 `store` 与 `forge` 都有 `contents:write` 的 PAT**：那声信标是往 `forge` 仓库发的，
+> 所以同一把 token 也得够得着那边。调用方在自己的仓库里放这把 token 时要知道这一点。
+
+> ⚠️ **上传前它会把队列复位成 draft**。这不是"恢复发车"的手段（那条路已经没有了），而是**防人手**的
+> 不变量守卫：有人在网页上把队列 Publish 掉之后就再也点不回去（published 的 Release 只有 Update /
+> Delete，没有 Publish 按钮），而发布过的队列仍然收得下 asset、只是不会有任何事件 —— 一个谁也看不
+> 出来的死局。这一步顺手把它拉回来。
 
 > ⚠️ **App 仓必须在同一 org 才调得动**（store 转私有后，私有仓的可复用 workflow 只对同 org 开放）。
 > 否则就把那个文件里的两步 `gh api` 就地抄进 App 仓的 workflow —— 同样只需要那把 PAT，不需要 store 公开。
@@ -235,4 +245,4 @@ jobs:
 | 3 | 本仓库与 `forge` 各自都能解析出 **同名** secret `GH_PAT`（**仓库级或组织级都行** —— 现状是本仓库用仓库级、`forge` 走组织级），值是**同一把** fine-grained PAT，仓库范围必须含 `store`(Contents RW + Issues RW) / `forge`(Contents RW) / **`forge-core`(Contents R)** |
 | 3b | `forge-core` 必须**已发布过至少一个带 `forge-linux-amd64` asset 的 tag** —— 公有的 `forge` 浮动取 latest，一个 Release 都没有时取件直接失败 |
 | 4 | 本仓库 workflow 保持 `permissions: {}` |
-| 5 | 确认 `_incoming` 始终是 **draft** 且从未被误 Publish（CI 那条路每次上传前会先复位成 draft，见 §4；网页那条路靠人别点错） |
+| 5 | 确认 `_incoming` **存在**且是 **draft**（它的唯一状态）。⚠️ 若它曾被人 Publish 过，先在网页上 Edit → Convert to draft 改回来 —— published 的 Release **没有 Publish 按钮**，也没有别的东西会去修它（CI 那条路每次上传前会顺手复位，见 §4） |
