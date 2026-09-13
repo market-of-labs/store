@@ -36,6 +36,26 @@
           "size": 23852160
         }
       ]
+    },
+    {
+      "version": "1.6.16",
+      "versionCode": 23553,
+      "versionName": "1.6.16",
+      "publishedAt": "2026-09-13T08:23:47Z",
+      "upstreamTag": "v1.6.16",
+      "releaseNote": "## What's Changed\r\n* Fix GitHub issue templates by @DonDae001 in https://github.com/ImranR98/Obtainium/pull/3284\r\n* i18n: update `pl.json` by @krvstek in https://github.com/ImranR98/Obtainium/pull/3302\r\n* Update ja.json by @bluefly000 in https://github.com/ImranR98/Obtainium/pull/3291\r\n* Update ru.json by @solokot in https://github.com/ImranR98/Obtainium/pull/3286\r\n* Translation: Update hu.json by @summoner001 in https://github.com/ImranR98/Obtainium/pull/3285\r\n* Update bs.json by @Errudar in https://github.com/ImranR98/Obtainium/pull/3287\r\n* Add Huawei AppGallery .ru host by @skrimix in https://github.com/ImranR98/Obtainium/pull/3295\r\n* HTML source: discover URLs in parsed HTML attributes by @Scott-Nx in https://github.com/ImranR98/Obtainium/pull/3294\r\n* Fix Uptodown downloads and add search by @skrimix in https://github.com/ImranR98/Obtainium/pull/3305\r\n* docs:README change sig hash formatting by @master-bob in https://github.com/ImranR98/Obtainium/pull/3304\r\n* By @ImranR98 in https://github.com/ImranR98/Obtainium/pull/3307:\r\n  * Add an app list density setting (#2620)\r\n  * Fix version detection, GitLab APK assets, app dir recovery and AGP build (#3215) (#2732) (#2860) (#3188)\r\n  * Fix HTML source link extraction for relative and quoted URLs (#2816)\r\n  * Verify APK signing certificates before installing (#2922)\r\n  * Detect external install completion from the installer's own result (#3091)\r\n  * Show a specific error for RuStore external-source listings (#3298)\r\n  * Support multiple split APK URLs in one apkUrls entry (#3298)\r\n  * Resolve RuStore split APKs using a device profile request (#3298)\r\n  * Sum all split APK sizes in the download size probe (#3298)\r\n  * Add shared minimum update age helpers and fix update suppression (#3303)\r\n  * Honor the minimum update age when adding apps (#3303)\r\n  * Skip releases younger than the minimum update age in list-based sources (#3303)\r\n  * Refactored the source/provider structure and UI code, and reworked version detection including rolling version tags.\r\n  * Added emulator end-to-end test suites with a local runner.\r\n  * Broad Android TV UI/UX polish\r\n  * Various networking and download/install related improvements\r\n  * Various other bugfixes\r\n* By @ImranR98 in https://github.com/ImranR98/Obtainium/pull/3308:\r\n  * Refresh cached app icons when an app is updated (#3306)\r\n  * Migrate to Flutter built-in Kotlin and material_ui, switch to forks of unmaintained packages, move off legacy Kotlin Gradle Plugin (#3258)\r\n* ci: tighten up auxiliary workflows by @master-bob in https://github.com/ImranR98/Obtainium/pull/3309\r\n* Improve APKMirror tracking with release pages, changelogs, sizes and package IDs by @ImranR98 in https://github.com/ImranR98/Obtainium/pull/3310\r\n  * APKMirror tracking improvements include code and research adapted from ObtainX by Bikram Agarwal (@bikram-agarwal).\r\n* Persist the ForgeJo token globally and drop GitHub-only settings (#2788) by @ImranR98 in https://github.com/ImranR98/Obtainium/pull/3313\r\n\r\n## New Contributors\r\n* @DonDae001 made their first contribution in https://github.com/ImranR98/Obtainium/pull/3284\r\n* @Scott-Nx made their first contribution in https://github.com/ImranR98/Obtainium/pull/3294\r\n\r\n**Full Changelog**: https://github.com/ImranR98/Obtainium/compare/v1.6.15...v1.6.16",
+      "assets": [
+        {
+          "abi": "arm64-v8a",
+          "file": "dev.imranr.obtainium-1.6.16-arm64-v8a.apk",
+          "size": 26154026
+        },
+        {
+          "abi": "armeabi-v7a",
+          "file": "dev.imranr.obtainium-1.6.16-armeabi-v7a.apk",
+          "size": 24282162
+        }
+      ]
     }
   ]
 }

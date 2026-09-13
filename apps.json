@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-12T20:38:00Z",
+  "exportedAt": "2026-09-13T20:54:41Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -98,12 +98,12 @@
       "author": "ImranR98",
       "url": "https://market.invalid/dev.imranr.obtainium",
       "overrideSource": "HTML",
-      "latestVersion": "1.6.15",
-      "apkUrls": "[[\"dev.imranr.obtainium-1.6.15-arm64-v8a.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.imranr.obtainium/dev.imranr.obtainium-1.6.15-arm64-v8a.apk\"],[\"dev.imranr.obtainium-1.6.15-armeabi-v7a.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.imranr.obtainium/dev.imranr.obtainium-1.6.15-armeabi-v7a.apk\"]]",
+      "latestVersion": "1.6.16",
+      "apkUrls": "[[\"dev.imranr.obtainium-1.6.16-arm64-v8a.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.imranr.obtainium/dev.imranr.obtainium-1.6.16-arm64-v8a.apk\"],[\"dev.imranr.obtainium-1.6.16-armeabi-v7a.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.imranr.obtainium/dev.imranr.obtainium-1.6.16-armeabi-v7a.apk\"]]",
       "otherAssetUrls": "[]",
       "preferredApkIndex": 0,
-      "additionalSettings": "{\"versionCode\":23543}",
-      "releaseDate": 1788678588000000,
+      "additionalSettings": "{\"versionCode\":23553}",
+      "releaseDate": 1789287827000000,
       "changeLog": "",
       "categories": [
         "工具"
