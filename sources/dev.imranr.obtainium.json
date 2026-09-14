@@ -56,6 +56,26 @@
           "size": 24282162
         }
       ]
+    },
+    {
+      "version": "1.6.17",
+      "versionCode": 23563,
+      "versionName": "1.6.17",
+      "publishedAt": "2026-09-13T18:08:26Z",
+      "upstreamTag": "v1.6.17",
+      "releaseNote": "## What's Changed\r\n* Update ru.json by @solokot in https://github.com/ImranR98/Obtainium/pull/3314\r\n* Translation: Update hu.json by @summoner001 in https://github.com/ImranR98/Obtainium/pull/3315\r\n* Restore track-only pseudo-version controls on the app page by @ImranR98 in https://github.com/ImranR98/Obtainium/pull/3316\r\n* Translation: Update hu.json by @summoner001 in https://github.com/ImranR98/Obtainium/pull/3317\r\n* Update ja.json by @bluefly000 in https://github.com/ImranR98/Obtainium/pull/3318\r\n* Update zh.json translations by @Jursin in https://github.com/ImranR98/Obtainium/pull/3319\r\n* docs: Initial documentation for Contributing policies and procedures by @master-bob in https://github.com/ImranR98/Obtainium/pull/3216\r\n\r\nPlus all changes from [v1.6.16](https://github.com/ImranR98/Obtainium/releases/tag/v1.6.16) which was marked as pre-release.\r\n\r\n**Full Changelog**: https://github.com/ImranR98/Obtainium/compare/v1.6.16...v1.6.17",
+      "assets": [
+        {
+          "abi": "arm64-v8a",
+          "file": "dev.imranr.obtainium-1.6.17-arm64-v8a.apk",
+          "size": 26154026
+        },
+        {
+          "abi": "armeabi-v7a",
+          "file": "dev.imranr.obtainium-1.6.17-armeabi-v7a.apk",
+          "size": 24282162
+        }
+      ]
     }
   ]
 }

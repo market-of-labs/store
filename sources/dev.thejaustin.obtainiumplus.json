@@ -27,6 +27,21 @@
           "size": 83040228
         }
       ]
+    },
+    {
+      "version": "1.6.10-p20",
+      "versionCode": 2419,
+      "versionName": "1.6.10-p20",
+      "publishedAt": "2026-09-14T05:51:50Z",
+      "upstreamTag": "v1.6.10-p20",
+      "releaseNote": "**Obtainium+ 1.6.10-p20** — build #644, commit `e202af6e`, 2026-09-14 05:51 UTC\n\n## Changes since v1.6.10-p19\n\n### 🔧 Improvements & Maintenance\n- perf: single-pass update discovery, lazy getSource(), removeApps fix (#295) (e202af6e)\n\n\n---\n[Full Changelog](https://github.com/thejaustin/ObtainiumPlus/compare/v1.6.10-p19...v1.6.10-p20)\n",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "dev.thejaustin.obtainiumplus-1.6.10-p20-universal.apk",
+          "size": 83040228
+        }
+      ]
     }
   ]
 }
