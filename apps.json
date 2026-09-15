@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-14T21:53:48Z",
+  "exportedAt": "2026-09-15T21:26:29Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -43,12 +43,12 @@
       "author": "mytv-android",
       "url": "https://market.invalid/com.github.mytv.dv",
       "overrideSource": "HTML",
-      "latestVersion": "1.4.26",
-      "apkUrls": "[[\"com.github.mytv.dv-1.4.26-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/com.github.mytv.dv/com.github.mytv.dv-1.4.26-universal.apk\"]]",
+      "latestVersion": "1.5.27",
+      "apkUrls": "[[\"com.github.mytv.dv-1.5.27-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/com.github.mytv.dv/com.github.mytv.dv-1.5.27-universal.apk\"]]",
       "otherAssetUrls": "[]",
       "preferredApkIndex": 0,
-      "additionalSettings": "{\"versionCode\":26}",
-      "releaseDate": 1788438775000000,
+      "additionalSettings": "{\"versionCode\":27}",
+      "releaseDate": 1789477684000000,
       "changeLog": "",
       "categories": [
         "媒体"
@@ -116,12 +116,12 @@
       "author": "thejaustin",
       "url": "https://market.invalid/dev.thejaustin.obtainiumplus",
       "overrideSource": "HTML",
-      "latestVersion": "1.6.10-p20",
-      "apkUrls": "[[\"dev.thejaustin.obtainiumplus-1.6.10-p20-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.thejaustin.obtainiumplus/dev.thejaustin.obtainiumplus-1.6.10-p20-universal.apk\"]]",
+      "latestVersion": "1.6.10-p21",
+      "apkUrls": "[[\"dev.thejaustin.obtainiumplus-1.6.10-p21-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.thejaustin.obtainiumplus/dev.thejaustin.obtainiumplus-1.6.10-p21-universal.apk\"]]",
       "otherAssetUrls": "[]",
       "preferredApkIndex": 0,
-      "additionalSettings": "{\"versionCode\":2419}",
-      "releaseDate": 1789365110000000,
+      "additionalSettings": "{\"versionCode\":2420}",
+      "releaseDate": 1789366227000000,
       "changeLog": "",
       "categories": [
         "工具",

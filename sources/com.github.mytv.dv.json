@@ -26,6 +26,21 @@
           "size": 15652606
         }
       ]
+    },
+    {
+      "version": "1.5.27",
+      "versionCode": 27,
+      "versionName": "1.5.27",
+      "publishedAt": "2026-09-15T13:08:04Z",
+      "upstreamTag": "V1.5.27",
+      "releaseNote": "# 变更日志\n\n## 新功能\n- 优化界面\n- 调整评论面板可见判定\n- 扫码搜索提交与搜索页本地「搜索」键行为一致（作品 ID 直开、跳转结果页）\n- 搜索结果翻页请求增加间隔：4s + 0~999ms 随机抖动\n## 修复\n- 作者主页、合集、视频详情接口",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "com.github.mytv.dv-1.5.27-universal.apk",
+          "size": 15635257
+        }
+      ]
     }
   ]
 }
