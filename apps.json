@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-16T12:24:18Z",
+  "exportedAt": "2026-09-16T21:23:04Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -176,12 +176,12 @@
       "author": "thejaustin",
       "url": "https://market.invalid/dev.thejaustin.obtainiumplus",
       "overrideSource": "HTML",
-      "latestVersion": "1.6.10-p24",
-      "apkUrls": "[[\"dev.thejaustin.obtainiumplus-1.6.10-p24-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.thejaustin.obtainiumplus/dev.thejaustin.obtainiumplus-1.6.10-p24-universal.apk\"]]",
+      "latestVersion": "1.6.10-p25",
+      "apkUrls": "[[\"dev.thejaustin.obtainiumplus-1.6.10-p25-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/dev.thejaustin.obtainiumplus/dev.thejaustin.obtainiumplus-1.6.10-p25-universal.apk\"]]",
       "otherAssetUrls": "[]",
       "preferredApkIndex": 0,
-      "additionalSettings": "{\"versionCode\":2423}",
-      "releaseDate": 1789418935000000,
+      "additionalSettings": "{\"versionCode\":2424}",
+      "releaseDate": 1789422099000000,
       "changeLog": "",
       "categories": [
         "工具",
