@@ -1,0 +1,19 @@
+{
+  "id": "org.smarttube.stable",
+  "name": "SmartTube",
+  "author": "yuliskov",
+  "desc": "第三方Youtube TV客户端",
+  "source": "github",
+  "paused": false,
+  "categories": [
+    "媒体"
+  ],
+  "upstream": {
+    "type": "github-release",
+    "repo": "yuliskov/SmartTube"
+  },
+  "abiWhitelist": [
+    "arm64-v8a",
+    "armeabi-v7a"
+  ]
+}
