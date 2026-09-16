@@ -4,7 +4,8 @@ name: forward-to-forge
 # 硬规矩（细则见 market-spec/03 §2.6）：
 #   1. 不 checkout —— 没有任何仓库内容进入执行环境（包括 issue 正文）
 #   2. run:/script: 里零 ${{ }} 插值 —— 外部值全部走 env:（${{ }} 在那里是文本拼接，会脚本注入）
-#   3. 跳过在 job 级 —— 被跳过的 job 根本拿不到 secret（这里没有权限门禁，见下）
+#   3. 跳过只在 job 级 —— 被跳过的 job 根本拿不到 secret。（本文件现在**没有** if:，
+#      连跳过都不需要：三个事件都要真的转发。真要加，写法与理由见 jobs.forward）
 #   4. 转发的是「信标」不是「数据」—— 只带事件名（手动按钮时是 verb，见下）/issue 号/sha，
 #      内容由 forge 自己用 API 读
 
@@ -17,9 +18,18 @@ on:
   # `release: [published]` 会在**任何**
   # Release 发布时打进 forge，迫使 forge 侧再挂一道闸门去筛"是不是 _incoming"；
   # 而它真正想覆盖的"人手动 Publish 队列发车"那条路已经不存在了。
-  push:
-    # 只有输入面变化才需要重算；产物（根目录的 apps.json 与 store/**）由 forge 回写，不需要转发
-    paths: ['sources/**']
+  #
+  # ⚠️ 这里**没有** `push` —— 别再把它加回来（2026-09-16 删的）。
+  #
+  # 它从前是 `push: paths: ['sources/**']`，服务于「人直接改数据源」：改一个
+  # sources/{appId}.json 就只收敛那一个来源（reconcile.go 的 push 分支，OnlyID
+  # 模式，不是全量）。而维护方式已经定死：收录与变更走 issue（§2.5 入口乙），
+  # 产物走 _incoming 与手动按钮 —— 人手改文件不在其中。
+  #
+  # 它还逼出一条**跨仓的隐式契约**：store 敢开 push，是因为 forge-core 的
+  # CommitBack 每次回写都记得在提交信息里塞 `[skip-dispatch]`（internal/job/ctx.go）。
+  # 真要把它加回来，必须同时恢复下面那条守卫；那个串至今还留在 ctx.go 里，
+  # 就是给这时候用的。人手改完 sources/ 想让它生效：点一次手动按钮（verb=reconcile）。
   # 手动按钮：**人上传完 APK 之后点这里**（03 §3.2）。这是本仓库里唯一需要人踩的一脚 ——
   # 队列常驻 draft，往 Release 上传/改名/删 asset 都不触发任何事件（§3.3），所以传完文件
   # 不会有谁自动来搬。CI 那条路（publish-apk.yml）不需要这个按钮，它直接发信标。
@@ -49,19 +59,17 @@ permissions: {}            # 不需要 GITHUB_TOKEN 的任何权限（走 PAT）
 jobs:
   forward:
     runs-on: ubuntu-latest
-    # 唯一的守卫：防自激回声。forge 每次回写都由 CommitBack 无条件补上
-    # [skip-dispatch]（internal/job/ctx.go），而它写 sources/（收录与变更单都写）
-    # 恰好落在上面的 paths 里 —— PAT 触发的 push 不会被 GitHub 抑制，不拦就是
-    # 「回写 → 转发 → 再回写」，每收录一个应用白烧一轮最长 90 分钟的对账。
+    # 没有 if: 守卫 —— push 触发器已经删了（见 on: 里的说明），没有 push 事件
+    # 就没有回声可拦。
     #
-    # ⚠️ 写成「非 push 事件直接放行」，**不要**把两件事塞进同一条 && 链。
-    # github.event.head_commit 只在 push 事件里存在，issue 事件里去取它会让整条
-    # 表达式判假 —— 症状是 run 一闪而过、结论 skipped、日志一个字都没有。
+    # ⚠️ 若把 `push:` 加回来，这里**必须**同时恢复下面这一条，且**不要**把别的
+    # 条件塞进同一条 && 链 —— `github.event.head_commit` 只在 push 事件里存在，
+    # 在 issue 事件上去取它会让整条表达式判假。症状是 run 一闪而过、结论 skipped、
+    # 日志一个字都没有 —— 这条真实发生过（当时它和一条按 author_association 的
+    # 门禁串在一起；那条门禁挡不到任何人，因为 store 是私有仓库，非成员连 issue
+    # 都开不了，已删）：
     #
-    # 上面两句原本和一条按 author_association 挡陌生人的门禁串在同一条 && 里：
-    # issue 事件上 head_commit 与那条门禁必有一个取不到值，整条就判假了 ——
-    # 而 store 是私有仓库，非成员连 issue 都开不了，那条门禁挡不到任何人，已删。
-    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip-dispatch]')
+    #   if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip-dispatch]')
     steps:
       - name: Dispatch forge
         # GitHub 官方的 API 客户端 action（node24，无第三方依赖树）。选它而不是
