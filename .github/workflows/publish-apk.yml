@@ -44,7 +44,7 @@ on:
   workflow_call:
     inputs:
       app-id:
-        description: 应用的 appId，与 APK 里的 package 逐字一致。传之前用它确认这个包名已收录。
+        description: 应用的 appId，与 APK 里的 package 逐字一致。对不上只在日志里告警，不阻断（新 App 本来就没有条目）。
         type: string
         required: true
       apk:
@@ -83,15 +83,20 @@ jobs:
           name: apk
           path: dist
 
-      - name: 确认这个包名已收录
+      - name: 看一眼这个包名收没收录（只告警）
         run: |
-          # 这不是"没收录就搬不进去"（forge 现在会按 APK 的 package 当场把条目建出来，
-          # 见 03 §3.2 / D52）。留着它是为了挡住**打错的 app-id**：真正的落点由 APK 内容
-          # 决定，所以这里跟 app-id 对不上时，写错的后果是 store 里悄悄多出一条作者为
-          # 「未知」的陌生来源 —— 那是事后翻 git 历史才看得见的那种错误。
-          if ! gh api "repos/$STORE/contents/sources/$APP_ID.json" >/dev/null 2>&1; then
-            echo "::error::store 里没有 sources/$APP_ID.json。若这个包名是新的：先把 APK 传一次（forge 会替它建条目，作者记成「未知」，之后用 change-source.yml 补），再回来跑这里；若它本该已收录：app-id 打错了。"
-            exit 1
+          # ⚠️ **只告警不阻断**。从前这里是个 `exit 1`，但那是错的：forge 会按 APK 的
+          # package 当场把条目建出来（03 §3.2 / D52），所以"没有 sources/{app-id}.json"
+          # 对一个**新** App 完全正常 —— 而"新 App 第一次上传"正是本 workflow 的主要用途。
+          # 那道守卫的净效果只剩拦住合法操作。
+          #
+          # 留着这一句是为了让**打错的 app-id** 在自己的 CI 日志里露出来：真正的落点由 APK
+          # 内容决定，所以 app-id 写错的后果是 store 里多出一条作者为「未知」的陌生来源，
+          # 属于事后翻 git 历史才看得见的那种错。
+          if gh api "repos/$STORE/contents/sources/$APP_ID.json" >/dev/null 2>&1; then
+            echo "已收录：sources/$APP_ID.json"
+          else
+            echo "::warning::store 里没有 sources/$APP_ID.json。包名是新的 → 正常，forge 会按 APK 内容替它建条目（作者先记「未知」，之后用 change-source.yml 补）。本该已收录 → app-id 打错了，检查一下再收尾。"
           fi
 
       - name: 找回暂存区，并确认它是 draft
