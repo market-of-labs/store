@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-16T01:33:20Z",
+  "exportedAt": "2026-09-16T02:15:48Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -72,6 +72,21 @@
         "效率"
       ],
       "kind": "companion"
+    },
+    {
+      "id": "com.wolf.google.lm",
+      "name": "启动器管理器",
+      "author": "未知",
+      "url": "https://market.invalid/com.wolf.google.lm",
+      "overrideSource": "HTML",
+      "latestVersion": "1.0.4",
+      "apkUrls": "[[\"com.wolf.google.lm-1.0.4-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/com.wolf.google.lm/com.wolf.google.lm-1.0.4-universal.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":104}",
+      "releaseDate": 1789524946000000,
+      "changeLog": "",
+      "categories": []
     },
     {
       "id": "dev.bikram.obtainx",

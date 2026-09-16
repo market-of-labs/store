@@ -1,0 +1,22 @@
+{
+  "id": "com.wolf.google.lm",
+  "name": "启动器管理器",
+  "author": "未知",
+  "source": "manual",
+  "paused": false,
+  "versions": [
+    {
+      "version": "1.0.4",
+      "versionCode": 104,
+      "versionName": "1.0.4",
+      "publishedAt": "2026-09-16T02:15:46Z",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "com.wolf.google.lm-1.0.4-universal.apk",
+          "size": 1505901
+        }
+      ]
+    }
+  ]
+}
