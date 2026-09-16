@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-16T02:16:10Z",
+  "exportedAt": "2026-09-16T03:23:23Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -181,6 +181,23 @@
         "效率"
       ],
       "kind": "obtainium"
+    },
+    {
+      "id": "org.smarttube.stable",
+      "name": "SmartTube · 第三方Youtube TV客户端",
+      "author": "yuliskov",
+      "url": "https://market.invalid/org.smarttube.stable",
+      "overrideSource": "HTML",
+      "latestVersion": "32.47",
+      "apkUrls": "[[\"org.smarttube.stable-32.47-arm64-v8a.apk\",\"https://github.com/market-of-labs/store/releases/download/org.smarttube.stable/org.smarttube.stable-32.47-arm64-v8a.apk\"],[\"org.smarttube.stable-32.47-armeabi-v7a.apk\",\"https://github.com/market-of-labs/store/releases/download/org.smarttube.stable/org.smarttube.stable-32.47-armeabi-v7a.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":2437}",
+      "releaseDate": 1789341891000000,
+      "changeLog": "",
+      "categories": [
+        "媒体"
+      ]
     }
   ]
 }
