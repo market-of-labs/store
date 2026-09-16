@@ -39,8 +39,9 @@ name: publish-apk
 #   3. 只往 `_incoming` 写。清场（保持在 draft、删掉已搬走的 asset）是 forge 的活（§3.2 规则 6），
 #      这里绝不碰任何正式 Release。唯一的例外是上传前删掉**同名**旧 asset（重跑要幂等），
 #      那不算清场 —— 见那一步里的说明
-#   4. 收尾时**显式叫一声** forge（repository_dispatch）。队列常驻 draft，没有"发布即发车"
-#      那种事件可等；上传本身不触发任何事件（§3.3），所以这一步不能省。
+#   4. 收尾时**显式叫一声** forge（repository_dispatch）。上传本身不触发任何事件（§3.3），
+#      所以这一步不能省 —— 人是靠手动点 Publish 发车的（那条路有 forward.yml 的 release
+#      事件接着），而这条路只往 draft 队列里塞东西，自己没有那一刻可等。
 
 on:
   workflow_call:
@@ -107,9 +108,9 @@ jobs:
           # draft=false —— 每次 CI 上传前先把队列**发布掉**，还会把 tag 名降级成
           # `untagged-<sha>`，于是下一次搬运认不出队列（症状是「传了却没反应」）。
           #
-          # 而它想防的那件事根本不用防：Publish 队列不触发任何运行（forward.yml 的
-          # `release: [published]` 已删），intake 也不筛 draft，队列的复位是 forge 的
-          # 活（03 §3.2 规则 6，每轮 Unpublish 都会做，且会把 tag 名签回去）。
+          # 而它想防的那件事根本不用防：intake 不筛 draft（它按 tag 名认队列），队列的
+          # 复位是 forge 的活（03 §3.2 规则 6，每轮 Unpublish 都会做，且会把 tag 名
+          # 签回去）。
 
           # 递给后面两步（写进 $GITHUB_ENV 的值，后续 step 直接当环境变量用）。
           echo "INCOMING_ID=$id" >> "$GITHUB_ENV"
@@ -152,9 +153,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          # 队列常驻 draft，搬运**只能被显式叫起来**（03 §3.2）：upload / 改名 / 删
-          # asset 都不触发任何事件（§3.3），从前那条「Publish 一下就自动发车」的路
-          # 已经不存在了。所以这里是收尾那一声。
+          # upload / 改名 / 删 asset 都不触发任何事件（§3.3，这是 GitHub 的硬限制），
+          # 而这条路只往 draft 队列里塞东西、从不 Publish —— 人是靠点 Publish 发车的
+          # 那条路（forward.yml 的 release 事件）在这里够不着。所以收尾这一声不能省。
           #
           # 发的是**信标**不是数据（§2.6）：只说「搬 _incoming」，搬什么由 forge 自己
           # 用 API 去 store 读。于是这条路径上没有任何外部字符串进入 forge 的执行环境。
