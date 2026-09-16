@@ -21,7 +21,7 @@ body:
         1. Releases → 名为 `_incoming` 的那个草稿 Release
         2. 挂上 APK（文件名随意 —— 包名、版本、ABI 都从 APK 内容里读；**一次可以挂多个**，
            不同应用、不同版本、不同 ABI 混着挂都行，一次搬运会把整批处理完）
-        3. 去 **forge** 仓的 Actions → `on-dispatch` → Run workflow（`verb` 保持缺省）
+        3. 去 **本仓** 的 Actions → `forward-to-forge` → Run workflow（`verb` 保持缺省）
            —— 队列常驻草稿，传完文件不会有谁自动来搬，这一脚得自己踩
 
         条目会按 APK 里的 `package` 与 `label` 当场建出来（包名 = appId，label = 显示名），

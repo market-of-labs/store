@@ -21,6 +21,7 @@ store/
 │   └── endpoints.json          # 地址模板（第一期 ⇄ 部署期的唯一开关）
 ├── .github/
 │   ├── workflows/forward.yml   # 薄转发：不 checkout、不插值、只 POST 一次 dispatch
+│   │                           # 也是**手动按钮**所在（Run workflow，`verb` 二选一）
 │   ├── workflows/publish-apk.yml # 可复用：私有源码仓的 CI 把 APK 送进 _incoming（§4）
 │   ├── dependabot.yml          # 每周升 forward.yml 里那个 action 的主版本
 │   └── ISSUE_TEMPLATE/         # 维护数据源的两个入口
@@ -152,8 +153,9 @@ store/
 
 1. 打开 Releases → `_incoming`（**常驻 draft**）→ 上传 APK。**一次可以传多个**，
    属于不同 App、不同版本、不同 ABI 的都行 —— 下面第 3 步会把**整批**一次搬完。
-2. **手动触发一次 action**：去 `forge` 的 Actions → `on-dispatch` → Run workflow，
-   `verb` 保持缺省（`intake-incoming`）。
+2. **手动触发一次 action**：就在**本仓库** Actions → `forward-to-forge` → Run workflow，
+   `verb` 保持缺省（`intake-incoming`）。按钮在这儿而不是只在 `forge`，是因为你刚在
+   这个仓库的 Release 页面上传完文件 —— 不用切仓库，也不用想"该去哪个仓点什么"。
 3. `forge` 解析每个 APK 的 `package / versionName / versionCode / ABI` → 改名搬运进对应 `{appId}` 的正式 Release → 重建清单。
 4. `forge` 把 `_incoming` **继续保持 draft** 并删掉已搬走的 asset（清场）。
 
@@ -164,6 +166,9 @@ store/
 > ⚠️ **为什么必须手动触发**：往 Release 上传/改名/删 asset **不触发任何 `release` 事件**，
 > 而队列常驻 draft、压根不经过"发布"这个动作 —— 所以传完文件**不会有任何东西替你发车**，
 > 那一脚只能自己踩（或让 CI 发信标，见下）。
+>
+> `verb` 的另一项 `reconcile` 与 `_incoming` 无关：它是"把每日对账提前跑一遍"。
+> `forge` 的 `on-dispatch` 里也有同一个二选一，两边等效 —— 日常用本仓库这个。
 >
 > ⚠️ **搬不进去的会留在队列里**，逐条写明原因、**不静默丢弃**（03 §3.2）；看一眼 forge 那次
 > run 的日志就知道哪几条还在等人工。重跑一次搬运即可，幂等（已搬成的会被跳过）。
