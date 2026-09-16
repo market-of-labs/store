@@ -99,7 +99,7 @@ jobs:
             echo "::warning::store 里没有 sources/$APP_ID.json。包名是新的 → 正常，forge 会按 APK 内容替它建条目（作者先记「未知」，之后用 change-source.yml 补）。本该已收录 → app-id 打错了，检查一下再收尾。"
           fi
 
-      - name: 找回暂存区，并确认它是 draft
+      - name: 找回暂存区
         run: |
           set -euo pipefail
 
@@ -112,19 +112,19 @@ jobs:
           id=$(gh api --paginate "repos/$STORE/releases" \
             --jq '.[] | select(.tag_name == "_incoming") | .id' | head -1)
           if [ -z "$id" ]; then
-            echo "::error::store 里没有 tag 为 _incoming 的 Release。它是个**常驻队列**（03 §3.2），状态无所谓 —— 有这个 tag 就行，本 workflow 会先把它复位成 draft。但 forge 故意不自动建：凭空冒出一个空队列出来，只会掩盖「你其实传到了别处」这个事实。"
+            echo "::error::store 里没有 tag 为 _incoming 的 Release。它是个**常驻队列**（03 §3.2），状态无所谓 —— 有这个 tag 就行。但 forge 故意不自动建：凭空冒出一个空队列出来，只会掩盖「你其实传到了别处」这个事实。"
             exit 1
           fi
 
-          # ⚠️ 上传之前先把这条不变量拧住：队列**永远**是 draft（§3.2）。
+          # ⚠️ **本步骤只读。别在这里 PATCH 队列的 draft 状态**（2026-09-16 删掉了那句）。
           #
-          # 正常情况下这句 PATCH 不产生任何状态变化 —— forge 每次搬完都把它留在
-          # draft，队列自己不会变成别的样子。留着它是防**人手**：在网页上把队列
-          # Publish 掉之后就再也点不回去了（published 的 Release 只有 Update /
-          # Delete，没有 Publish 按钮），而发布过的队列仍然收得下 asset、只是不会
-          # 有任何事件（§3.3）—— 一个谁也看不出来的死局。这里顺手把它拉回来。
-          gh api -X PATCH "repos/$STORE/releases/$id" -f draft=true >/dev/null
-          echo "暂存区已确认为 draft（id=$id）"
+          # 它是**反的**：`gh api -f draft=true` 传的是字符串 "true"，GitHub 只当
+          # draft=false —— 每次 CI 上传前先把队列**发布掉**，还会把 tag 名降级成
+          # `untagged-<sha>`，于是下一次搬运认不出队列（症状是「传了却没反应」）。
+          #
+          # 而它想防的那件事根本不用防：Publish 队列不触发任何运行（forward.yml 的
+          # `release: [published]` 已删），intake 也不筛 draft，队列的复位是 forge 的
+          # 活（03 §3.2 规则 6，每轮 Unpublish 都会做，且会把 tag 名签回去）。
 
           # 递给后面两步（写进 $GITHUB_ENV 的值，后续 step 直接当环境变量用）。
           echo "INCOMING_ID=$id" >> "$GITHUB_ENV"
