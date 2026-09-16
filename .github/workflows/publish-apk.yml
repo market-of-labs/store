@@ -25,7 +25,8 @@ name: publish-apk
 #     publish:
 #       needs: build
 #       uses: market-of-labs/store/.github/workflows/publish-apk.yml@master   # 本仓库默认分支是 master（不是 main）
-#       with: { app-id: com.you.closedapp }
+#       # 没有 with: —— 落点由 APK 内容决定（D52），本 workflow 不需要知道 appId。
+#       # 产物路径默认 dist/*.apk；要改就 with: { apk: 'app/build/outputs/apk/release/*.apk' }
 #       secrets: { store-token: ${{ secrets.STORE_TOKEN }} }
 #
 # 放在 store 而不是各 App 仓：store 是 `_incoming` 的宿主，也是唯一知道仓库名的地方。
@@ -33,7 +34,7 @@ name: publish-apk
 #
 # 硬规矩（与 forward.yml 同一套）：
 #   1. `run:` 里零 `${{ }}` 插值 —— 外部值全部走 `env:`（`${{ }}` 在 run: 里是文本拼接，
-#      传进来一个带引号的 appId 就能改掉整段脚本）
+#      调用方或 secret 里任何一个带引号的值都能改掉整段脚本）
 #   2. 走 PAT（`secrets.store-token`）而不是 GITHUB_TOKEN —— 后者出不了本仓库（§6.2 不变量 1）
 #   3. 只往 `_incoming` 写。清场（保持在 draft、删掉已搬走的 asset）是 forge 的活（§3.2 规则 6），
 #      这里绝不碰任何正式 Release
@@ -43,10 +44,10 @@ name: publish-apk
 on:
   workflow_call:
     inputs:
-      app-id:
-        description: 应用的 appId，与 APK 里的 package 逐字一致。对不上只在日志里告警，不阻断（新 App 本来就没有条目）。
-        type: string
-        required: true
+      # 没有 app-id：**落点由 APK 内容决定**（03 §3.2 / D52），forge 自己读包名。
+      # 曾经有个 required 的 app-id，唯一用途是在调用方的日志里对一下包名收没收录 ——
+      # 它对结果零影响（打错了也只多一条作者为「未知」的来源，而那个会自愈），却让
+      # 每个调用方都得传一个被忽略的值。2026-09-16 连同那个检查一起删除。
       apk:
         description: 构建产物路径（相对仓库根，可通配）。多 ABI 分片可以一次全传。
         type: string
@@ -71,7 +72,6 @@ jobs:
       # ⚠️ 一切外部数据只经 env 传入；下面 run: 里一处 ${{ }} 都没有。
       GH_TOKEN: ${{ secrets.store-token }}
       STORE: ${{ inputs.store-repo }}
-      APP_ID: ${{ inputs.app-id }}
       APK_GLOB: ${{ inputs.apk }}
       # 收尾要叫的那一声发给谁。写死而不是做成 input：store 与 forge 是同一套部署的
       # 两个固定点，调用方（各 App 仓）不该、也不需要知道怎么拼这个地址。
@@ -82,22 +82,6 @@ jobs:
         with:
           name: apk
           path: dist
-
-      - name: 看一眼这个包名收没收录（只告警）
-        run: |
-          # ⚠️ **只告警不阻断**。从前这里是个 `exit 1`，但那是错的：forge 会按 APK 的
-          # package 当场把条目建出来（03 §3.2 / D52），所以"没有 sources/{app-id}.json"
-          # 对一个**新** App 完全正常 —— 而"新 App 第一次上传"正是本 workflow 的主要用途。
-          # 那道守卫的净效果只剩拦住合法操作。
-          #
-          # 留着这一句是为了让**打错的 app-id** 在自己的 CI 日志里露出来：真正的落点由 APK
-          # 内容决定，所以 app-id 写错的后果是 store 里多出一条作者为「未知」的陌生来源，
-          # 属于事后翻 git 历史才看得见的那种错。
-          if gh api "repos/$STORE/contents/sources/$APP_ID.json" >/dev/null 2>&1; then
-            echo "已收录：sources/$APP_ID.json"
-          else
-            echo "::warning::store 里没有 sources/$APP_ID.json。包名是新的 → 正常，forge 会按 APK 内容替它建条目（作者先记「未知」，之后用 change-source.yml 补）。本该已收录 → app-id 打错了，检查一下再收尾。"
-          fi
 
       - name: 找回暂存区
         run: |
