@@ -1,0 +1,22 @@
+{
+  "id": "com.dangbeimarket",
+  "name": "当贝市场",
+  "author": "未知",
+  "source": "manual",
+  "paused": false,
+  "versions": [
+    {
+      "version": "6.0.7",
+      "versionCode": 613,
+      "versionName": "6.0.7",
+      "publishedAt": "2026-09-16T04:08:11Z",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "com.dangbeimarket-6.0.7-universal.apk",
+          "size": 10213786
+        }
+      ]
+    }
+  ]
+}

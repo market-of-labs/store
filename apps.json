@@ -1,8 +1,23 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-16T03:23:23Z",
+  "exportedAt": "2026-09-16T04:08:13Z",
   "generatedBy": "forge",
   "apps": [
+    {
+      "id": "com.dangbeimarket",
+      "name": "当贝市场",
+      "author": "未知",
+      "url": "https://market.invalid/com.dangbeimarket",
+      "overrideSource": "HTML",
+      "latestVersion": "6.0.7",
+      "apkUrls": "[[\"com.dangbeimarket-6.0.7-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/com.dangbeimarket/com.dangbeimarket-6.0.7-universal.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":613}",
+      "releaseDate": 1789531691000000,
+      "changeLog": "",
+      "categories": []
+    },
     {
       "id": "com.github.HailLauncher",
       "name": "冰雹桌面 · 带应用冻结功能的TV桌面",
