@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-16T12:21:30Z",
+  "exportedAt": "2026-09-16T12:24:18Z",
   "generatedBy": "forge",
   "apps": [
     {
@@ -83,6 +83,21 @@
       "categories": [
         "媒体"
       ]
+    },
+    {
+      "id": "com.hisen.android.tv",
+      "name": "OK影视",
+      "author": "未知",
+      "url": "https://market.invalid/com.hisen.android.tv",
+      "overrideSource": "HTML",
+      "latestVersion": "5.1.6",
+      "apkUrls": "[[\"com.hisen.android.tv-5.1.6-armeabi-v7a.apk\",\"https://github.com/market-of-labs/store/releases/download/com.hisen.android.tv/com.hisen.android.tv-5.1.6-armeabi-v7a.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":516}",
+      "releaseDate": 1789561453000000,
+      "changeLog": "",
+      "categories": []
     },
     {
       "id": "com.obtainium.companion",
