@@ -1,8 +1,23 @@
 {
   "schemaVersion": 2,
-  "exportedAt": "2026-09-16T04:08:39Z",
+  "exportedAt": "2026-09-16T12:21:30Z",
   "generatedBy": "forge",
   "apps": [
+    {
+      "id": "com.dangbei.screencast",
+      "name": "当贝投屏",
+      "author": "未知",
+      "url": "https://market.invalid/com.dangbei.screencast",
+      "overrideSource": "HTML",
+      "latestVersion": "V2.9.3",
+      "apkUrls": "[[\"com.dangbei.screencast-V2.9.3-universal.apk\",\"https://github.com/market-of-labs/store/releases/download/com.dangbei.screencast/com.dangbei.screencast-V2.9.3-universal.apk\"]]",
+      "otherAssetUrls": "[]",
+      "preferredApkIndex": 0,
+      "additionalSettings": "{\"versionCode\":293}",
+      "releaseDate": 1789561286000000,
+      "changeLog": "",
+      "categories": []
+    },
     {
       "id": "com.dangbeimarket",
       "name": "当贝市场",

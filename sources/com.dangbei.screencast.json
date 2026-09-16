@@ -1,0 +1,22 @@
+{
+  "id": "com.dangbei.screencast",
+  "name": "当贝投屏",
+  "author": "未知",
+  "source": "manual",
+  "paused": false,
+  "versions": [
+    {
+      "version": "V2.9.3",
+      "versionCode": 293,
+      "versionName": "V2.9.3",
+      "publishedAt": "2026-09-16T12:21:26Z",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "com.dangbei.screencast-V2.9.3-universal.apk",
+          "size": 49851543
+        }
+      ]
+    }
+  ]
+}
