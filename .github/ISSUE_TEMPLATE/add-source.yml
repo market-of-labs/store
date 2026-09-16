@@ -32,7 +32,7 @@ body:
     id: repo
     attributes:
       label: 上游 GitHub 仓库
-      description: owner/repo 形式。必须可匿名读（公开仓库）。填错时本单会收到一条说明并保持开着，改完编辑正文即可重试。
+      description: owner/repo 形式。必须是**读得到**的仓库：公开仓库（匿名读），或本 org 名下的私有仓。填错时本单会收到一条说明并保持开着，改完编辑正文即可重试。
       placeholder: ImranR98/Obtainium
     validations:
       required: true

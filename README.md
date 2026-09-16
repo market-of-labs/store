@@ -7,7 +7,7 @@
 - 完整设计见 `market-spec/`（尤其 **03 · 维护逻辑**）。
 
 > ⚠️ **这个仓库不执行任何维护逻辑**。维护数据那条链全靠一个「转手就发车」的极薄 workflow 把事件转告 `forge`；
-> 另有一个 `publish-apk.yml`，它是**给私有源码仓复用的上传器** —— 只往 `_incoming` 里放文件，不读也不改 `sources/`（§4）。
+> 另有一个 `publish-apk.yml`，它是**给"没有可读上游"的源复用的上传器** —— 只往 `_incoming` 里放文件，不读也不改 `sources/`（§4）。⚠️ 判据是**那个源的上游 `forge` 读不读得到**，不是"私有不私有"：同 `market-of-labs` owner 的私有仓（如 `companion`）照样是**普通上游**，直接镜像即可（03 §8 / D55）。
 
 ---
 
@@ -22,7 +22,7 @@ store/
 ├── .github/
 │   ├── workflows/forward.yml   # 薄转发：不 checkout、不插值、只 POST 一次 dispatch
 │   │                           # 也是**手动按钮**所在（Run workflow，`verb` 二选一）
-│   ├── workflows/publish-apk.yml # 可复用：私有源码仓的 CI 把 APK 送进 _incoming（§4）
+│   ├── workflows/publish-apk.yml # 可复用：没有可读上游的源码仓把 APK 送进 _incoming（§4）
 │   ├── dependabot.yml          # 每周升 forward.yml 里那个 action 的主版本
 │   └── ISSUE_TEMPLATE/         # 维护数据源的两个入口
 ├── README.md
@@ -177,8 +177,13 @@ store/
 
 ### 自研 App：让源码仓的 CI 自动走这四步
 
-自研 App 的源码仓是私有的，`source: "github"` 那条路走不通（forge 匿名读不了私有仓，我们也不打算给它上游读凭据）。
-它走的是**同一条**上传队列，只是把上面 4 步自动化 —— 本仓库的 `publish-apk.yml` 是可复用 workflow，App 仓构建完调一下即可：
+⚠️ **先看判据**：`forge` 读得到上游 ⇒ **什么都不用做**，它和别的应用一样在每日对账里被自动镜像。
+**同 `market-of-labs` owner 的私有仓（如 `companion`）就属于这一类** —— `forge` 的 GitHub 客户端本来就带那把 PAT，
+在 PAT 的仓库清单里加上它（Contents: **Read**）即可，零代码改动（03 §8 / D55）。
+
+真正需要下面这套的是**上游 `forge` 够不着**的源：源码仓在**别的 owner** 名下（fine-grained PAT 只覆盖一个 owner），
+或者根本没有上游（`source: "manual"`）。它们走的是**同一条**上传队列，只是把上面 4 步自动化 ——
+本仓库的 `publish-apk.yml` 是可复用 workflow，App 仓构建完调一下即可：
 
 ```yaml
 jobs:
@@ -210,6 +215,8 @@ jobs:
 
 > ⚠️ **App 仓必须在同一 org 才调得动**（store 转私有后，私有仓的可复用 workflow 只对同 org 开放）。
 > 否则就把那个文件里的两步 `gh api` 就地抄进 App 仓的 workflow —— 同样只需要那把 PAT，不需要 store 公开。
+> ⚠️ **这两条约束同源，别当成两个独立条件**：一个仓不在我们的 org 里，就既调不动可复用 workflow、`forge` 的 PAT 也读不到它的 Release ——
+> 所以"得走队列"和"得同 org"说的其实是同一件事（fine-grained PAT 只覆盖一个 owner，03 §8）。
 
 ---
 
@@ -246,8 +253,8 @@ jobs:
 | # | 检查项 |
 |---|---|
 | **1** | **本仓库及其所属 org 的「Immutable releases」必须为 OFF**（2025-10-28 GA）。开启后 asset 不能增删改、tag 不能删/移 —— 本设计的追加上传与 `_incoming` 清场全部失效；删除不可变 Release 会**永久烧毁该 tag**，而 `tag = {appId}` 不可重建。**"先开后关"也不安全**（已固化的 Release 不受影响）。 |
-| 2 | `store` 转私有后按私有仓库计费 —— 逻辑跑在公有的 `forge`（其实现来自私有的 `forge-core`），本仓库只跑一个 dispatch 步骤 |
-| 3 | 本仓库与 `forge` 各自都能解析出 **同名** secret `GH_PAT`（**仓库级或组织级都行** —— 现状是本仓库用仓库级、`forge` 走组织级），值是**同一把** fine-grained PAT，仓库范围必须含 `store`(Contents RW + Issues RW) / `forge`(Contents RW) / **`forge-core`(Contents R)** |
+| 2 | `store` 转私有后按私有仓库计费 —— 逻辑跑在公有的 `forge`（其实现来自私有的 `forge-core`），本仓库只跑一个 dispatch 步骤。⚠️ **唯一的例外是 `companion`**：它转私有后，`release.yml` 里那次 Gradle 构建也开始计费（D55，本设计里唯一一处重活落在计费额度上） |
+| 3 | 本仓库与 `forge` 各自都能解析出 **同名** secret `GH_PAT`（**仓库级或组织级都行** —— 现状是本仓库用仓库级、`forge` 走组织级），值是**同一把** fine-grained PAT，仓库范围必须含 `store`(Contents RW + Issues RW) / `forge`(Contents RW) / **`forge-core`(Contents R)** / **`companion`(Contents R)**（最后一个：它转私有后 `forge` 要靠这把 PAT 把它当上游读，D55） |
 | 3b | `forge-core` 必须**已发布过至少一个带 `forge-linux-amd64` asset 的 tag** —— 公有的 `forge` 浮动取 latest，一个 Release 都没有时取件直接失败 |
 | 4 | 本仓库 workflow 保持 `permissions: {}` |
 | 5 | 确认 `_incoming` **存在**且是 **draft**（它的唯一状态）。⚠️ 若它曾被人 Publish 过，先在网页上 Edit → Convert to draft 改回来 —— published 的 Release **没有 Publish 按钮**，也没有别的东西会去修它（CI 那条路每次上传前会顺手复位，见 §4） |
