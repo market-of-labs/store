@@ -1,0 +1,22 @@
+{
+  "id": "ru.andr7e.deviceinfohw",
+  "name": "Device Info HW",
+  "author": "未知",
+  "source": "manual",
+  "paused": false,
+  "versions": [
+    {
+      "version": "5.27.1",
+      "versionCode": 239,
+      "versionName": "5.27.1",
+      "publishedAt": "2026-09-18T04:20:20Z",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "ru.andr7e.deviceinfohw-5.27.1-universal.apk",
+          "size": 3806447
+        }
+      ]
+    }
+  ]
+}
