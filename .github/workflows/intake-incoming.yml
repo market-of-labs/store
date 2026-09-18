@@ -1,0 +1,76 @@
+name: 搬运队列·转发
+
+# **这个文件就是一个功能。** 它干的事只有一件：把 **`_incoming` 队列被发布**这件事
+# 告诉 forge（03 §3.2）—— 于是 forge 把队列里的 asset 搬进各自的正式 Release、
+# 重建索引、回写。
+#
+# 文件名即路由：看懂它要干什么不需要读任何 `if:`、也不需要读 forge 那边 Go 里的 switch。
+#
+# 硬规矩（细则见 market-spec/03 §2.6）：不 checkout、run:/script: 里零 `${{ }}` 插值、
+# 跳过只在 job 级、转发的是「信标」不是「数据」。四条与 source-change.yml 逐字同源，
+# 逐条理由写在那个文件里。
+on:
+  # 人上传完 APK、在网页上点 "Publish release" —— 那一刻就是发车信号（2026-09-16 恢复）。
+  # 在此之前搬运只能靠下面那个手动按钮：往 Release 上传 / 改名 / 删 asset 都**不触发任何
+  # 事件**（§3.3，GitHub 的硬限制），所以传完文件不会有谁自动来搬。
+  #
+  # ⚠️⚠️ **这条路有一个隐藏依赖，改动本文件时**必须**一起想：`release` 事件跑的是
+  # **tag 所指提交**上的这份文件，不是默认分支 HEAD 上的。而 `_incoming` 的 tag 引用
+  # 一旦建立就再也不动（实测：09-12 建的那个，09-16 的发布还在用）—— 于是"文件改了、
+  # 推到默认分支了"在这一条路上**看不见**：Publish 了却什么都没发生，而 Actions 页面
+  # 干干净净（旧提交上那个触发器早就不是这么写的，甚至可能压根没有本文件）。
+  #
+  # 出路不在 store 这边：forge 每轮搬运成功后的清场会把那个引用删掉
+  # （`cleanIncoming` → `gh.DeleteTagRef`），下一次 Publish 就会在**当时的**默认分支
+  # HEAD 上重建它。所以**改名 / 重构本文件之后，要等那个引用被删过一次才算真落地** ——
+  # 本轮拆工作流正是卡在这条上：引用刷新之前，这条路跑的仍是**旧提交上那份 `forward.yml`**，
+  # 所以灰度顺序是「先让 forge 挂上新监听（新的三个入口 + 旧的 `on-dispatch.yml` 并存）→ 再删
+  # store 这边的旧文件 → 等引用确实被删过一次 → 才轮到清理 `on-dispatch.yml`」（03 §4.7 第 5 步）。
+  release:
+    types: [published]
+
+  # 手动按钮：人想主动叫一次搬运时用（03 §3.2）。
+  #
+  # why 按钮在本仓库而不是只在 forge：人是在**本仓库**的 Release 页面上传的文件，按钮就该
+  # 在同一页的 Actions 里，省掉一次仓库切换（也省掉"我到底该去哪个仓点什么"）。forge 那边
+  # 的同名文件同样通，效果一样，留着它是因为改 forge-core 的人常在那儿调试。
+  #
+  # **没有 inputs。** 从前的 `verb` choice 是"把两件事挤进同一个文件"的产物：同一份文件
+  # 既要能搬队列又要能全量对账，才需要问一句"你要哪一个"。文件名即选择之后，这个输入
+  # 连同为它服务的那个四段式 `EVENT:` 表达式一起消失了 —— 手动按钮不再可能"漏填 verb
+  # 于是静默跑了另一件事"。
+  workflow_dispatch:
+
+permissions: {}            # 不需要 GITHUB_TOKEN 的任何权限（走 PAT）
+
+jobs:
+  intake-incoming:
+    runs-on: ubuntu-latest
+    # 只放行"队列被发布"这一种 release。
+    #
+    # ⚠️ 短路求值是**必须**的，不是风格问题：`github.event.release` 只在 release 事件里
+    # 存在，而**手动按钮**（workflow_dispatch）上取它会让整条表达式判假 —— 症状是
+    # 点了按钮、run 一闪而过、结论 skipped、日志一个字都没有。所以
+    # `github.event_name != 'release'` 必须排在最前，让非 release 事件根本走不到后半句。
+    #
+    # 拆分之前这句话是本文件最危险的一处（同一个 `if:` 上还挂着第三个触发面，谁想加条件
+    # 都只能往 `||` 的右边加、串成 `&&` 链就会把整个 job 判假）。现在本文件只有这一个
+    # 条件，但**别把它改成 `&&`** —— 那条推理没变。
+    #
+    # 为什么不能干脆去掉：`release` 会对 store 的**任何** Release 发布触发，包括 forge
+    # 通过 API 建的**每个应用的正式 Release**。少了这道闸门，每发一个正式版本都会多叫
+    # forge 搬一次队列（搬完发现是空的）—— 幂等，但纯属噪声。
+    if: github.event_name != 'release' || github.event.release.tag_name == '_incoming'
+    steps:
+      - name: 转发信标
+        # ⚠️ `$/` 不是 `./`，理由见 source-change.yml（`./` 要求 checkout，而本 job
+        # 刻意不 checkout）。
+        uses: $/.github/actions/beacon
+        with:
+          token: ${{ secrets.GH_PAT }}
+          # ⚠️ **这里就是那个"队列被发布"到"来搬 _incoming"的翻译。** 事件名是
+          # `release`，而 forge 认的是功能名；上面的 `if:` 已经保证走到这里的 release
+          # 只可能是 tag 名为 `_incoming` 的那种。
+          event-type: intake-incoming
+          ref: ${{ github.ref }}
+          sha: ${{ github.sha }}

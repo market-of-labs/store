@@ -1,0 +1,41 @@
+name: 对账·转发
+
+# **这个文件就是一个功能。** 它干的事只有一件：让 forge 把 store 与上游重新对一遍
+# （03 §4.4）—— 解析上游 → 镜像缺失版本 → 重建索引 → 回写。
+#
+# 文件名即路由：看懂它要干什么不需要读任何 `if:`、也不需要读 forge 那边 Go 里的 switch。
+#
+# 硬规矩（细则见 market-spec/03 §2.6）：不 checkout、run:/script: 里零 `${{ }}` 插值、
+# 跳过只在 job 级、转发的是「信标」不是「数据」。四条与 source-change.yml 逐字同源，
+# 逐条理由写在那个文件里。
+on:
+  # **只有一个触发面：手动按钮。** 这件事的主体是每日 cron，而在 forge 那边
+  # （`forge/.github/workflows/reconcile.yml` 的 `schedule:`）—— 这里这个按钮服务的是
+  # 另一种场合：**人手改完 store 里的 `sources/*.json`**。
+  #
+  # 从前改文件是自动的（`push: paths: ['sources/**']`，只收敛被改的那一个来源），
+  # 2026-09-16 把那个触发面删了（维护方式已定死：收录与变更走 issue，产物走 `_incoming`，
+  # 人手改文件不在其中）。但"删掉自动路"**不等于**"人手改文件这件事不存在"：
+  # 改一条错记录、或回滚一次改动，仍然需要有人能叫一次对账 —— 那个出口就是这个按钮。
+  #
+  # ⚠️ 这里**没有** `schedule`，别再把它加回来。每日对账在 forge 侧，那里还带着一个
+  # 120 分钟的预算与一条"发布物核对"的断言 —— 在两处各跑一份只会让"今天到底跑了几次"
+  # 变成要跨两个仓库去数的事。
+  workflow_dispatch:
+
+permissions: {}            # 不需要 GITHUB_TOKEN 的任何权限（走 PAT）
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 转发信标
+        # ⚠️ `$/` 不是 `./`，理由见 source-change.yml（`./` 要求 checkout，而本 job
+        # 刻意不 checkout）。
+        uses: $/.github/actions/beacon
+        with:
+          token: ${{ secrets.GH_PAT }}
+          # 这三个词就是 forge 的路由键，一个文件对一个词（见该动作的说明）。
+          event-type: reconcile
+          ref: ${{ github.ref }}
+          sha: ${{ github.sha }}

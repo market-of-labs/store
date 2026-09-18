@@ -1,4 +1,4 @@
-name: publish-apk
+name: 上传 APK 到队列
 
 # **上游 forge 够不着**的源码仓，把构建产物送进 `_incoming` 暂存队列（03 §3.2 / §8）。
 #
@@ -32,7 +32,7 @@ name: publish-apk
 # 放在 store 而不是各 App 仓：store 是 `_incoming` 的宿主，也是唯一知道仓库名的地方。
 # 一份实现、一处修 bug，各 App 仓不用各抄一份。
 #
-# 硬规矩（与 forward.yml 同一套）：
+# 硬规矩（与 store 那三个入口文件同一套）：
 #   1. `run:` 里零 `${{ }}` 插值 —— 外部值全部走 `env:`（`${{ }}` 在 run: 里是文本拼接，
 #      调用方或 secret 里任何一个带引号的值都能改掉整段脚本）
 #   2. 走 PAT（`secrets.store-token`）而不是 GITHUB_TOKEN —— 后者出不了本仓库（§6.2 不变量 1）
@@ -40,8 +40,8 @@ name: publish-apk
 #      这里绝不碰任何正式 Release。唯一的例外是上传前删掉**同名**旧 asset（重跑要幂等），
 #      那不算清场 —— 见那一步里的说明
 #   4. 收尾时**显式叫一声** forge（repository_dispatch）。上传本身不触发任何事件（§3.3），
-#      所以这一步不能省 —— 人是靠手动点 Publish 发车的（那条路有 forward.yml 的 release
-#      事件接着），而这条路只往 draft 队列里塞东西，自己没有那一刻可等。
+#      所以这一步不能省 —— 人是靠手动点 Publish 发车的（那条路有 intake-incoming.yml 的
+#      release 事件接着），而这条路只往 draft 队列里塞东西，自己没有那一刻可等。
 
 on:
   workflow_call:
@@ -155,15 +155,30 @@ jobs:
 
           # upload / 改名 / 删 asset 都不触发任何事件（§3.3，这是 GitHub 的硬限制），
           # 而这条路只往 draft 队列里塞东西、从不 Publish —— 人是靠点 Publish 发车的
-          # 那条路（forward.yml 的 release 事件）在这里够不着。所以收尾这一声不能省。
+          # 那条路（intake-incoming.yml 的 release 事件）在这里够不着。所以收尾这一声不能省。
           #
           # 发的是**信标**不是数据（§2.6）：只说「搬 _incoming」，搬什么由 forge 自己
           # 用 API 去 store 读。于是这条路径上没有任何外部字符串进入 forge 的执行环境。
           #
+          # ⚠️ 事件类型（`event_type`）就是**路由键**：forge 的 intake-incoming.yml 只认
+          # 这一个词。从前这里是那个什么都塞的 `store-event`，而"到底是哪种事件"由
+          # payload 里一个字符串说了算 —— 现在路由在**文件名 + 触发面**上。
+          #
+          # `client_payload` 是**空的**，这不是漏了：`intake-incoming` 那个动词一个事件
+          # 字段都不读（搬什么由 forge 自己去 store 读，§2.6 的切面）。store 侧那三个
+          # 入口文件发的是 `{issue, repo, ref, sha}`，那是给 `source-change` 用的 ——
+          # 两处载荷形状不同是**对的**，各自的动词读什么就发什么。
+          #
+          # ⚠️ 上面这个载荷**是内联的、不共用 store 的 beacon 复合动作**，理由不是偷懒：
+          # 本文件是 `workflow_call`，由**别的仓库**调用。`$/.github/actions/beacon`
+          # 解析的是"这个文件所属的仓库"（store），于是调用方要先能读到 store 的内容 ——
+          # 而 `uses:` 没有地方能塞 token，调用方的 GITHUB_TOKEN 又出不了它自己的仓库
+          # （§6.2 不变量 1）。改成本地路径 `./` 更糟：那个按**调用方**的仓库解析，404。
+          #
           # 用 --input - 从 stdin 读 body：secret 与 JSON 都不进 argv（不进进程列表）。
           gh api -X POST "repos/$FORGE/dispatches" --input - <<'JSON' >/dev/null
-          {"event_type":"store-event","client_payload":{"event":"intake-incoming"}}
+          {"event_type":"intake-incoming","client_payload":{}}
           JSON
 
           echo "已叫过 forge 了 —— 它会把 _incoming 里**这一批全部** asset 搬进各自的正式 Release，并重建清单。"
-          echo "结果看 forge 仓的 Actions 日志（on-dispatch）：搬不进去的会**留在 _incoming** 并逐条写明原因（03 §3.2，不静默丢弃）。"
+          echo "结果看 forge 仓的 Actions 日志（intake-incoming）：搬不进去的会**留在 _incoming** 并逐条写明原因（03 §3.2，不静默丢弃）。"

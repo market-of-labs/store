@@ -6,7 +6,7 @@
 - 转私有正是 CF 遮蔽网关存在的理由，也是维护逻辑被拆出去的原因（GitHub **只对私有仓库**的 Actions 分钟数计费）。拆成了两个：公有的 [`forge`](../forge) 只放 workflow（**运行器**），逻辑的**实现**在私有的 [`forge-core`](../forge-core) 里 —— 所以"跑在公有仓库"和"逻辑不公开"能同时成立。
 - 完整设计见 `market-spec/`（尤其 **03 · 维护逻辑**）。
 
-> ⚠️ **这个仓库不执行任何维护逻辑**。维护数据那条链全靠一个「转手就发车」的极薄 workflow 把事件转告 `forge`；
+> ⚠️ **这个仓库不执行任何维护逻辑**。维护数据那条链全靠**三个「转手就发车」的极薄 workflow**（`source-change` / `intake-incoming` / `reconcile`，**一个功能一个文件**）把事件转告 `forge` —— 信标那一段是共用的复合动作 `.github/actions/beacon`；
 > 另有一个 `publish-apk.yml`，它是**给"没有可读上游"的源复用的上传器** —— 只往 `_incoming` 里放文件，不读也不改 `sources/`（§4）。⚠️ 判据是**那个源的上游 `forge` 读不读得到**，不是"私有不私有"：同 `market-of-labs` owner 下的私有仓照样是**普通上游**，直接镜像即可（03 §8 / D55）。
 
 ---
@@ -24,10 +24,13 @@ store/
 │       └── metadata/           # 每应用一份 <appId>.yml —— forge 每轮重写，**在 git 里**
 ├── repo/                       # 对外伺服的产物：**只有索引，没有 APK**（build-repo 每轮生成）
 ├── .github/
-│   ├── workflows/forward.yml   # 薄转发：不 checkout、不插值、只 POST 一次 dispatch
-│   │                           # 也是**手动按钮**所在（Run workflow，`verb` 二选一）
+│   ├── actions/beacon/         # 发信标给 forge：不 checkout、不插值、只 POST 一次 dispatch
+│   ├── workflows/source-change.yml   # 有人开了/改了申请单 → 通知 forge 处理那一张
+│   ├── workflows/intake-incoming.yml # `_incoming` 队列被 Publish → 通知 forge 来搬
+│   │                                 # 也是**手动按钮**所在（Run workflow，无入参）
+│   ├── workflows/reconcile.yml       # 手动按钮：人手改完 sources/ 之后叫一次全量对账
 │   ├── workflows/publish-apk.yml # 可复用：没有可读上游的源码仓把 APK 送进 _incoming（§4）
-│   ├── dependabot.yml          # 每周升 forward.yml 里那个 action 的主版本
+│   ├── dependabot.yml          # 每周升 beacon 里那个 action 的主版本
 │   └── ISSUE_TEMPLATE/         # 维护数据源的两个入口
 ├── README.md
 └── .gitignore
@@ -181,12 +184,22 @@ store/
 > 事件**（GitHub 的硬限制，03 §3.3）—— 光把文件传上去，什么都不会发生。所以**发车必须挂在另一个
 > 动作上**，而"发布"正是你本来就期待的那个收尾动作（传完文件总要留下点什么吧）。
 >
-> ⚠️ **没反应时点一次按钮**：本仓库 Actions → `forward-to-forge` → Run workflow，`verb` 保持缺省
-> （`intake-incoming`）。这是唯一需要的排查动作 —— 它跟 Publish 走的是同一条下游，效果一样。
+> ⚠️ **没反应时点一次按钮**：本仓库 Actions → **`搬运队列·转发`** → Run workflow（没有入参）。
+> 这是唯一需要的排查动作 —— 它跟 Publish 走的是同一条下游，效果一样。
 > 按钮在本仓库而不是只在 `forge`，是因为你刚在这个仓库的 Release 页面上传完文件，省一次仓库切换。
 >
-> `verb` 的另一项 `reconcile` 与 `_incoming` 无关：它是"把每日对账提前跑一遍"。
-> `forge` 的 `on-dispatch` 里也有同一个二选一，两边等效 —— 日常用本仓库这个。
+> ⚠️ **一个功能一个按钮。** 这个仓库的 Actions 页面上有三个入口，各自只干自己那一件事 —— **互不串台**。
+> ⚠️ **界面显示中文名、文档一律用文件名**（路由靠的是文件名，不是这个名字 —— 它只是给人看的），对照如下：
+>
+> | 界面显示 | 文件 | 干的事 |
+> |---|---|---|
+> | **`搬运队列·转发`** | `intake-incoming.yml` | 通知 `forge` 搬 `_incoming`（也是 Publish 那条路的下游） |
+> | **`对账·转发`** | `reconcile.yml` | 把每日对账提前跑一遍 |
+> | **`申请单·转发`** | `source-change.yml` | 重跑某一张申请单 |
+>
+> 三个**都只是把话转告 `forge`**（`beacon` 复合动作为此存在）—— 名字里那个"转发"就是这件事：
+> 本仓库不执行任何维护逻辑。`forge` 侧的同名文件才是**真正动手**的那一端（它的名字没有"转发"二字）。
+> 从前它们挤在一个 `forward-to-forge` 里、靠一个 `verb` 下拉框区分，而那个下拉框是可以选错的。
 >
 > ⚠️ **搬不进去的会留在队列里**，逐条写明原因、**不静默丢弃**（03 §3.2）；看一眼 forge 那次
 > run 的日志就知道哪几条还在等人工。重跑一次搬运即可，幂等（已搬成的会被跳过）。
@@ -195,10 +208,10 @@ store/
 > Immutable Releases，该 tag 会被**永久烧毁**且无法重建。
 >
 > ⚠️ 第 4 步删的是 **tag 引用**（`refs/tags/_incoming`），**不是 Release** —— 两件事完全不同，别
-> 看混。那一步必须做：`release` 事件跑的是 **tag 所指提交**上那份 `forward.yml`，而引用一旦建立就
-> **不再移动**，于是本仓库默认分支上怎么改触发器、队列这条路都看不见（症状：Publish 了却什么都没
-> 发生，而 Actions 页面干干净净）。删掉之后，下一次 Publish 会在**当时的**默认分支 HEAD 上重建它
-> （03 §3.2）。
+> 看混。那一步必须做：`release` 事件跑的是 **tag 所指提交**上那份
+> `.github/workflows/intake-incoming.yml`，而引用一旦建立就**不再移动**，于是本仓库默认分支上怎么
+> 改触发器、队列这条路都看不见（症状：Publish 了却什么都没发生，而 Actions 页面干干净净）。
+> 删掉之后，下一次 Publish 会在**当时的**默认分支 HEAD 上重建它（03 §3.2）。
 
 ### 自研 App：让源码仓的 CI 自动走这四步
 
@@ -296,4 +309,4 @@ jobs:
 | 3 | 本仓库与 `forge` 各自都能解析出 **同名** secret `GH_PAT`（**仓库级或组织级都行** —— 现状是本仓库用仓库级、`forge` 走组织级），值是**同一把** fine-grained PAT，仓库范围必须含 `store`(Contents RW + Issues RW) / `forge`(Contents RW) / **`forge-core`(Contents R)**（最后一个：`forge` 要下载它的 Release 里的执行体；转私有后也是靠这把 PAT 读，D40） |
 | 3b | `forge-core` 必须**已发布过至少一个带 `forge-linux-amd64` asset 的 tag** —— 公有的 `forge` 浮动取 latest，一个 Release 都没有时取件直接失败 |
 | 4 | 本仓库 workflow 保持 `permissions: {}` |
-| 5 | 确认 `_incoming` **存在**（draft 或 published 都行）。⚠️ **别再手工把它 Convert to draft**：从 D57 起，"上传后 Publish" 是正常动作，published 是上传到清场之间那个**正常的**中间状态，`forge` 清场会自己拧回去（§4 第 4 步）。它若长停在 published，那只有一个意思 —— 搬运没跑成，点一次手动按钮（`verb=intake-incoming`）即可 |
+| 5 | 确认 `_incoming` **存在**（draft 或 published 都行）。⚠️ **别再手工把它 Convert to draft**：从 D57 起，"上传后 Publish" 是正常动作，published 是上传到清场之间那个**正常的**中间状态，`forge` 清场会自己拧回去（§4 第 4 步）。它若长停在 published，那只有一个意思 —— 搬运没跑成，点一次手动按钮（`intake-incoming` 那个 workflow）即可 |

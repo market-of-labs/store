@@ -1,17 +1,24 @@
 version: 2
 
-# store 也有 action 依赖了（forward.yml 的 actions/github-script），所以它同样需要
-# 一份 —— 用的既然是主版本标签（`@v9`），不配这个就等于钉死在当前主版本上。
+# store 也有 action 依赖了，所以它同样需要一份 —— 用的既然是主版本标签，不配这个就等于
+# 钉死在当前主版本上。一共**两个**：
+#   - `.github/actions/beacon` 里的 `actions/github-script@v9`；
+#   - `publish-apk.yml` 里的 `actions/download-artifact@v8`。
+#
+# ⚠️ 信标那个 action 现在在 `.github/actions/beacon/action.yml` 里，而不是某个 workflow 里：
+# 三个入口文件（source-change / intake-incoming / reconcile）都 `uses` 它。
+# ⚠️ `publish-apk.yml` 那份**没有**跟着进 beacon —— 它是 `workflow_call`、由别的仓库调用，
+# 本地 `uses:` 会按调用方仓库解析（03 §4.7.3）。它那份信标是内联的，这是**明确接受的重复**。
 #
 # 这个仓库是私有的，所以顺带确认它不花分钟数：本仓库的 workflow 只在
-# issues / release / push(sources/**) 上跑，Dependabot 开的是普通 PR，触发不了
+# issues / release / 手动按钮 上跑，Dependabot 开的是普通 PR，触发不了
 # 任何东西。它也**只开 PR**，不合并、不写 sources/，碰不到任何会被转发出去的东西。
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
-    # 只有一个生态、一个依赖，合成一个 PR，别刷屏。
+    # 只有一个生态、两个依赖，合成一个 PR，别刷屏。
     groups:
       actions:
         patterns: ['*']

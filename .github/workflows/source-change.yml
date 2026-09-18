@@ -1,0 +1,60 @@
+name: 申请单·转发
+
+# **这个文件就是一个功能。** 它干的事只有一件：把"store 里有一张申请单"这件事告诉 forge
+# （03 §2.5 入口乙）—— 新增单当场收录并只同步它自己，变更单直接改来源文件。
+#
+# 文件名即路由：看懂它要干什么不需要读任何 `if:`、也不需要读 forge 那边 Go 里的 switch。
+#
+# 硬规矩（细则见 market-spec/03 §2.6）：
+#   1. **不 checkout** —— 没有任何仓库内容进入执行环境（包括 issue 正文）。
+#      这不是"懒得写 checkout"：issue 正文是**陌生人写的字符串**，而本 job 带着能写
+#      store 的 PAT —— 两者之间隔着的越远越好。（下面那个 `$/` 引用不需要 checkout，
+#      正是选它而不是 `./` 的**次要**理由；主要理由见它那里的注释。）
+#   2. run:/script: 里零 `${{ }}` 插值 —— 外部值全部走 env:（`${{ }}` 在那里是文本拼接，
+#      会脚本注入）。这条规矩在本文件里是**实打实**的：`github.event.issue.number`
+#      后面站着一个陌生人的 issue 标题。
+#   3. 跳过只在 job 级 —— 被跳过的 job 根本拿不到 secret。本文件**没有**任何条件跳过，
+#      也就是说这个 job 一定会拿到 PAT；判据是"这个 job 只做转发"（下面那条）。
+#   4. 转发的是「信标」不是「数据」—— 只带事件名 / issue 号 / sha，
+#      内容由 forge 自己用 API 读。
+#
+# ⚠️ 本 job **只转发**，不做任何业务判断。防注入的那道墙不在这个文件里，而在
+# `forge intake-issue` 里面：DecideIntake 是纯函数，外部字符串能影响的范围被限死在
+# 它的返回值里（见 forge-core 的 internal/job/intake.go）。本文件的职责只有一条，
+# 就是**别把那面墙拆了**。
+on:
+  issues:
+    types: [opened, edited]
+
+# 不需要 GITHUB_TOKEN 的任何权限（走 PAT）。
+#
+# ⚠️ **不要往 `on:` 上加 `push` / `pull_request_target`。** store 是数据宿主的仓库，
+# 而这条 job 带着 PAT：`pull_request_target` 是公有仓库最经典的泄密面；`push` 从前有过
+# （`paths: ['sources/**']`，服务于"人直接改数据源"），2026-09-16 删掉了 ——
+# 真要加回来，还得**同时**让 forge 那边的 `[skip-dispatch]` 保险对上（见 ctx.go）。
+#
+# ⚠️ 顺带一条：store 现在还是公有仓库。转私有之后本文件一个字都不用改 ——
+# 它既没有 `if:` 也没有依赖可见性的东西。
+permissions: {}
+
+jobs:
+  source-change:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 转发信标
+        # ⚠️ **`$/` 不是 `./`。** `./.github/actions/beacon` 是工作区相对路径，要求先
+        # `actions/checkout` 把仓库落到工作区里 —— 那正好违反上面的硬规矩 1。
+        # `$/` 是 GitHub 的自仓库语法：解析到**本 workflow 所属仓库、当前正在跑的那个
+        # commit**，不需要 checkout。限制：仅 github.com、runner ≥ 2.336.0
+        # （托管 runner 满足）、GitHub Enterprise Server 上没有。
+        #
+        # 顺带一个好处：`$/` 跟着**正在跑的 commit**走，所以就算这个文件哪天被 pin 到
+        # 某个 SHA，动作也取同一个 SHA —— 而 `./` 取的是工作区里那份，两者可以不一致。
+        uses: $/.github/actions/beacon
+        with:
+          token: ${{ secrets.GH_PAT }}
+          # 这三个词就是 forge 的路由键，一个文件对一个词（见该动作的说明）。
+          event-type: source-change
+          issue: ${{ github.event.issue.number }}
+          ref: ${{ github.ref }}
+          sha: ${{ github.sha }}
