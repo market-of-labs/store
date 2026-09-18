@@ -46,19 +46,6 @@ body:
     validations:
       required: false
 
-  - type: dropdown
-    id: kind
-    attributes:
-      label: 应用类型
-      description: 绝大多数情况就是**普通应用**（默认值，不用动）。`obtainium` = 帮伴侣应用标记「装 Obtainium 该装哪一个」；`companion` = 本市场的伴侣应用本体（**全局至多一条**，已有的话会被拒）。
-      options:
-        - 普通应用
-        - obtainium
-        - companion
-      default: 0
-    validations:
-      required: true
-
   - type: checkboxes
     id: includePrerelease
     attributes:
@@ -71,7 +58,7 @@ body:
     id: desc
     attributes:
       label: 一句话简介（可选）
-      description: 会拼在 Obtainium 列表里的**显示名**后面，形如「应用名 · 你的简介」。这是列表行上唯一能写字的空白处，所以**最多 20 个字**（超了会被截断，并在回评里告诉你）。留空就只显示应用名。
+      description: 会落成 F-Droid 的 `Summary`，也就是客户端里**应用名下面那一行小字**。那是列表行上唯一能写字的空白处，所以**最多 20 个字**（超了会被截断，并在回评里告诉你）。留空就只显示应用名。
       placeholder: 去广告的第三方客户端
     validations:
       required: false
@@ -80,7 +67,7 @@ body:
     id: categories
     attributes:
       label: 分类标签（可选）
-      description: 会显示在 Obtainium 的列表色条与筛选里。建议至少勾一个；一个都不勾也能收录。
+      description: 会映射成 F-Droid 的分类，显示在客户端的分类筛选里。建议至少勾一个；一个都不勾也能收录。
       options:
         - label: 工具
         - label: 效率

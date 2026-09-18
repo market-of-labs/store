@@ -2,12 +2,12 @@
 
 这是**私密应用市场的数据落地处**：输入（`sources/`）、产物（`store/`）、以及全部 APK 二进制（Releases）。
 
-- **现在公有**（为了让开发期的 raw 直链可直接用）→ **部署期转私有**。
+- **现在公有**（开发期暂时如此）→ **部署期转私有**。
 - 转私有正是 CF 遮蔽网关存在的理由，也是维护逻辑被拆出去的原因（GitHub **只对私有仓库**的 Actions 分钟数计费）。拆成了两个：公有的 [`forge`](../forge) 只放 workflow（**运行器**），逻辑的**实现**在私有的 [`forge-core`](../forge-core) 里 —— 所以"跑在公有仓库"和"逻辑不公开"能同时成立。
 - 完整设计见 `market-spec/`（尤其 **03 · 维护逻辑**）。
 
 > ⚠️ **这个仓库不执行任何维护逻辑**。维护数据那条链全靠一个「转手就发车」的极薄 workflow 把事件转告 `forge`；
-> 另有一个 `publish-apk.yml`，它是**给"没有可读上游"的源复用的上传器** —— 只往 `_incoming` 里放文件，不读也不改 `sources/`（§4）。⚠️ 判据是**那个源的上游 `forge` 读不读得到**，不是"私有不私有"：同 `market-of-labs` owner 的私有仓（如 `companion`）照样是**普通上游**，直接镜像即可（03 §8 / D55）。
+> 另有一个 `publish-apk.yml`，它是**给"没有可读上游"的源复用的上传器** —— 只往 `_incoming` 里放文件，不读也不改 `sources/`（§4）。⚠️ 判据是**那个源的上游 `forge` 读不读得到**，不是"私有不私有"：同 `market-of-labs` owner 下的私有仓照样是**普通上游**，直接镜像即可（03 §8 / D55）。
 
 ---
 
@@ -15,10 +15,14 @@
 
 ```
 store/
-├── sources/                    # 唯一事实源，一应用一文件（**现在是空的**，只有 .gitkeep）
-├── apps.json                   # 最终清单 —— 放**根目录**，因为客户端唯一消费的就是它（首条落地前不存在）
-├── store/                      # 其余产物 + 契约常量 —— 只有 forge 写
-│   └── endpoints.json          # 地址模板（第一期 ⇄ 部署期的唯一开关）
+├── sources/                    # 唯一事实源，一应用一文件
+├── store/                      # 契约常量 + fdroid 工作区 —— 只有 forge 写
+│   ├── endpoints.json          # 地址模板 —— **唯一一处"只改数据就改行为"的开关**
+│   └── fdroid/
+│       ├── config.yml          # 签名口令在这里，**绝不入库**（.gitignore 拦着）
+│       ├── repo/               # fdroidserver 的工作目录，每轮重跑都重写，**不入库**
+│       └── metadata/           # 每应用一份 <appId>.yml —— forge 每轮重写，**在 git 里**
+├── repo/                       # 对外伺服的产物：**只有索引，没有 APK**（build-repo 每轮生成）
 ├── .github/
 │   ├── workflows/forward.yml   # 薄转发：不 checkout、不插值、只 POST 一次 dispatch
 │   │                           # 也是**手动按钮**所在（Run workflow，`verb` 二选一）
@@ -29,20 +33,25 @@ store/
 └── .gitignore
 ```
 
-**`sources/` 是唯一事实源，产物是 `apps.json` 与 `store/endpoints.json`。**
+**`sources/` 是唯一事实源，产物是根 `repo/` 下那一份 F-Droid 仓库索引**
+（`store/fdroid/metadata/` 是它的中间产物，也进 git —— 它逐份对应一个应用，比索引好读得多）。
 `sources/{appId}.json` 里**人填的那半**（`name`/`author`/`upstream`…）与**forge 写的 `versions` 账本**
 同住一个文件 —— 所以它也**整份由 forge 改写**，手改会在下一轮对账被盖掉
 （版本账本曾经是独立的 `store/index.json`，已并入来源文件，D48）。
 
-> **为什么清单在根目录而不在 `store/` 里**：`apps.json` 是**唯一直接伺服给客户端**的文件，
-> 它的路径就是设备的默认清单地址（`raw.githubusercontent.com/market-of-labs/store/master/apps.json`）。
-> 把它放在根目录，地址里就不会出现 `store/store` 这种「仓库名与目录名重复」的段；
-> `endpoints.json` 是给 forge 与 CF 读的契约常量，不需要短路径，留在 `store/` 里。
+> **为什么产物在根 `repo/` 而不在 `store/fdroid/repo/` 里**：根 `repo/` 是对外**伺服**的那一份。
+> `repoUrl` 的最后一段就是 `repo`（见 `store/endpoints.json`），客户端按 `repoUrl + "/" + 文件名`
+> 取件。而 `store/fdroid/repo/` 是 fdroidserver 的工作目录，里面**索引与 APK 混在一起**；
+> 往根目录拷的时候只带索引、不带 APK —— 每个应用的 APK 躺在**它自己的 Release** 里
+> （`tag = {appId}`），由 CF 网关按文件名映射过去（04 契约）。
 >
-> ⚠️ **路径里的分支名是 `master`**（本仓库的默认分支），别顺手写成 `main`。
-> `companion` 仓库用的是 `main`，两者**不同名是有意的** —— 对齐方式是改地址，不是改默认分支。
-> 所以任何硬编码这条 raw 直链的地方（`companion/app/build.gradle.kts` 的内置默认值、
-> 上述两处文档）都必须同时改，漏一处就是设备端一个 404。
+> ⚠️ **APK 不进 git**，`.gitignore` 里有 `/repo/**/*.apk` 兜底。它拦下的正是"有人顺手把 20MB
+> 的 APK 提交进来"——而真发生了会很难看：APK 一旦进 git 历史就很难真的删掉。
+>
+> ⚠️ **`endpoints.json` 的 `repoUrl` 现在还是占位值**（`REPLACE-ME-BEFORE-PUBLISH.invalid`）。
+> 它会被 `fdroid update` 写进 `index-v2.json` 的 `repo.address`，而客户端就是拿这个地址去取件的 ——
+> 所以**真正发布前必须换成最终的 CF 地址**，否则所有人的客户端都会指向一个不存在的主机。
+> 用 `.invalid` 是刻意的：它是 RFC 2606 的保留后缀，忘了改会**响亮地失败**，而不是悄悄指错地方。
 
 ---
 
@@ -73,10 +82,10 @@ store/
 }
 ```
 
-> **`desc`（可选，≤20 字）是列表里唯一能写字的地方。** Obtainium 的列表行只有
-> 「图标 + 名字 + `by 作者` + 版本」，没有描述字段（`about` 那种长文本只在应用**详情页**里）。
-> 所以 `desc` 由 `forge` 在合成清单时**拼进 `name`**，设备上显示成 `第三方公开示例 · 去广告的第三方客户端`。
-> 它在文件里是独立字段 —— 想改分隔符或改简介，都不用动别的条目。
+> **`desc`（可选，≤20 字）会落成 F-Droid 的 `Summary`** —— 也就是客户端列表行里**应用名下面
+> 那一行小字**。同一行上还有图标、名字、版本，`Summary` 是那行里唯一能写字的空白处，
+> 所以才有这个字数上限（超了会被截断，并在回评里告诉你）。留空就只显示应用名。
+> 它在文件里是独立字段，与 `name` 各走各的（曾经是拼进 `name` 的，D42 已作废）。
 
 手动上传的 APK（没有 GitHub 上游）用 `source: "manual"`，二进制走 `_incoming` 暂存 Release：
 
@@ -91,7 +100,7 @@ store/
 }
 ```
 
-> **`id` 必须 = APK 包内真实的 `package`。** 它同时是文件名、git tag、和 Obtainium 的安装身份，写错无法自动纠正。
+> **`id` 必须 = APK 包内真实的 `package`。** 它同时是文件名、git tag、和客户端安装时的身份，写错无法自动纠正。
 > 两条入口都是这么取得的 —— **没有人手填 `id`**。
 
 两个模板：
@@ -107,7 +116,7 @@ store/
 |---|---|---|
 | 校验（纯本地） | 仓库形状、正则是否编译得过、勾选项是否在固定词表内 | —— |
 | 探身份 | 去上游读出**包名**（APK 的 `package`）、**显示名**（APK 的 `label`）、**作者**（仓库 owner） | —— |
-| 落盘 + 同步 | 写 `sources/{appId}.json` → 建 Release、镜像该版本 APK → 重建 `apps.json` → 回评核对 → **关单** | 一张表格列出读出来的身份 + 这一轮镜像进来的版本 |
+| 落盘 + 同步 | 写 `sources/{appId}.json` → 建 Release、镜像该版本 APK → 重建仓库产物（metadata + 索引）→ 回评核对 → **关单** | 一张表格列出读出来的身份 + 这一轮镜像进来的版本 |
 
 **模板里没有 appId / 显示名 / 作者**，因为它们都**能自动取得**，而让申请人填一个会被覆盖的值只是在制造一条假回评。
 
@@ -128,10 +137,10 @@ store/
 > **手动上传没有新增单**（D52）。它不经 `add-source.yml`：那张单里根本没有能表达
 > "我没有上游仓库"的字段（`repo` 是必填）。条目由 §4 那条搬运链**按 APK 内容当场建**：
 > `id` = 包名、`name` = APK 的 `label`、`author` 先记 **`未知`**。
-> 所以"传一个 APK"就是收录一个新来源的全部动作，传完它就在 `apps.json` 里了。
+> 所以"传一个 APK"就是收录一个新来源的全部动作，传完它就在索引里了。
 >
 > 代价是**作者只能先占位**：APK 里没有作者字段，也没有上游仓库可以取 owner。而 `author`
-> 是必填（空着会让**整份清单**判失败，不是只废掉这一条），所以 `未知` 是唯一能填的值 ——
+> 是必填（空着会让**整批来源**判失败，不是只废掉这一条），所以 `未知` 是唯一能填的值 ——
 > 它也是**唯一**的提示信号：看到它就说明这条来源还在等一张 `change-source.yml`。
 
 ---
@@ -140,12 +149,19 @@ store/
 
 | 你想做的 | 正确做法 | 结果 |
 |---|---|---|
-| **暂时/永久不再更新** | 把 `sources/{appId}.json` 的 `paused` 改成 `true` | 条目留在清单里、`latestVersion` 冻结；设备端表现为「**无更新**」（安静） |
-| **彻底不再提供** | 删掉 `sources/{appId}.json` | 新设备不再收录；**但已同步设备上那一行不会消失**，需用户手删 |
+| **不再追新版本** | 把 `sources/{appId}.json` 的 `paused` 改成 `true` | 它的 metadata 被清掉 ⇒ **不在索引里**；设备端安静（不会提示更新），但**新设备也装不到它了** |
+| **彻底不再提供** | 删掉 `sources/{appId}.json` | 同上，只是**账本一起没了**（`paused` 是可逆的，删文件不是） |
 
-**为什么移除不传播**：deep link 的 `import()` 只有创建/覆盖，**没有删除动作**。清单里没有某条 ≠ 让 Obtainium 删掉它。这是路线 C（零改动 Obtainium）的结构性代价，客户端无法补救（读不到 Obtainium 的行数据）。
+> ⚠️ **这一节与规格还没对齐，先按上表理解。** `market-spec` 02 §2.9.2 说的是 `paused` ⇒
+> 「条目**留在索引里**、不再有新版本」，也就是"老设备安静、新设备照样能装"；而本仓的实现是
+> **不渲染它的 metadata**（依据是 02 §2.5 的「`paused` 不生成任何东西」），于是它**整个从
+> 索引里消失**。两句规格话不可能同时成立 —— F-Droid 侧要做到 §2.9.2 那个效果，得**同时保留
+> metadata 与 cache 里的老 APK**，只是不再去上游取新版。**这条分歧还没解决**（02 §2.5 与
+> §2.9.2 互相矛盾），等真机验证过客户端行为再定。
 
-> **结论：想停更就用 `paused`，别删文件。**
+**结论：想停更就用 `paused`，别删文件。** 理由不是"设备端行为更好"（那条现在我们说了不算，
+见上），而是**可逆**：`paused` 之后账本原封不动，把 `true` 改回 `false` 就能恢复；
+删文件则是把"已经镜像过哪些版本"一起丢了，而那份账本只能从 Release 现状重建。
 
 ---
 
@@ -154,12 +170,12 @@ store/
 1. 打开 Releases → `_incoming` → 上传 APK。**一次可以传多个**，
    属于不同 App、不同版本、不同 ABI 的都行 —— 下面第 3 步会把**整批**一次搬完。
 2. **点 "Publish release"** —— 就是这一下发车（`release: published` 事件接住它，D57）。
-3. `forge` 解析每个 APK 的 `package / versionName / versionCode / ABI` → 改名搬运进对应 `{appId}` 的正式 Release → 重建清单。
+3. `forge` 解析每个 APK 的 `package / versionName / versionCode / ABI` → 改名搬运进对应 `{appId}` 的正式 Release → 重建仓库产物。
 4. `forge` 把 `_incoming` **改回 draft**、删掉那个 tag 引用，并删掉已搬走的 asset（清场）。
 
 > **`sources/` 里还没有这个包名时，条目就在第 3 步当场建出来**（D52）：包名 = `id`、
 > APK 的 `label` = 显示名、`author` 先记 `未知`。所以新建一个手动来源**不需要任何单子** ——
-> 传一次 APK 就够了，传完它已经在 `apps.json` 里。作者与简介之后用 `change-source.yml` 补。
+> 传一次 APK 就够了，传完它已经在索引里。作者与简介之后用 `change-source.yml` 补。
 
 > ⚠️ **为什么非要点 Publish 不可**：往 Release 上传 / 改名 / 删 asset **不触发任何 `release`
 > 事件**（GitHub 的硬限制，03 §3.3）—— 光把文件传上去，什么都不会发生。所以**发车必须挂在另一个
@@ -187,7 +203,7 @@ store/
 ### 自研 App：让源码仓的 CI 自动走这四步
 
 ⚠️ **先看判据**：`forge` 读得到上游 ⇒ **什么都不用做**，它和别的应用一样在每日对账里被自动镜像。
-**同 `market-of-labs` owner 的私有仓（如 `companion`）就属于这一类** —— `forge` 的 GitHub 客户端本来就带那把 PAT，
+**同 `market-of-labs` owner 下的私有仓就属于这一类** —— `forge` 的 GitHub 客户端本来就带那把 PAT，
 在 PAT 的仓库清单里加上它（Contents: **Read**）即可，零代码改动（03 §8 / D55）。
 
 真正需要下面这套的是**上游 `forge` 够不着**的源：源码仓在**别的 owner** 名下（fine-grained PAT 只覆盖一个 owner），
@@ -233,31 +249,41 @@ jobs:
 
 ---
 
-## 5. 第一期 ⇄ 部署期：只差 `store/endpoints.json` 一行
+## 5. 地址配置：`store/endpoints.json`
 
-| | 第一期（现在，无 CF） | 部署期 |
-|---|---|---|
-| `assetUrlTemplate` | `https://github.com/market-of-labs/store/releases/download/{appId}/{fileName}` | `https://<cf域>/asset/{appId}/{version}/{fileName}` |
-| 清单地址 | `https://raw.githubusercontent.com/market-of-labs/store/master/apps.json` | `https://<cf域>/manifest` |
-| CF 隐藏红线 | ⚠️ **暂时失守**（真实 `owner/repo` 出现在清单里） | 满足 |
+```json
+{
+  "tagTemplate": "{appId}",
+  "assetNameTemplate": "{appId}-{version}-{abi}.apk",
+  "repoUrl": "https://REPLACE-ME-BEFORE-PUBLISH.invalid/fdroid/repo"
+}
+```
 
-**客户端不需要任何改动**：它只消费清单里现成的 URL、从不自行拼前缀。切 CF = 改这一行 + 改伴侣应用设置里的清单地址，**不发新版应用**。
+前两个是**契约常量**，不是配置：
 
-> `tagTemplate` / `assetNameTemplate` 是**契约常量**，两期都不变。改它们 = 改 Release 结构与文件命名契约。
+- `tagTemplate` = `{appId}` —— "一应用一 Release"的依据，也是 CF 网关从文件名**反查出该去哪个 Release 取件**的依据（04 §3.2）；
+- `assetNameTemplate` = `{appId}-{version}-{abi}.apk` —— 全部历史 asset 的命名，`{appId}` 不含 `-` 正是"按第一个 `-` 切段"能成立的前提（02 §2.9.1）。
+
+改它们 = 改 Release 结构与每一条 asset 的文件名，要配套做数据迁移。**`repoUrl` 才是配置**：
+
+- 客户端按 `repoUrl + "/" + 文件名` 取件，而这个前缀由 `fdroid update` **写死在索引里**（`index-v2.json` 的 `repo.address`）—— 所以改它只需改这一行 + 重跑一次 `build-repo`，**客户端不用动**；
+- 现在它还是**占位值**。`.invalid` 是 RFC 2606 的保留后缀，忘了改会**响亮地失败**，而不是悄悄把客户端指向一台不存在的主机；
+- 本机验证时要**临时**把它改成那个本地 HTTP 服务的地址，验完改回来（03 §7 #11 那条真机实测就是这么做的）。
+
+> CF 网关接进来之后这一行**仍然是唯一的开关** —— 网关只负责把 `/fdroid/repo/<文件名>` 落到正确的地方（索引读本仓，APK 读各应用自己的 Release），地址形状不变。
 
 ---
 
-## 6. 当前状态（**干净的起点**）
+## 6. 当前状态
 
-- `sources/` **是空的**（只有 `.gitkeep`），`apps.json` **不存在** —— 原先那份手写种子数据（3 条来源 + 一份清单）已整体清空，从头开始。
-- 下一条真实数据来自**第一张新增 issue**：它落下 `sources/{appId}.json`、建 `{appId}` Release、把 APK 镜像进去、重建 `apps.json`。在那之前：
-  - 设备端拉清单地址是 **404**（预期，不是故障）；
-  - `forge-core` 的黄金测试 `TestGoldenRealRepo` 会**跳过**（它要求 `apps.json` 存在才跑）—— 码在、数据不在，跳过是对的行为。
-- **⚠️ 两条会被"从头开始"带走的条目，要用时得重新收录**：
-  - `com.obtainium.companion`（`kind:"companion"`，伴侣应用**自更新**的来源）—— 没有它，自更新链路没有上游；
-  - `dev.imranr.obtainium`（`kind:"obtainium"`，**引导安装 Obtainium** 的候选）—— 没有它，伴侣应用找不到"该装哪一个"。
-  这两条都不是自动回来的，各开一张新增单即可（前者上游指向本市场的 `companion` 仓库的 Release）。
-- `com.github.HailLauncher` 也一并清掉了（它当初只是"待镜像"的占位）。
+- `sources/` **12 条**来源，`store/fdroid/metadata/` **12 份** `<appId>.yml`，一一对应
+  —— 后者由 `forge-core` 的黄金测试与实际渲染结果**逐字节**比对（`internal/store/golden_test.go`）。
+- **根 `repo/` 还不存在**：索引要等 `build-repo` 在 CI 里跑过第一轮才会生成。
+  在那之前客户端拉取是 404 —— **这是预期，不是故障**。
+- ⚠️ **一条死来源**：`com.obtainium.companion`（"私有市场同步器"）的上游是
+  `market-of-labs/companion`，而那个仓库随 D58 一起删了。于是它现在渲染出的
+  `SourceCode` / `IssueTracker` 是**两个 404 链接**，下一轮对账在取件那一步也会空手而归。
+  要么给它换个上游，要么按 §3 处理掉。
 
 ---
 
@@ -266,8 +292,8 @@ jobs:
 | # | 检查项 |
 |---|---|
 | **1** | **本仓库及其所属 org 的「Immutable releases」必须为 OFF**（2025-10-28 GA）。开启后 asset 不能增删改、tag 不能删/移 —— 本设计的追加上传与 `_incoming` 清场全部失效；删除不可变 Release 会**永久烧毁该 tag**，而 `tag = {appId}` 不可重建。**"先开后关"也不安全**（已固化的 Release 不受影响）。 |
-| 2 | `store` 转私有后按私有仓库计费 —— 逻辑跑在公有的 `forge`（其实现来自私有的 `forge-core`），本仓库只跑一个 dispatch 步骤。⚠️ **唯一的例外是 `companion`**：它转私有后，`release.yml` 里那次 Gradle 构建也开始计费（D55，本设计里唯一一处重活落在计费额度上） |
-| 3 | 本仓库与 `forge` 各自都能解析出 **同名** secret `GH_PAT`（**仓库级或组织级都行** —— 现状是本仓库用仓库级、`forge` 走组织级），值是**同一把** fine-grained PAT，仓库范围必须含 `store`(Contents RW + Issues RW) / `forge`(Contents RW) / **`forge-core`(Contents R)** / **`companion`(Contents R)**（最后一个：它转私有后 `forge` 要靠这把 PAT 把它当上游读，D55） |
+| 2 | `store` 转私有后按私有仓库计费 —— 逻辑跑在公有的 `forge`（其实现来自私有的 `forge-core`），本仓库只跑一个 dispatch 步骤。⚠️ **这是这套拆分的全部意义**：下载 APK、跑 `fdroid update` 这些重活全在 `forge` 上，本仓库这边只有一次转发 |
+| 3 | 本仓库与 `forge` 各自都能解析出 **同名** secret `GH_PAT`（**仓库级或组织级都行** —— 现状是本仓库用仓库级、`forge` 走组织级），值是**同一把** fine-grained PAT，仓库范围必须含 `store`(Contents RW + Issues RW) / `forge`(Contents RW) / **`forge-core`(Contents R)**（最后一个：`forge` 要下载它的 Release 里的执行体；转私有后也是靠这把 PAT 读，D40） |
 | 3b | `forge-core` 必须**已发布过至少一个带 `forge-linux-amd64` asset 的 tag** —— 公有的 `forge` 浮动取 latest，一个 Release 都没有时取件直接失败 |
 | 4 | 本仓库 workflow 保持 `permissions: {}` |
 | 5 | 确认 `_incoming` **存在**（draft 或 published 都行）。⚠️ **别再手工把它 Convert to draft**：从 D57 起，"上传后 Publish" 是正常动作，published 是上传到清场之间那个**正常的**中间状态，`forge` 清场会自己拧回去（§4 第 4 步）。它若长停在 published，那只有一个意思 —— 搬运没跑成，点一次手动按钮（`verb=intake-incoming`）即可 |

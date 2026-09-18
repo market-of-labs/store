@@ -1,0 +1,9 @@
+Name: "\u51B0\u96F9\u684C\u9762"
+Summary: "\u5E26\u5E94\u7528\u51BB\u7ED3\u529F\u80FD\u7684TV\u684C\u9762"
+AuthorName: "TVLaunchers"
+Categories:
+  - System
+SourceCode: "https://github.com/TVLaunchers/HailLauncher"
+IssueTracker: "https://github.com/TVLaunchers/HailLauncher/issues"
+AutoUpdateMode: None
+UpdateCheckMode: None

@@ -1,0 +1,9 @@
+Name: "myDV"
+Summary: "\u6296\u97F3\u7B2C\u4E09\u65B9\u7535\u89C6\u7248"
+AuthorName: "mytv-android"
+Categories:
+  - Multimedia
+SourceCode: "https://github.com/mytv-android/myDV"
+IssueTracker: "https://github.com/mytv-android/myDV/issues"
+AutoUpdateMode: None
+UpdateCheckMode: None

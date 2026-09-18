@@ -1,0 +1,9 @@
+Name: "Discoverium"
+AuthorName: "cygnusx-1-org"
+Categories:
+  - System
+  - Office
+SourceCode: "https://github.com/cygnusx-1-org/Discoverium"
+IssueTracker: "https://github.com/cygnusx-1-org/Discoverium/issues"
+AutoUpdateMode: None
+UpdateCheckMode: None

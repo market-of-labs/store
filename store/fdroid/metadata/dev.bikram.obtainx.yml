@@ -1,0 +1,9 @@
+Name: "ObtainX"
+AuthorName: "bikram-agarwal"
+Categories:
+  - System
+  - Office
+SourceCode: "https://github.com/bikram-agarwal/ObtainX"
+IssueTracker: "https://github.com/bikram-agarwal/ObtainX/issues"
+AutoUpdateMode: None
+UpdateCheckMode: None

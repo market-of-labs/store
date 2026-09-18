@@ -1,0 +1,9 @@
+Name: "TV Live"
+Summary: "IPTV\u64AD\u653E\u5668"
+AuthorName: "mytv-android"
+Categories:
+  - Multimedia
+SourceCode: "https://github.com/mytv-android/mytv-android"
+IssueTracker: "https://github.com/mytv-android/mytv-android/issues"
+AutoUpdateMode: None
+UpdateCheckMode: None

@@ -7,7 +7,6 @@
   "categories": [
     "工具"
   ],
-  "kind": "obtainium",
   "upstream": {
     "type": "github-release",
     "repo": "ImranR98/Obtainium",

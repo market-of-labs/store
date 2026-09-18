@@ -8,7 +8,6 @@
     "工具",
     "效率"
   ],
-  "kind": "obtainium",
   "upstream": {
     "type": "github-release",
     "repo": "cygnusx-1-org/Discoverium"

@@ -12,3 +12,17 @@ local.properties
 *.keystore
 keystore.*
 secrets.*
+
+# 三仓库共用的密钥目录（工作区根目录，本来就不是 git 仓库 —— 这条是纵深防御）
+.keys/
+
+# fdroid 工作区里**只有 metadata/ 该进 git**：
+#   config.yml —— 明文写着签名口令（03 §5.1），提交它等于把仓库签名权交出去
+#   repo/      —— APK 与索引，每轮重跑都会重写；索引的副本在根 repo/ 下
+/store/fdroid/config.yml
+/store/fdroid/repo/
+
+# 根 repo/ 是对外伺服的那一份产物，但 **APK 不在这里**：
+# 每个应用的 APK 躺在它自己那个 Release 里（tag = appId），由 CF 网关按文件名映射。
+# 于是这一条拦下的正是"有人顺手把 20MB 的 APK 提交进来"。
+/repo/**/*.apk

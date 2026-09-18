@@ -1,0 +1,9 @@
+Name: "Updatium"
+AuthorName: "omeritzics"
+Categories:
+  - System
+  - Office
+SourceCode: "https://github.com/omeritzics/Updatium"
+IssueTracker: "https://github.com/omeritzics/Updatium/issues"
+AutoUpdateMode: None
+UpdateCheckMode: None

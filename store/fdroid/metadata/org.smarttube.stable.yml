@@ -1,0 +1,9 @@
+Name: "SmartTube"
+Summary: "\u7B2C\u4E09\u65B9Youtube TV\u5BA2\u6237\u7AEF"
+AuthorName: "yuliskov"
+Categories:
+  - Multimedia
+SourceCode: "https://github.com/yuliskov/SmartTube"
+IssueTracker: "https://github.com/yuliskov/SmartTube/issues"
+AutoUpdateMode: None
+UpdateCheckMode: None

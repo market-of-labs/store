@@ -9,7 +9,6 @@
     "工具",
     "效率"
   ],
-  "kind": "companion",
   "upstream": {
     "type": "github-release",
     "repo": "market-of-labs/companion"
