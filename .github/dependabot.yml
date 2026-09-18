@@ -6,7 +6,8 @@ version: 2
 #   - `publish-apk.yml` 里的 `actions/download-artifact@v8`。
 #
 # ⚠️ 信标那个 action 现在在 `.github/actions/beacon/action.yml` 里，而不是某个 workflow 里：
-# 三个入口文件（source-change / intake-incoming / reconcile）都 `uses` 它。
+# 两个入口文件（source-change / intake-incoming）都 `uses` 它。
+# （`reconcile.yml` 已于 2026-09-18 删除 —— 对账的触发面全在 forge 侧，见 README。）
 # ⚠️ `publish-apk.yml` 那份**没有**跟着进 beacon —— 它是 `workflow_call`、由别的仓库调用，
 # 本地 `uses:` 会按调用方仓库解析（03 §4.7.3）。它那份信标是内联的，这是**明确接受的重复**。
 #

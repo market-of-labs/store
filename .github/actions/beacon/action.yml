@@ -6,7 +6,7 @@ description: >-
 # 为什么是 composite action：这一声从前在 store 里写了两遍 —— forward.yml 里一遍
 # （actions/github-script + retries），publish-apk.yml 里一遍（`gh api --input -`）。
 # 两遍的载荷形状必须一致（forge 那边读的是同一组键），而"必须一致、错了却是静默失败"
-# 的拷贝是迟早要漂移的那种。现在三个入口文件共用这一份。
+# 的拷贝是迟早要漂移的那种。现在本仓库的两个入口文件共用这一份。
 #
 # ⚠️ **它不做"决定要不要发"这件事。** 每家入口该在什么条件下发车是那家的业务，
 # 写在各自的 workflow 里（比如 intake-incoming 只管 tag 名为 `_incoming` 的 release）——
@@ -29,8 +29,11 @@ inputs:
   event-type:
     description: >-
       这一声信标叫什么名字。它是 `repository_dispatch` 的 `types`，也就是 forge 那边的
-      **路由键** —— forge 的三个入口文件各自只认一个词（`source-change` /
-      `intake-incoming` / `reconcile`）。
+      **路由键** —— forge 的入口文件各自只认一个词。本仓库这一侧只发两个：
+      `source-change`（申请单）与 `intake-incoming`（搬队列）。
+      ⚠️ forge 的 `reconcile.yml` 也还听着 `reconcile` 这个词，但**本仓库已经没有发它的人**
+      （那个只做转发的 `reconcile.yml` 已于 2026-09-18 删除）—— 对账的三个触发面
+      （cron / 按钮 / dispatch）全在 forge 侧那一个文件上。
       ⚠️ 打过去一个那边没人监听的名字时，GitHub 返回 **204 且什么都不做**：没有报错、
       没有日志、Actions 页面干干净净。所以"让 forge 挂上新监听"必须**先于**"让 store
       开始发"（03 §4.2）。
