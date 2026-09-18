@@ -6,8 +6,12 @@
 - 转私有正是 CF 遮蔽网关存在的理由，也是维护逻辑被拆出去的原因（GitHub **只对私有仓库**的 Actions 分钟数计费）。拆成了两个：公有的 [`forge`](../forge) 只放 workflow（**运行器**），逻辑的**实现**在私有的 [`forge-core`](../forge-core) 里 —— 所以"跑在公有仓库"和"逻辑不公开"能同时成立。
 - 完整设计见 `market-spec/`（尤其 **03 · 维护逻辑**）。
 
-> ⚠️ **这个仓库不执行任何维护逻辑**。维护数据那条链全靠**两个「转手就发车」的极薄 workflow**（`source-change` / `intake-incoming`，**一个功能一个文件**）把事件转告 `forge` —— 信标那一段是共用的复合动作 `.github/actions/beacon`；
-> 另有一个 `publish-apk.yml`，它是**给"没有可读上游"的源复用的上传器** —— 只往 `_incoming` 里放文件，不读也不改 `sources/`（§4）。⚠️ 判据是**那个源的上游 `forge` 读不读得到**，不是"私有不私有"：同 `market-of-labs` owner 下的私有仓照样是**普通上游**，直接镜像即可（03 §8 / D55）。
+> ⚠️ **这个仓库不执行任何维护逻辑**。维护数据那条链全靠**两个「转手就发车」的极薄 workflow**（`source-change` / `intake-incoming`，**一个功能一个文件**）把事件转告 `forge` —— 信标那一段是共用的复合动作 `.github/actions/beacon`。
+>
+> ⚠️ **上传器（`publish-apk.yml`）也已没有** —— 那个给"`forge` 读不到上游"的源复用的可复用 workflow（`on: workflow_call`）于 2026-09-18 删除，
+> 因为**能调用它的仓一个都不存在**（判据、代价与"将来要自动化时怎么写"见 03 §2.6.5 / D67）。
+> ⚠️ **判据本身没变**：看的是**上游 `forge` 读不读得到**，不是"私有不私有" —— 同 `market-of-labs` owner 下的私有仓照样是**普通上游**，
+> 在 PAT 的仓库清单里加上它（Contents: Read）即可（03 §8 / D55）；够不着的两类（别的 owner / `source: "manual"`）今天走**人手动上传**（§4）。
 >
 > ⚠️ **对账（`reconcile`）在这一侧没有文件** —— 那个只做转发的 `reconcile.yml` 已于 2026-09-18 删除，
 > 理由见 §4 里"没反应时点一次按钮"下面那段对照表（一句话：对账的 cron 与按钮本来就都在 `forge` 侧同一个文件上，这边再放一个只会转发的空壳
@@ -32,7 +36,6 @@ store/
 │   ├── workflows/source-change.yml   # 有人开了/改了申请单 → 通知 forge 处理那一张
 │   ├── workflows/intake-incoming.yml # `_incoming` 队列被 Publish → 通知 forge 来搬
 │   │                                 # 也是**手动按钮**所在（Run workflow，无入参）
-│   ├── workflows/publish-apk.yml # 可复用：没有可读上游的源码仓把 APK 送进 _incoming（§4）
 │   ├── dependabot.yml          # 每周升 beacon 里那个 action 的主版本
 │   └── ISSUE_TEMPLATE/         # 维护数据源的两个入口
 ├── README.md
@@ -226,52 +229,36 @@ store/
 > 改触发器、队列这条路都看不见（症状：Publish 了却什么都没发生，而 Actions 页面干干净净）。
 > 删掉之后，下一次 Publish 会在**当时的**默认分支 HEAD 上重建它（03 §3.2）。
 
-### 自研 App：让源码仓的 CI 自动走这四步
+### 上游够不着的源：今天只有"人手动上传"一条路
 
 ⚠️ **先看判据**：`forge` 读得到上游 ⇒ **什么都不用做**，它和别的应用一样在每日对账里被自动镜像。
 **同 `market-of-labs` owner 下的私有仓就属于这一类** —— `forge` 的 GitHub 客户端本来就带那把 PAT，
 在 PAT 的仓库清单里加上它（Contents: **Read**）即可，零代码改动（03 §8 / D55）。
 
-真正需要下面这套的是**上游 `forge` 够不着**的源：源码仓在**别的 owner** 名下（fine-grained PAT 只覆盖一个 owner），
-或者根本没有上游（`source: "manual"`）。它们走的是**同一条**上传队列，只是把上面 4 步自动化 ——
-本仓库的 `publish-apk.yml` 是可复用 workflow，App 仓构建完调一下即可：
+真正够不着的是两类：源码仓在**别的 owner** 名下（fine-grained PAT 只覆盖一个 owner），
+或者根本没有上游（`source: "manual"`）。
 
-```yaml
-jobs:
-  build:                      # 构建 job 与平时一样，只多一步
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - run: ./gradlew assembleRelease
-      - uses: actions/upload-artifact@v7
-        with: { name: apk, path: app/**/*.apk }   # 名字必须是 apk
-  publish:
-    needs: build
-    uses: market-of-labs/store/.github/workflows/publish-apk.yml@master   # 本仓库默认分支是 master（不是 main）
-    # 没有 with: —— 落点由 APK 内容决定（D52），这个 workflow 不需要知道 appId
-    secrets: { store-token: ${{ secrets.STORE_TOKEN }} }   # 对 store 有 contents:write 的细粒度 PAT
-```
+⚠️ **这两类今天没有自动化的入口。** 这里从前是可复用 workflow `publish-apk.yml`（App 仓构建完
+`uses:` 一下即可），**已于 2026-09-18 删除**（D67）。删的理由：能调用它的仓必须满足"`forge` 读不到上游"，
+而那种仓**一个都不存在** —— 别的 owner 名下的仓全是公开仓（`forge` 直接读得到），
+`source: "manual"` 的那几个（当贝市场 / 当贝影视 / 海信TV / 启动器管理器）**没有源码仓**，
+也就没有谁去调它。它是一条**为还不存在的仓预留的接口**；而 `workflow_call` 不自触发、不占入口表、
+不跑 cron，删掉它不会让"一个功能一个入口"更干净，但留着它要一直维护一份解释（03 §2.6.5）。
 
-它做两件事：把 APK 传进 `_incoming`、**发一个 `repository_dispatch` 叫 `forge` 来搬** ——
-之后与手动路径完全一样（第 3、4 步）。
+⇒ **那两类源走人手动上传**（就是上面那四步）：把 APK 传到 `_incoming`、点 Publish。
+这条路一直都在，由 `intake-incoming.yml` 的 `release` 事件接着。
+将来若真要自动跟踪（比如定时抓当贝市场的包），**先有那个抓取仓，再写上传器** —— 那时的形状会更清楚。
 
-> ⚠️ **这里曾经有个 `with: { app-id: ... }`（2026-09-16 删）**：唯一用途是在调用方的日志里对一下
-> 包名收没收录，**对结果零影响**（打错了也只多一条作者为「未知」的来源，而那个会自愈）。它却让
-> 每个调用方都得传一个被忽略的值，传错还会直接报错（可复用 workflow 收到未声明的 input 会失败）。
+> ⚠️ **那个文件踩过的两个坑，重写时仍要记着**（03 §8 / §2.6.5）：
+> 1. **布尔参数用 `-F` 不用 `-f`** —— `gh api -f draft=true` 传的是**字符串** `"true"`，GitHub 只当
+>    `draft=false`。当年那个"上传前先把队列复位成 draft"的步骤因此把队列**发布掉**、还顺手把 tag 名
+>    降级成 `untagged-<sha>`，下一次搬运就认不出队列（症状正是"传了却没反应"）。
+> 2. **落点由 APK 内容决定**（D52）—— 所以上传器**不需要**知道 appId，也就没有 `with: { app-id }`
+>    这种输入（那个 2026-09-16 就删了：对结果零影响，却让每个调用方都得传一个被忽略的值）。
 
-> ⚠️ **它拿的是对 `store` 与 `forge` 都有 `contents:write` 的 PAT**：那声信标是往 `forge` 仓库发的，
-> 所以同一把 token 也得够得着那边。调用方在自己的仓库里放这把 token 时要知道这一点。
-
-> ⚠️ **它不碰队列的 draft 状态** —— 那个"上传前先把队列复位成 draft"的步骤同一天（2026-09-16）删了。
-> 它当年是**反的**：`gh api -f draft=true` 传的是字符串 `"true"`，GitHub 只当 `draft=false`，于是每次
-> CI 上传前先把队列**发布掉**、还顺手把 tag 名降级成 `untagged-<sha>`，下一次搬运就认不出队列了
-> （症状正是"传了却没反应"）。布尔值得用 `-F`。而它想防的那件事今天也不用防：队列的状态由 `forge`
-> 清场维持（第 4 步）。
-
-> ⚠️ **App 仓必须在同一 org 才调得动**（store 转私有后，私有仓的可复用 workflow 只对同 org 开放）。
-> 否则就把那个文件里的两步 `gh api` 就地抄进 App 仓的 workflow —— 同样只需要那把 PAT，不需要 store 公开。
-> ⚠️ **这两条约束同源，别当成两个独立条件**：一个仓不在我们的 org 里，就既调不动可复用 workflow、`forge` 的 PAT 也读不到它的 Release ——
-> 所以"得走队列"和"得同 org"说的其实是同一件事（fine-grained PAT 只覆盖一个 owner，03 §8）。
+> ⚠️ **"上游够不着"与"不在我们的 owner 里"是同一件事**，别当成两个独立条件：fine-grained PAT 只覆盖
+> 一个 owner，所以一个仓不在我们的 owner 里，`forge` 的 PAT 就读不到它的 Release —— 这正是上面那条
+> 判据的来源（03 §8）。
 
 ---
 
