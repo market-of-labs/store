@@ -1,9 +1,0 @@
-Name: "Obtainium+"
-AuthorName: "thejaustin"
-Categories:
-  - System
-  - Office
-SourceCode: "https://github.com/thejaustin/ObtainiumPlus"
-IssueTracker: "https://github.com/thejaustin/ObtainiumPlus/issues"
-AutoUpdateMode: None
-UpdateCheckMode: None

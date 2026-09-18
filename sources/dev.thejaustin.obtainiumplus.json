@@ -116,6 +116,21 @@
           "size": 83270752
         }
       ]
+    },
+    {
+      "version": "1.6.10-p26",
+      "versionCode": 2425,
+      "versionName": "1.6.10-p26",
+      "publishedAt": "2026-09-15T01:27:15Z",
+      "upstreamTag": "v1.6.10-p26",
+      "releaseNote": "**Obtainium+ 1.6.10-p26** — build #662, commit `a6b875a2`, 2026-09-15 01:27 UTC\n\n## Changes since v1.6.10-p25\n\n### ✨ New Features\n- feat(installer): ShizukuPlus IPC latency test, smart fallback, and directional transitions (#307) (bee62f97)\n\n### 🐛 Bug Fixes\n- fix(ui): close AnimatedSwitcher brackets in DeviceOptimizationSheet (#308) (a6b875a2)\n\n\n---\n[Full Changelog](https://github.com/thejaustin/ObtainiumPlus/compare/v1.6.10-p25...v1.6.10-p26)\n",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "dev.thejaustin.obtainiumplus-1.6.10-p26-universal.apk",
+          "size": 83336512
+        }
+      ]
     }
   ]
 }
