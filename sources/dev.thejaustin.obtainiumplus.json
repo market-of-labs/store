@@ -146,6 +146,21 @@
           "size": 83435328
         }
       ]
+    },
+    {
+      "version": "1.6.10-p29",
+      "versionCode": 2428,
+      "versionName": "1.6.10-p29",
+      "publishedAt": "2026-09-15T17:19:40Z",
+      "upstreamTag": "v1.6.10-p29",
+      "releaseNote": "**Obtainium+ 1.6.10-p29** — build #667, commit `4709cb8e`, 2026-09-15 17:19 UTC\n\n## Changes since v1.6.10-p28\n\n### 🐛 Bug Fixes\n- fix(provider): assert non-null rawId when sanitizing resolved app ID (#313) (4709cb8e)\n- fix(install): resolve package alias ID mismatch and installed app detection (#312) (b4e44be4)\n\n\n---\n[Full Changelog](https://github.com/thejaustin/ObtainiumPlus/compare/v1.6.10-p28...v1.6.10-p29)\n",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "dev.thejaustin.obtainiumplus-1.6.10-p29-universal.apk",
+          "size": 83435328
+        }
+      ]
     }
   ]
 }
