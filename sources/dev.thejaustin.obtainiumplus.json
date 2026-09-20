@@ -161,6 +161,21 @@
           "size": 83435328
         }
       ]
+    },
+    {
+      "version": "1.6.10-p30",
+      "versionCode": 2429,
+      "versionName": "1.6.10-p30",
+      "publishedAt": "2026-09-15T18:07:41Z",
+      "upstreamTag": "v1.6.10-p30",
+      "releaseNote": "**Obtainium+ 1.6.10-p30** — build #668, commit `cb033cc7`, 2026-09-15 18:07 UTC\n\n## Changes since v1.6.10-p29\n\n### ✨ New Features\n- feat(settings): expressive motion and tactile touch in notification, behavior, and troubleshooting (#314) (cb033cc7)\n\n\n---\n[Full Changelog](https://github.com/thejaustin/ObtainiumPlus/compare/v1.6.10-p29...v1.6.10-p30)\n",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "dev.thejaustin.obtainiumplus-1.6.10-p30-universal.apk",
+          "size": 83435328
+        }
+      ]
     }
   ]
 }
