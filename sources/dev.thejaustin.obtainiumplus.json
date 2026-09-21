@@ -176,6 +176,21 @@
           "size": 83435328
         }
       ]
+    },
+    {
+      "version": "1.6.10-p31",
+      "versionCode": 2430,
+      "versionName": "1.6.10-p31",
+      "publishedAt": "2026-09-15T20:32:53Z",
+      "upstreamTag": "v1.6.10-p31",
+      "releaseNote": "**Obtainium+ 1.6.10-p31** — build #669, commit `6bd7375d`, 2026-09-15 20:32 UTC\n\n## Changes since v1.6.10-p30\n\n### ✨ New Features\n- feat(ui, network): tactile swipe gestures, cached provider requests, and rate-limit backoff (#315) (6bd7375d)\n\n\n---\n[Full Changelog](https://github.com/thejaustin/ObtainiumPlus/compare/v1.6.10-p30...v1.6.10-p31)\n",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "dev.thejaustin.obtainiumplus-1.6.10-p31-universal.apk",
+          "size": 83435328
+        }
+      ]
     }
   ]
 }
