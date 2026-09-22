@@ -191,6 +191,21 @@
           "size": 83435328
         }
       ]
+    },
+    {
+      "version": "1.6.10-p32",
+      "versionCode": 2431,
+      "versionName": "1.6.10-p32",
+      "publishedAt": "2026-09-16T11:41:10Z",
+      "upstreamTag": "v1.6.10-p32",
+      "releaseNote": "**Obtainium+ 1.6.10-p32** — build #670, commit `3671a5a9`, 2026-09-16 11:41 UTC\n\n## Changes since v1.6.10-p31\n\n### ✨ New Features\n- feat: enhance discover filter animations, omnibar haptics, and search resilience (#316) (3671a5a9)\n\n\n---\n[Full Changelog](https://github.com/thejaustin/ObtainiumPlus/compare/v1.6.10-p31...v1.6.10-p32)\n",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "dev.thejaustin.obtainiumplus-1.6.10-p32-universal.apk",
+          "size": 83435328
+        }
+      ]
     }
   ]
 }

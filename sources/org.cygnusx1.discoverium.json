@@ -26,6 +26,21 @@
           "size": 77481617
         }
       ]
+    },
+    {
+      "version": "1.6.170",
+      "versionCode": 23560,
+      "versionName": "1.6.170",
+      "publishedAt": "2026-09-22T03:19:15Z",
+      "upstreamTag": "1.6.170",
+      "releaseNote": "* Updated to 1.6.17\r\n* Implemented Added missing strings and transaltion to de locale #52\r\n* Fixed False Update Detection for a specific app (NagramXF) #59",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "org.cygnusx1.discoverium-1.6.170-universal.apk",
+          "size": 79898755
+        }
+      ]
     }
   ]
 }
