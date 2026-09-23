@@ -36,6 +36,26 @@
           "size": 25281982
         }
       ]
+    },
+    {
+      "version": "2.20.0",
+      "versionCode": 220003,
+      "versionName": "2.20.0",
+      "publishedAt": "2026-09-23T00:34:57Z",
+      "upstreamTag": "v2.20.0",
+      "releaseNote": "## ✨ New Features\r\n- **📚 Track the same app across different stores** — Follow GitHub for nightlies, F-Droid for reproducible builds, and APKPure as a fallback — all simultaneously. Each listing with its own independent version tracking and settings.\r\n- **🔄 Swap tracked source** — Tracking an app on GitHub, but want to switch to F-Droid or APKPure? Change sources in-place in two taps. The app keeps its folders, categories, and history — only where the updates come from changes.\r\n- Group the apps list by update status (update available, needs review, newer on device, same version, not installed, and so on).\r\n- HTML sources can pick up zip artifacts from CI/nightly pages, with stable version labels for partial downloads.\r\n- Better diagnostic: record about 60 seconds of on-device performance data from the logs screen, then include it when you share logs. \r\n\r\n<table>\r\n    <tr>\r\n        <td width=\"50%\" align=\"center\" valign=\"top\">\r\n            <img src=\"https://github.com/user-attachments/assets/320593ad-f856-49c2-b99b-718649dc9da0\" alt=\"Track same app in multiple stores\" width=\"400\" /><br />\r\n            <strong>Track same app in multiple stores</strong>\r\n        </td>\r\n        <td width=\"50%\" align=\"center\" valign=\"top\">\r\n            <img src=\"https://github.com/user-attachments/assets/20f2e9af-90c2-421a-aec7-391b6fb32dde\" alt=\"Hot-swap tracked store, or create new store entry\" width=400\" /><br />\r\n            <strong>Hot-swap tracked store, or create new store entry</strong>\r\n        </td>\r\n    </tr>\r\n</table>\r\n\r\n## 🛠 Improved Features\r\n- Update checks, downloads, and store lookups are faster and more resilient (timeouts, shared connections, less work on the UI thread, skipping background checks when nothing is due).\r\n- Version comparison is much more reliable: Play Store and device-style labels, prereleases, build hashes, FOSS vs store variants, and the exact APK you selected are all taken into account. \r\n- Auto mode no longer silently switches to a fake \"same version\" when it is unsure.\r\n- F-Droid, F-Droid repositories, APKPure, and APKMirror feed richer version information into that comparison.\r\n- GitHub app builds that share a version label but differ by commit can be automatically ordered using GitHub's compare history.\r\n- Apps added from GitHub, GitLab, Codeberg, and SourceHut are matched to the right build more often. Some projects publish separate builds for each store, and ObtainX now recognizes the one that belongs to the site you are tracking, so the app no longer shows as \"not installed\" when it is actually there.\r\n- Installing through third-party installer (or Shizuku/Dhizuku) waits for the system to confirm the package actually updated, instead of marking the update done as soon as the installer goes away. You can dismiss the temporary \"Installing\" indicator if you already finished elsewhere.\r\n- \"Reduce visual effects\" now also turns off gradients, icon-tinted pages, and extra shadows. \r\n- Back from Settings/Add/Backup returns to Apps in one press. \r\n- When using \"source webpage in app view\", it now has proper back history, and file links open in default browser when ObtainX cannot download them itself.\r\n- Better diagnostic: Shared logs now include display/font & scale info. \r\n- Long version names on the About screen shrinks to fit.\r\n\r\n## 🐛 Bug Fixes\r\n- Apps no longer show \"Update available\" just because version strings look different (including several Play Store, FOSS, and GitHub hash cases).\r\n- Track-only \"mark as latest\" actually sticks, including from bulk update.\r\n- Bulk updates no longer stall when Shizuku permission and install calls overlap.\r\n- Deleting a category removes it from every assigned app, including ones that were not loaded in memory.\r\n- Settings labels that stayed in the old language after a locale change are fixed.\r\n\r\n## 🗣️Translations\r\n- Add missing Simplified and Traditional Chinese translations by @You236929 in https://github.com/bikram-agarwal/ObtainX/pull/279\r\n- Complete and improve Turkish translation by @MrRaita in https://github.com/bikram-agarwal/ObtainX/pull/282\r\n- French translation by @LeDimigit in https://github.com/bikram-agarwal/ObtainX/pull/285\r\n\r\n## 🧾 Documentation\r\n- [README](./README.md), [Difference_with_Obtainium.md](./docs/Difference_with_Obtainium.md) updated. \r\n\r\n## 📰 News\r\n- [FilePipe](https://github.com/bikram-agarwal/FilePipe) got featured by **Sam Beckman** in **[Best Android Apps of 2026!](https://youtu.be/9q1yhqX2DD4?t=543)** 🎊",
+      "assets": [
+        {
+          "abi": "arm64-v8a",
+          "file": "dev.bikram.obtainx-2.20.0-arm64-v8a.apk",
+          "size": 27336570
+        },
+        {
+          "abi": "armeabi-v7a",
+          "file": "dev.bikram.obtainx-2.20.0-armeabi-v7a.apk",
+          "size": 25630042
+        }
+      ]
     }
   ]
 }
