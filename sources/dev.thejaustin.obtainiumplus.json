@@ -221,6 +221,21 @@
           "size": 83435448
         }
       ]
+    },
+    {
+      "version": "1.6.10-p34",
+      "versionCode": 2433,
+      "versionName": "1.6.10-p34",
+      "publishedAt": "2026-09-17T23:39:00Z",
+      "upstreamTag": "v1.6.10-p34",
+      "releaseNote": "**Obtainium+ 1.6.10-p34** — build #674, commit `85abc910`, 2026-09-17 23:38 UTC\n\n## Changes since v1.6.10-p33\n\n### ✨ New Features\n- feat: polish glass surfaces, dynamic card radii, and tactile haptics (#318) (ceae59b0)\n\n### 🐛 Bug Fixes\n- fix: import AppConstants in app.dart (#320) (85abc910)\n- fix: correct ConditionalBlur parameters and haptic_utils import (#319) (a61cc39f)\n\n\n---\n[Full Changelog](https://github.com/thejaustin/ObtainiumPlus/compare/v1.6.10-p33...v1.6.10-p34)\n",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "dev.thejaustin.obtainiumplus-1.6.10-p34-universal.apk",
+          "size": 83451828
+        }
+      ]
     }
   ]
 }

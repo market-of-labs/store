@@ -36,6 +36,26 @@
           "size": 25040930
         }
       ]
+    },
+    {
+      "version": "32.56",
+      "versionCode": 2446,
+      "versionName": "32.56",
+      "publishedAt": "2026-09-23T23:20:23Z",
+      "upstreamTag": "32.56s",
+      "releaseNote": "- Restored Not interested and Don't recommend channel context menu items\r\n- Fixed Hide shorts in the News section (this option should be rechecked to apply)\r\n- Fixes rare playback stutters caused by background sync\r\n- Increased thumbnail resolution\r\n\r\nDownloader code: 28544 | [F-Droid](https://f-droid.org/packages/app.smarttube.fdroid/) | [Translation](https://jtbrinkmann.de/tools/android-strings.xml-translator.html)\n\t\t\t\n## 🛡️ VirusTotal Analysis\n\n| Build Variant | VirusTotal Status | Detailed Report |\n| :--- | :--- | :--- |\n| [SmartTube_stable_32.56_arm64-v8a.apk](https://github.com/yuliskov/SmartTube/releases/download/32.56s/SmartTube_stable_32.56_arm64-v8a.apk) | [![](https://badges.cssnr.com/vt/id/cc53f1aedac52ea0d4e77803acd580e32e7e5179adc96b55db7267b63a16c864?start=green&end=red&n=8&v=1790206128)](https://www.virustotal.com/gui/file/cc53f1aedac52ea0d4e77803acd580e32e7e5179adc96b55db7267b63a16c864/detection) | [View Report](https://www.virustotal.com/gui/file/cc53f1aedac52ea0d4e77803acd580e32e7e5179adc96b55db7267b63a16c864/detection) |\n| [SmartTube_stable_32.56_armeabi-v7a.apk](https://github.com/yuliskov/SmartTube/releases/download/32.56s/SmartTube_stable_32.56_armeabi-v7a.apk) | [![](https://badges.cssnr.com/vt/id/d2e9bc90b95aa6232fbf647e63003ccb9051d1aad53531c103aa997e443457b6?start=green&end=red&n=8&v=1790206128)](https://www.virustotal.com/gui/file/d2e9bc90b95aa6232fbf647e63003ccb9051d1aad53531c103aa997e443457b6/detection) | [View Report](https://www.virustotal.com/gui/file/d2e9bc90b95aa6232fbf647e63003ccb9051d1aad53531c103aa997e443457b6/detection) |\n| [SmartTube_stable_32.56_universal.apk](https://github.com/yuliskov/SmartTube/releases/download/32.56s/SmartTube_stable_32.56_universal.apk) | [![](https://badges.cssnr.com/vt/id/4a35b90940612e048e4e9cb9e10379f7db1e84f30375994129f10a571ee04ce5?start=green&end=red&n=8&v=1790206129)](https://www.virustotal.com/gui/file/4a35b90940612e048e4e9cb9e10379f7db1e84f30375994129f10a571ee04ce5/detection) | [View Report](https://www.virustotal.com/gui/file/4a35b90940612e048e4e9cb9e10379f7db1e84f30375994129f10a571ee04ce5/detection) |\n| [SmartTube_stable_32.56_x86.apk](https://github.com/yuliskov/SmartTube/releases/download/32.56s/SmartTube_stable_32.56_x86.apk) | [![](https://badges.cssnr.com/vt/id/b3887fb9e7482d7b9c6d0bfc5a1dbb120e678aa8a9bc54a1363a8135a698cb5a?start=green&end=red&n=8&v=1790206129)](https://www.virustotal.com/gui/file/b3887fb9e7482d7b9c6d0bfc5a1dbb120e678aa8a9bc54a1363a8135a698cb5a/detection) | [View Report](https://www.virustotal.com/gui/file/b3887fb9e7482d7b9c6d0bfc5a1dbb120e678aa8a9bc54a1363a8135a698cb5a/detection) |\n",
+      "assets": [
+        {
+          "abi": "arm64-v8a",
+          "file": "org.smarttube.stable-32.56-arm64-v8a.apk",
+          "size": 26260353
+        },
+        {
+          "abi": "armeabi-v7a",
+          "file": "org.smarttube.stable-32.56-armeabi-v7a.apk",
+          "size": 25046686
+        }
+      ]
     }
   ]
 }

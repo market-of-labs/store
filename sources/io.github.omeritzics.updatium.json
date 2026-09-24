@@ -35,6 +35,26 @@
           "size": 25083267
         }
       ]
+    },
+    {
+      "version": "26.9",
+      "versionCode": 260926132,
+      "versionName": "26.9",
+      "publishedAt": "2026-09-24T17:03:27Z",
+      "upstreamTag": "Qama-v26.9",
+      "releaseNote": "## What's Changed\r\n* Added an option to set a default tab for the main \"Apps\" screen (https://github.com/omeritzics/Updatium/commit/06630d60d3587219a33c368f6769b5bdb5eab936).\r\n* Moved Download/Update button's location to the buttom, as a FAB.\r\n* Added an option to cancel ongoing downloads.\r\n* Replaced the integration of the discontinued AppVerifier with AppVerifier BG (dbcf3f1c7d45f0091b7d549a34f7e4444fcc86ba).\r\n* Fixed the bugs that appeared on Updatium 'Qama' v26.7 (#416).\r\n* Removed Mullvad DNS provider, due to their announced discontinuation.\r\n* Added the option to use an external installer (thanks to ObtainX project by @bikram-agarwal).\r\n\r\n**Full Changelog**: https://github.com/omeritzics/Updatium/compare/Qama-v26.8...Qama-v26.9",
+      "assets": [
+        {
+          "abi": "arm64-v8a",
+          "file": "io.github.omeritzics.updatium-26.9-arm64-v8a.apk",
+          "size": 29180836
+        },
+        {
+          "abi": "armeabi-v7a",
+          "file": "io.github.omeritzics.updatium-26.9-armeabi-v7a.apk",
+          "size": 26933994
+        }
+      ]
     }
   ]
 }

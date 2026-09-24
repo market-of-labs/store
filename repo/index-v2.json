@@ -14,7 +14,7 @@
       }
     },
     "address": "https://REPLACE-ME-BEFORE-PUBLISH.invalid/fdroid/repo",
-    "timestamp": 1790199358000,
+    "timestamp": 1790285845000,
     "categories": {
       "Multimedia": {
         "name": {
@@ -36,8 +36,8 @@
   "packages": {
     "com.dangbei.screencast": {
       "metadata": {
-        "added": 1790199342000,
-        "lastUpdated": 1790199342000,
+        "added": 1790285826000,
+        "lastUpdated": 1790285826000,
         "authorName": "未知",
         "name": {
           "en-US": "当贝投屏"
@@ -53,7 +53,7 @@
       },
       "versions": {
         "d92d01235d36a05a241ea0b7578ccdf5bda78bf3451bf04c695fb3778dc3fbc6": {
-          "added": 1790199342000,
+          "added": 1790285826000,
           "file": {
             "name": "/com.dangbei.screencast-V2.9.3-universal.apk",
             "sha256": "d92d01235d36a05a241ea0b7578ccdf5bda78bf3451bf04c695fb3778dc3fbc6",
@@ -205,8 +205,8 @@
     },
     "com.dangbeimarket": {
       "metadata": {
-        "added": 1790199342000,
-        "lastUpdated": 1790199342000,
+        "added": 1790285826000,
+        "lastUpdated": 1790285826000,
         "authorName": "未知",
         "name": {
           "en-US": "当贝市场"
@@ -215,7 +215,7 @@
       },
       "versions": {
         "4dc895a8870fb2cd6b923781d55d0374f8298d0da3f77d27cabaa4350acb7f54": {
-          "added": 1790199342000,
+          "added": 1790285826000,
           "file": {
             "name": "/com.dangbeimarket-6.0.7-universal.apk",
             "sha256": "4dc895a8870fb2cd6b923781d55d0374f8298d0da3f77d27cabaa4350acb7f54",
@@ -370,12 +370,12 @@
     },
     "com.github.HailLauncher": {
       "metadata": {
-        "added": 1790199342000,
+        "added": 1790285827000,
         "categories": [
           "System"
         ],
         "issueTracker": "https://github.com/TVLaunchers/HailLauncher/issues",
-        "lastUpdated": 1790199342000,
+        "lastUpdated": 1790285827000,
         "sourceCode": "https://github.com/TVLaunchers/HailLauncher",
         "authorName": "TVLaunchers",
         "name": {
@@ -388,7 +388,7 @@
       },
       "versions": {
         "f607a57a54287e40b33c2b7ecc1270042d3de6c995c74945317f42ced60d9aff": {
-          "added": 1790199342000,
+          "added": 1790285827000,
           "file": {
             "name": "/com.github.HailLauncher-2026.09.10-universal.apk",
             "sha256": "f607a57a54287e40b33c2b7ecc1270042d3de6c995c74945317f42ced60d9aff",
@@ -465,12 +465,12 @@
     },
     "com.github.mytv.android": {
       "metadata": {
-        "added": 1790199343000,
+        "added": 1790285827000,
         "categories": [
           "Multimedia"
         ],
         "issueTracker": "https://github.com/mytv-android/mytv-android/issues",
-        "lastUpdated": 1790199344000,
+        "lastUpdated": 1790285828000,
         "sourceCode": "https://github.com/mytv-android/mytv-android",
         "authorName": "mytv-android",
         "name": {
@@ -483,7 +483,7 @@
       },
       "versions": {
         "28b3caa52c87e6e83449f1558578474c6422054643596e29f30aa8ec37a19162": {
-          "added": 1790199343000,
+          "added": 1790285827000,
           "file": {
             "name": "/com.github.mytv.android-2.2.0.219-arm64-v8a.apk",
             "sha256": "28b3caa52c87e6e83449f1558578474c6422054643596e29f30aa8ec37a19162",
@@ -566,7 +566,7 @@
           }
         },
         "93f0a7a276d616c89f0f944e9fd0624744e17e96d260092844f411c8bd9e59fe": {
-          "added": 1790199344000,
+          "added": 1790285828000,
           "file": {
             "name": "/com.github.mytv.android-2.2.0.219-armeabi-v7a.apk",
             "sha256": "93f0a7a276d616c89f0f944e9fd0624744e17e96d260092844f411c8bd9e59fe",
@@ -652,12 +652,12 @@
     },
     "com.github.mytv.dv": {
       "metadata": {
-        "added": 1790199345000,
+        "added": 1790285828000,
         "categories": [
           "Multimedia"
         ],
         "issueTracker": "https://github.com/mytv-android/myDV/issues",
-        "lastUpdated": 1790199345000,
+        "lastUpdated": 1790285828000,
         "sourceCode": "https://github.com/mytv-android/myDV",
         "authorName": "mytv-android",
         "name": {
@@ -670,7 +670,7 @@
       },
       "versions": {
         "55d53921b9bdd36a4bfbc7cedaf6b7d4f6e375fec553e0ed156149ea9c50e4fb": {
-          "added": 1790199345000,
+          "added": 1790285828000,
           "file": {
             "name": "/com.github.mytv.dv-1.5.27-universal.apk",
             "sha256": "55d53921b9bdd36a4bfbc7cedaf6b7d4f6e375fec553e0ed156149ea9c50e4fb",
@@ -728,8 +728,8 @@
     },
     "com.hisen.android.tv": {
       "metadata": {
-        "added": 1790199346000,
-        "lastUpdated": 1790199346000,
+        "added": 1790285830000,
+        "lastUpdated": 1790285830000,
         "authorName": "未知",
         "name": {
           "en-US": "OK影视"
@@ -738,7 +738,7 @@
       },
       "versions": {
         "0d1845648a5971b8ff6fbf787f26485010df1e5ee964e2586a365063d739b133": {
-          "added": 1790199346000,
+          "added": 1790285830000,
           "file": {
             "name": "/com.hisen.android.tv-5.1.6-armeabi-v7a.apk",
             "sha256": "0d1845648a5971b8ff6fbf787f26485010df1e5ee964e2586a365063d739b133",
@@ -815,13 +815,13 @@
     },
     "com.obtainium.companion": {
       "metadata": {
-        "added": 1790199347000,
+        "added": 1790285830000,
         "categories": [
           "System",
           "Office"
         ],
         "issueTracker": "https://github.com/market-of-labs/companion/issues",
-        "lastUpdated": 1790199347000,
+        "lastUpdated": 1790285830000,
         "sourceCode": "https://github.com/market-of-labs/companion",
         "authorName": "market-of-labs",
         "name": {
@@ -834,7 +834,7 @@
       },
       "versions": {
         "92c860a49c068f96a84f127033acba7a7765cca207f73f01fcd3bb239ac0a3b9": {
-          "added": 1790199347000,
+          "added": 1790285830000,
           "file": {
             "name": "/com.obtainium.companion-0.0.2-universal.apk",
             "sha256": "92c860a49c068f96a84f127033acba7a7765cca207f73f01fcd3bb239ac0a3b9",
@@ -875,8 +875,8 @@
     },
     "com.wolf.google.lm": {
       "metadata": {
-        "added": 1790199347000,
-        "lastUpdated": 1790199347000,
+        "added": 1790285831000,
+        "lastUpdated": 1790285831000,
         "authorName": "未知",
         "name": {
           "en-US": "启动器管理器"
@@ -885,7 +885,7 @@
       },
       "versions": {
         "6e52c31dab7e5f0111368ddb153c3151c65e612563883ab1cbba949342c9dc56": {
-          "added": 1790199347000,
+          "added": 1790285831000,
           "file": {
             "name": "/com.wolf.google.lm-1.0.4-universal.apk",
             "sha256": "6e52c31dab7e5f0111368ddb153c3151c65e612563883ab1cbba949342c9dc56",
@@ -914,13 +914,13 @@
     },
     "dev.bikram.obtainx": {
       "metadata": {
-        "added": 1790199347000,
+        "added": 1790285831000,
         "categories": [
           "System",
           "Office"
         ],
         "issueTracker": "https://github.com/bikram-agarwal/ObtainX/issues",
-        "lastUpdated": 1790199348000,
+        "lastUpdated": 1790285832000,
         "sourceCode": "https://github.com/bikram-agarwal/ObtainX",
         "authorName": "bikram-agarwal",
         "name": {
@@ -930,7 +930,7 @@
       },
       "versions": {
         "73ee74311c876cd323047e78fe1f75917866a42d82b8dfe67f0d159bae036944": {
-          "added": 1790199348000,
+          "added": 1790285832000,
           "file": {
             "name": "/dev.bikram.obtainx-2.20.0-arm64-v8a.apk",
             "sha256": "73ee74311c876cd323047e78fe1f75917866a42d82b8dfe67f0d159bae036944",
@@ -1020,7 +1020,7 @@
           }
         },
         "c27e8b4fc88a5bfe1acb2df4d795924cf637d697bf2a2c62accce6607eba3276": {
-          "added": 1790199348000,
+          "added": 1790285832000,
           "file": {
             "name": "/dev.bikram.obtainx-2.20.0-armeabi-v7a.apk",
             "sha256": "c27e8b4fc88a5bfe1acb2df4d795924cf637d697bf2a2c62accce6607eba3276",
@@ -1110,7 +1110,7 @@
           }
         },
         "98c470149872eb37b54d8e6ae49585075945619ff9978c284f52c95b3938d65a": {
-          "added": 1790199347000,
+          "added": 1790285831000,
           "file": {
             "name": "/dev.bikram.obtainx-2.10.00-arm64-v8a.apk",
             "sha256": "98c470149872eb37b54d8e6ae49585075945619ff9978c284f52c95b3938d65a",
@@ -1200,7 +1200,7 @@
           }
         },
         "bb0fcb467ec263c637927f86f3caa08c6a8c8745877820d081ba77a2beada91f": {
-          "added": 1790199348000,
+          "added": 1790285831000,
           "file": {
             "name": "/dev.bikram.obtainx-2.10.00-armeabi-v7a.apk",
             "sha256": "bb0fcb467ec263c637927f86f3caa08c6a8c8745877820d081ba77a2beada91f",
@@ -1293,12 +1293,12 @@
     },
     "dev.imranr.obtainium": {
       "metadata": {
-        "added": 1790199349000,
+        "added": 1790285833000,
         "categories": [
           "System"
         ],
         "issueTracker": "https://github.com/ImranR98/Obtainium/issues",
-        "lastUpdated": 1790199349000,
+        "lastUpdated": 1790285833000,
         "sourceCode": "https://github.com/ImranR98/Obtainium",
         "authorName": "ImranR98",
         "name": {
@@ -1308,7 +1308,7 @@
       },
       "versions": {
         "ce1aa65430af809289f4045994838b1b072a2021bd82fceab1a6f4a90d0108d4": {
-          "added": 1790199349000,
+          "added": 1790285833000,
           "file": {
             "name": "/dev.imranr.obtainium-1.6.17-arm64-v8a.apk",
             "sha256": "ce1aa65430af809289f4045994838b1b072a2021bd82fceab1a6f4a90d0108d4",
@@ -1389,7 +1389,7 @@
           }
         },
         "455c53a5253f0b7b0ed41261d2f916ec7d0f41fcc1beb411eb9507383da27ef1": {
-          "added": 1790199349000,
+          "added": 1790285833000,
           "file": {
             "name": "/dev.imranr.obtainium-1.6.17-armeabi-v7a.apk",
             "sha256": "455c53a5253f0b7b0ed41261d2f916ec7d0f41fcc1beb411eb9507383da27ef1",
@@ -1473,13 +1473,13 @@
     },
     "dev.thejaustin.obtainiumplus": {
       "metadata": {
-        "added": 1790199350000,
+        "added": 1790285834000,
         "categories": [
           "System",
           "Office"
         ],
         "issueTracker": "https://github.com/thejaustin/ObtainiumPlus/issues",
-        "lastUpdated": 1790199353000,
+        "lastUpdated": 1790285837000,
         "sourceCode": "https://github.com/thejaustin/ObtainiumPlus",
         "authorName": "thejaustin",
         "name": {
@@ -1488,8 +1488,95 @@
         "preferredSigner": "623b5e5c9087b0215f3b0e9c1c562f8d42ce5880451bee5c5301733d1049887a"
       },
       "versions": {
+        "2f6a02f5ce8c4e287b0cb9f57baad64095bde25e76ae976ef08bce58b96faa47": {
+          "added": 1790285837000,
+          "file": {
+            "name": "/dev.thejaustin.obtainiumplus-1.6.10-p34-universal.apk",
+            "sha256": "2f6a02f5ce8c4e287b0cb9f57baad64095bde25e76ae976ef08bce58b96faa47",
+            "size": 83451828
+          },
+          "manifest": {
+            "nativecode": [
+              "arm64-v8a",
+              "armeabi-v7a",
+              "x86_64"
+            ],
+            "versionName": "1.6.10-p34",
+            "versionCode": 2433,
+            "usesSdk": {
+              "minSdkVersion": 26,
+              "targetSdkVersion": 36
+            },
+            "signer": {
+              "sha256": [
+                "623b5e5c9087b0215f3b0e9c1c562f8d42ce5880451bee5c5301733d1049887a"
+              ]
+            },
+            "usesPermission": [
+              {
+                "name": "android.permission.INTERNET"
+              },
+              {
+                "name": "android.permission.REQUEST_INSTALL_PACKAGES"
+              },
+              {
+                "name": "android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION"
+              },
+              {
+                "name": "android.permission.RECEIVE_BOOT_COMPLETED"
+              },
+              {
+                "name": "android.permission.WAKE_LOCK"
+              },
+              {
+                "name": "android.permission.REQUEST_DELETE_PACKAGES"
+              },
+              {
+                "name": "android.permission.ENFORCE_UPDATE_OWNERSHIP"
+              },
+              {
+                "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+                "maxSdkVersion": 29
+              },
+              {
+                "name": "android.permission.MANAGE_EXTERNAL_STORAGE"
+              },
+              {
+                "name": "android.permission.QUERY_ALL_PACKAGES"
+              },
+              {
+                "name": "android.permission.FOREGROUND_SERVICE"
+              },
+              {
+                "name": "android.permission.POST_NOTIFICATIONS"
+              },
+              {
+                "name": "android.permission.ACCESS_NETWORK_STATE"
+              },
+              {
+                "name": "android.permission.VIBRATE"
+              },
+              {
+                "name": "android.permission.READ_EXTERNAL_STORAGE"
+              },
+              {
+                "name": "android.permission.SCHEDULE_EXACT_ALARM",
+                "maxSdkVersion": 33
+              },
+              {
+                "name": "dev.thejaustin.obtainiumplus.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+              },
+              {
+                "name": "moe.shizuku.manager.permission.API_V23"
+              },
+              {
+                "name": "com.rosan.dhizuku.permission.API"
+              }
+            ]
+          }
+        },
         "b8fd5b4cd12fc48886752acab4220cfd3aeca825341766c1f4eb80138c048070": {
-          "added": 1790199353000,
+          "added": 1790285837000,
           "file": {
             "name": "/dev.thejaustin.obtainiumplus-1.6.10-p33-universal.apk",
             "sha256": "b8fd5b4cd12fc48886752acab4220cfd3aeca825341766c1f4eb80138c048070",
@@ -1576,7 +1663,7 @@
           }
         },
         "17803f5df96e429cd9abea0b98a1f0499a032198bdbc137ed95274312b0497b4": {
-          "added": 1790199353000,
+          "added": 1790285836000,
           "file": {
             "name": "/dev.thejaustin.obtainiumplus-1.6.10-p32-universal.apk",
             "sha256": "17803f5df96e429cd9abea0b98a1f0499a032198bdbc137ed95274312b0497b4",
@@ -1663,7 +1750,7 @@
           }
         },
         "0dc0e84c21bf3d5d841eda93456d31abd1b63903a92cdddcd9eca49ca1200f33": {
-          "added": 1790199352000,
+          "added": 1790285836000,
           "file": {
             "name": "/dev.thejaustin.obtainiumplus-1.6.10-p31-universal.apk",
             "sha256": "0dc0e84c21bf3d5d841eda93456d31abd1b63903a92cdddcd9eca49ca1200f33",
@@ -1750,7 +1837,7 @@
           }
         },
         "73191d4c77377d394439fac438f19e1a4ab2d1f4f3c3dbbb61902e483eaddca7": {
-          "added": 1790199352000,
+          "added": 1790285835000,
           "file": {
             "name": "/dev.thejaustin.obtainiumplus-1.6.10-p30-universal.apk",
             "sha256": "73191d4c77377d394439fac438f19e1a4ab2d1f4f3c3dbbb61902e483eaddca7",
@@ -1837,7 +1924,7 @@
           }
         },
         "194a3e50d6fe7fe9d491b462798c9dc54d914b0ddd09ebfff2c9c9fbb5390e2f": {
-          "added": 1790199351000,
+          "added": 1790285835000,
           "file": {
             "name": "/dev.thejaustin.obtainiumplus-1.6.10-p29-universal.apk",
             "sha256": "194a3e50d6fe7fe9d491b462798c9dc54d914b0ddd09ebfff2c9c9fbb5390e2f",
@@ -1924,7 +2011,7 @@
           }
         },
         "390e8700dc46f145b8d9ab102ed38388a7b42885540144b54860245b9cfd7889": {
-          "added": 1790199350000,
+          "added": 1790285834000,
           "file": {
             "name": "/dev.thejaustin.obtainiumplus-1.6.10-p28-universal.apk",
             "sha256": "390e8700dc46f145b8d9ab102ed38388a7b42885540144b54860245b9cfd7889",
@@ -2011,7 +2098,7 @@
           }
         },
         "1381eb7a7d39758611464d4624b69d49ca7720c91c573bcd06fe732a1f4c090f": {
-          "added": 1790199350000,
+          "added": 1790285834000,
           "file": {
             "name": "/dev.thejaustin.obtainiumplus-1.6.10-p27-universal.apk",
             "sha256": "1381eb7a7d39758611464d4624b69d49ca7720c91c573bcd06fe732a1f4c090f",
@@ -2101,13 +2188,13 @@
     },
     "io.github.omeritzics.updatium": {
       "metadata": {
-        "added": 1790199354000,
+        "added": 1790285837000,
         "categories": [
           "System",
           "Office"
         ],
         "issueTracker": "https://github.com/omeritzics/Updatium/issues",
-        "lastUpdated": 1790199354000,
+        "lastUpdated": 1790285839000,
         "sourceCode": "https://github.com/omeritzics/Updatium",
         "authorName": "omeritzics",
         "name": {
@@ -2116,8 +2203,186 @@
         "preferredSigner": "d8e311c3ce51501b61af7ca140624e7d9efade7d3b659fd4e4b8a7bf64a60db5"
       },
       "versions": {
+        "13d4c1cb85c64ba5aa1fd4af79b82bcda5b2b8d38f8f870f8bb02c2dd5edc90e": {
+          "added": 1790285838000,
+          "file": {
+            "name": "/io.github.omeritzics.updatium-26.9-arm64-v8a.apk",
+            "sha256": "13d4c1cb85c64ba5aa1fd4af79b82bcda5b2b8d38f8f870f8bb02c2dd5edc90e",
+            "size": 29180836
+          },
+          "manifest": {
+            "nativecode": [
+              "arm64-v8a"
+            ],
+            "versionName": "26.9",
+            "versionCode": 260926132,
+            "usesSdk": {
+              "minSdkVersion": 26,
+              "targetSdkVersion": 36
+            },
+            "signer": {
+              "sha256": [
+                "d8e311c3ce51501b61af7ca140624e7d9efade7d3b659fd4e4b8a7bf64a60db5"
+              ]
+            },
+            "usesPermission": [
+              {
+                "name": "android.permission.INTERNET"
+              },
+              {
+                "name": "android.permission.REQUEST_INSTALL_PACKAGES"
+              },
+              {
+                "name": "android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION"
+              },
+              {
+                "name": "android.permission.RECEIVE_BOOT_COMPLETED"
+              },
+              {
+                "name": "android.permission.REQUEST_DELETE_PACKAGES"
+              },
+              {
+                "name": "android.permission.ENFORCE_UPDATE_OWNERSHIP"
+              },
+              {
+                "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+                "maxSdkVersion": 29
+              },
+              {
+                "name": "android.permission.MANAGE_EXTERNAL_STORAGE"
+              },
+              {
+                "name": "android.permission.QUERY_ALL_PACKAGES"
+              },
+              {
+                "name": "android.permission.FOREGROUND_SERVICE"
+              },
+              {
+                "name": "android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
+              },
+              {
+                "name": "android.permission.ACCESS_NETWORK_STATE"
+              },
+              {
+                "name": "android.permission.WAKE_LOCK"
+              },
+              {
+                "name": "android.permission.POST_NOTIFICATIONS"
+              },
+              {
+                "name": "android.permission.VIBRATE"
+              },
+              {
+                "name": "android.permission.SCHEDULE_EXACT_ALARM",
+                "maxSdkVersion": 33
+              },
+              {
+                "name": "io.github.omeritzics.updatium.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+              },
+              {
+                "name": "moe.shizuku.manager.permission.API_V23"
+              },
+              {
+                "name": "com.rosan.dhizuku.permission.API"
+              },
+              {
+                "name": "android.permission.READ_EXTERNAL_STORAGE",
+                "maxSdkVersion": 29
+              }
+            ]
+          }
+        },
+        "4f061c05d628558a71614ff17e5fd3d28171feafaf0a6f0b2c356a12289594b1": {
+          "added": 1790285839000,
+          "file": {
+            "name": "/io.github.omeritzics.updatium-26.9-armeabi-v7a.apk",
+            "sha256": "4f061c05d628558a71614ff17e5fd3d28171feafaf0a6f0b2c356a12289594b1",
+            "size": 26933994
+          },
+          "manifest": {
+            "nativecode": [
+              "armeabi-v7a"
+            ],
+            "versionName": "26.9",
+            "versionCode": 260925132,
+            "usesSdk": {
+              "minSdkVersion": 26,
+              "targetSdkVersion": 36
+            },
+            "signer": {
+              "sha256": [
+                "d8e311c3ce51501b61af7ca140624e7d9efade7d3b659fd4e4b8a7bf64a60db5"
+              ]
+            },
+            "usesPermission": [
+              {
+                "name": "android.permission.INTERNET"
+              },
+              {
+                "name": "android.permission.REQUEST_INSTALL_PACKAGES"
+              },
+              {
+                "name": "android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION"
+              },
+              {
+                "name": "android.permission.RECEIVE_BOOT_COMPLETED"
+              },
+              {
+                "name": "android.permission.REQUEST_DELETE_PACKAGES"
+              },
+              {
+                "name": "android.permission.ENFORCE_UPDATE_OWNERSHIP"
+              },
+              {
+                "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+                "maxSdkVersion": 29
+              },
+              {
+                "name": "android.permission.MANAGE_EXTERNAL_STORAGE"
+              },
+              {
+                "name": "android.permission.QUERY_ALL_PACKAGES"
+              },
+              {
+                "name": "android.permission.FOREGROUND_SERVICE"
+              },
+              {
+                "name": "android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
+              },
+              {
+                "name": "android.permission.ACCESS_NETWORK_STATE"
+              },
+              {
+                "name": "android.permission.WAKE_LOCK"
+              },
+              {
+                "name": "android.permission.POST_NOTIFICATIONS"
+              },
+              {
+                "name": "android.permission.VIBRATE"
+              },
+              {
+                "name": "android.permission.SCHEDULE_EXACT_ALARM",
+                "maxSdkVersion": 33
+              },
+              {
+                "name": "io.github.omeritzics.updatium.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+              },
+              {
+                "name": "moe.shizuku.manager.permission.API_V23"
+              },
+              {
+                "name": "com.rosan.dhizuku.permission.API"
+              },
+              {
+                "name": "android.permission.READ_EXTERNAL_STORAGE",
+                "maxSdkVersion": 29
+              }
+            ]
+          }
+        },
         "bbeccbc8e49b40fafc423f17115b3225d2e7375ffded0b9166209dd673aa0dce": {
-          "added": 1790199354000,
+          "added": 1790285837000,
           "file": {
             "name": "/io.github.omeritzics.updatium-26.8-arm64-v8a.apk",
             "sha256": "bbeccbc8e49b40fafc423f17115b3225d2e7375ffded0b9166209dd673aa0dce",
@@ -2206,7 +2471,7 @@
           }
         },
         "8ad4f3e25218e018f14d730e2ca41ea0ff710ac80d484b22bfe568232be757b4": {
-          "added": 1790199354000,
+          "added": 1790285838000,
           "file": {
             "name": "/io.github.omeritzics.updatium-26.8-armeabi-v7a.apk",
             "sha256": "8ad4f3e25218e018f14d730e2ca41ea0ff710ac80d484b22bfe568232be757b4",
@@ -2298,13 +2563,13 @@
     },
     "org.cygnusx1.discoverium": {
       "metadata": {
-        "added": 1790199355000,
+        "added": 1790285839000,
         "categories": [
           "System",
           "Office"
         ],
         "issueTracker": "https://github.com/cygnusx-1-org/Discoverium/issues",
-        "lastUpdated": 1790199355000,
+        "lastUpdated": 1790285840000,
         "sourceCode": "https://github.com/cygnusx-1-org/Discoverium",
         "authorName": "cygnusx-1-org",
         "name": {
@@ -2314,7 +2579,7 @@
       },
       "versions": {
         "3967edeb1aca16397e8b809104f02e4c3fd8a68e7f529fdbd9da6f49d13df605": {
-          "added": 1790199355000,
+          "added": 1790285840000,
           "file": {
             "name": "/org.cygnusx1.discoverium-1.6.170-universal.apk",
             "sha256": "3967edeb1aca16397e8b809104f02e4c3fd8a68e7f529fdbd9da6f49d13df605",
@@ -2397,7 +2662,7 @@
           }
         },
         "e9266d0bf472f19d5a5a263eb352471c9142c962ab95030ddfb6a870f2ee18c9": {
-          "added": 1790199355000,
+          "added": 1790285839000,
           "file": {
             "name": "/org.cygnusx1.discoverium-1.6.140-universal.apk",
             "sha256": "e9266d0bf472f19d5a5a263eb352471c9142c962ab95030ddfb6a870f2ee18c9",
@@ -2483,12 +2748,12 @@
     },
     "org.smarttube.stable": {
       "metadata": {
-        "added": 1790199357000,
+        "added": 1790285841000,
         "categories": [
           "Multimedia"
         ],
         "issueTracker": "https://github.com/yuliskov/SmartTube/issues",
-        "lastUpdated": 1790199358000,
+        "lastUpdated": 1790285844000,
         "sourceCode": "https://github.com/yuliskov/SmartTube",
         "authorName": "yuliskov",
         "name": {
@@ -2500,8 +2765,196 @@
         "preferredSigner": "109735aa24fe85e2e1623ebb3b1ecc4bf4263f4c6374e4411d646bfa2eda482a"
       },
       "versions": {
+        "cc53f1aedac52ea0d4e77803acd580e32e7e5179adc96b55db7267b63a16c864": {
+          "added": 1790285843000,
+          "file": {
+            "name": "/org.smarttube.stable-32.56-arm64-v8a.apk",
+            "sha256": "cc53f1aedac52ea0d4e77803acd580e32e7e5179adc96b55db7267b63a16c864",
+            "size": 26260353
+          },
+          "manifest": {
+            "nativecode": [
+              "arm64-v8a"
+            ],
+            "versionName": "32.56",
+            "versionCode": 2446,
+            "features": [
+              {
+                "name": "android.software.leanback"
+              },
+              {
+                "name": "android.hardware.usb.host"
+              }
+            ],
+            "usesSdk": {
+              "minSdkVersion": 17,
+              "targetSdkVersion": 34
+            },
+            "signer": {
+              "sha256": [
+                "109735aa24fe85e2e1623ebb3b1ecc4bf4263f4c6374e4411d646bfa2eda482a"
+              ]
+            },
+            "usesPermission": [
+              {
+                "name": "org.smarttube.stable.ACCESS_VIDEO_DATA"
+              },
+              {
+                "name": "android.permission.INTERNET"
+              },
+              {
+                "name": "android.permission.RECORD_AUDIO"
+              },
+              {
+                "name": "android.permission.POST_NOTIFICATIONS"
+              },
+              {
+                "name": "android.permission.FOREGROUND_SERVICE"
+              },
+              {
+                "name": "android.permission.RECEIVE_BOOT_COMPLETED"
+              },
+              {
+                "name": "android.permission.QUICKBOOT_POWERON"
+              },
+              {
+                "name": "android.permission.READ_EXTERNAL_STORAGE"
+              },
+              {
+                "name": "android.permission.WRITE_EXTERNAL_STORAGE"
+              },
+              {
+                "name": "android.permission.SYSTEM_ALERT_WINDOW"
+              },
+              {
+                "name": "android.permission.ACTION_MANAGE_OVERLAY_PERMISSION"
+              },
+              {
+                "name": "android.permission.REQUEST_DELETE_PACKAGES"
+              },
+              {
+                "name": "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+              },
+              {
+                "name": "com.android.providers.tv.permission.READ_EPG_DATA"
+              },
+              {
+                "name": "com.android.providers.tv.permission.WRITE_EPG_DATA"
+              },
+              {
+                "name": "android.permission.ACCESS_NETWORK_STATE"
+              },
+              {
+                "name": "android.permission.REQUEST_INSTALL_PACKAGES"
+              },
+              {
+                "name": "android.permission.BLUETOOTH"
+              },
+              {
+                "name": "android.permission.WAKE_LOCK"
+              },
+              {
+                "name": "org.smarttube.stable.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+              }
+            ]
+          }
+        },
+        "d2e9bc90b95aa6232fbf647e63003ccb9051d1aad53531c103aa997e443457b6": {
+          "added": 1790285844000,
+          "file": {
+            "name": "/org.smarttube.stable-32.56-armeabi-v7a.apk",
+            "sha256": "d2e9bc90b95aa6232fbf647e63003ccb9051d1aad53531c103aa997e443457b6",
+            "size": 25046686
+          },
+          "manifest": {
+            "nativecode": [
+              "armeabi-v7a"
+            ],
+            "versionName": "32.56",
+            "versionCode": 2446,
+            "features": [
+              {
+                "name": "android.software.leanback"
+              },
+              {
+                "name": "android.hardware.usb.host"
+              }
+            ],
+            "usesSdk": {
+              "minSdkVersion": 17,
+              "targetSdkVersion": 34
+            },
+            "signer": {
+              "sha256": [
+                "109735aa24fe85e2e1623ebb3b1ecc4bf4263f4c6374e4411d646bfa2eda482a"
+              ]
+            },
+            "usesPermission": [
+              {
+                "name": "org.smarttube.stable.ACCESS_VIDEO_DATA"
+              },
+              {
+                "name": "android.permission.INTERNET"
+              },
+              {
+                "name": "android.permission.RECORD_AUDIO"
+              },
+              {
+                "name": "android.permission.POST_NOTIFICATIONS"
+              },
+              {
+                "name": "android.permission.FOREGROUND_SERVICE"
+              },
+              {
+                "name": "android.permission.RECEIVE_BOOT_COMPLETED"
+              },
+              {
+                "name": "android.permission.QUICKBOOT_POWERON"
+              },
+              {
+                "name": "android.permission.READ_EXTERNAL_STORAGE"
+              },
+              {
+                "name": "android.permission.WRITE_EXTERNAL_STORAGE"
+              },
+              {
+                "name": "android.permission.SYSTEM_ALERT_WINDOW"
+              },
+              {
+                "name": "android.permission.ACTION_MANAGE_OVERLAY_PERMISSION"
+              },
+              {
+                "name": "android.permission.REQUEST_DELETE_PACKAGES"
+              },
+              {
+                "name": "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+              },
+              {
+                "name": "com.android.providers.tv.permission.READ_EPG_DATA"
+              },
+              {
+                "name": "com.android.providers.tv.permission.WRITE_EPG_DATA"
+              },
+              {
+                "name": "android.permission.ACCESS_NETWORK_STATE"
+              },
+              {
+                "name": "android.permission.REQUEST_INSTALL_PACKAGES"
+              },
+              {
+                "name": "android.permission.BLUETOOTH"
+              },
+              {
+                "name": "android.permission.WAKE_LOCK"
+              },
+              {
+                "name": "org.smarttube.stable.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+              }
+            ]
+          }
+        },
         "65717d4fe7173e0e92857e84fde7c53a035cac314975c582dc7e59d9699e4c6e": {
-          "added": 1790199357000,
+          "added": 1790285841000,
           "file": {
             "name": "/org.smarttube.stable-32.47-arm64-v8a.apk",
             "sha256": "65717d4fe7173e0e92857e84fde7c53a035cac314975c582dc7e59d9699e4c6e",
@@ -2595,7 +3048,7 @@
           }
         },
         "9408be95767b8fc6a870a205549d121b448a2e5abbdc730f7b40d32da7c16968": {
-          "added": 1790199358000,
+          "added": 1790285842000,
           "file": {
             "name": "/org.smarttube.stable-32.47-armeabi-v7a.apk",
             "sha256": "9408be95767b8fc6a870a205549d121b448a2e5abbdc730f7b40d32da7c16968",
@@ -2692,8 +3145,8 @@
     },
     "ru.andr7e.deviceinfohw": {
       "metadata": {
-        "added": 1790199358000,
-        "lastUpdated": 1790199358000,
+        "added": 1790285845000,
+        "lastUpdated": 1790285845000,
         "authorName": "未知",
         "name": {
           "en-US": "Device Info HW"
@@ -2702,7 +3155,7 @@
       },
       "versions": {
         "cb46ef655754adbdbcadec79b5f044c038d38c145f55eae59685f89e1559efd9": {
-          "added": 1790199358000,
+          "added": 1790285845000,
           "file": {
             "name": "/ru.andr7e.deviceinfohw-5.27.1-universal.apk",
             "sha256": "cb46ef655754adbdbcadec79b5f044c038d38c145f55eae59685f89e1559efd9",
