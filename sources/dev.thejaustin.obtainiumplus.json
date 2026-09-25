@@ -236,6 +236,21 @@
           "size": 83451828
         }
       ]
+    },
+    {
+      "version": "1.6.10-p35",
+      "versionCode": 2434,
+      "versionName": "1.6.10-p35",
+      "publishedAt": "2026-09-18T02:48:48Z",
+      "upstreamTag": "v1.6.10-p35",
+      "releaseNote": "**Obtainium+ 1.6.10-p35** — build #675, commit `acbcedae`, 2026-09-18 02:48 UTC\n\n## Changes since v1.6.10-p34\n\n### ✨ New Features\n- feat: elevate AppListTile and sheet surfaces with glassmorphism and specular borders (#321) (acbcedae)\n\n\n---\n[Full Changelog](https://github.com/thejaustin/ObtainiumPlus/compare/v1.6.10-p34...v1.6.10-p35)\n",
+      "assets": [
+        {
+          "abi": "universal",
+          "file": "dev.thejaustin.obtainiumplus-1.6.10-p35-universal.apk",
+          "size": 83451832
+        }
+      ]
     }
   ]
 }
